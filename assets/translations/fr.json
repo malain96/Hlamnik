@@ -1,3 +1,10 @@
 {
-  "title": "Bonjour"
+  "title": "Bonjour",
+  "winter": "Hiver",
+  "fall": "Printemps",
+  "summer": "Été",
+  "autumn": "Automne",
+  "pants": "Pantalon",
+  "tshirt": "T-Shirt",
+  "sweater": "Pull"
 }

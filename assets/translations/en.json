@@ -1,3 +1,10 @@
 {
-  "title": "Hello"
+  "title": "Hello",
+  "winter": "Winter",
+  "fall": "Fall",
+  "summer": "Summer",
+  "autumn": "Autumn",
+  "pants": "Pants",
+  "tshirt": "T-Shirt",
+  "sweater": "Sweater"
 }

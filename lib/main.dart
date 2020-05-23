@@ -1,16 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:hlamnik/database/entities/category.dart';
+import 'package:hlamnik/database/seed.dart';
 import 'package:hlamnik/screens/item_list_screen.dart';
-import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final database = await DBService.getDatabase;
-  database.categoryDao.insertItem(Category(name: 'Test'));
-  //@TODO Create a seeder to create default seasons, categories and colors
+  Seed.initDB();
 
   runApp(
     EasyLocalization(
