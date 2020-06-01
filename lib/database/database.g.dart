@@ -68,6 +68,8 @@ class _$AppDatabase extends AppDatabase {
 
   SeasonDao _seasonDaoInstance;
 
+  ItemSeasonDao _itemSeasonDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback callback]) async {
     return sqflite.openDatabase(
@@ -121,6 +123,11 @@ class _$AppDatabase extends AppDatabase {
   SeasonDao get seasonDao {
     return _seasonDaoInstance ??= _$SeasonDao(database, changeListener);
   }
+
+  @override
+  ItemSeasonDao get itemSeasonDao {
+    return _itemSeasonDaoInstance ??= _$ItemSeasonDao(database, changeListener);
+  }
 }
 
 class _$CategoryDao extends CategoryDao {
@@ -150,8 +157,8 @@ class _$CategoryDao extends CategoryDao {
   }
 
   @override
-  Future<void> insertItem(Category item) async {
-    await _categoryInsertionAdapter.insert(
+  Future<int> insertItem(Category item) {
+    return _categoryInsertionAdapter.insertAndReturnId(
         item, sqflite.ConflictAlgorithm.abort);
   }
 }
@@ -182,8 +189,15 @@ class _$ColorDao extends ColorDao {
   }
 
   @override
-  Future<void> insertItem(Color item) async {
-    await _colorInsertionAdapter.insert(item, sqflite.ConflictAlgorithm.abort);
+  Future<Color> findByCode(String code) async {
+    return _queryAdapter.query('SELECT * FROM Color WHERE code = ?',
+        arguments: <dynamic>[code], mapper: _colorMapper);
+  }
+
+  @override
+  Future<int> insertItem(Color item) {
+    return _colorInsertionAdapter.insertAndReturnId(
+        item, sqflite.ConflictAlgorithm.abort);
   }
 }
 
@@ -235,8 +249,9 @@ class _$ItemDao extends ItemDao {
   }
 
   @override
-  Future<void> insertItem(Item item) async {
-    await _itemInsertionAdapter.insert(item, sqflite.ConflictAlgorithm.abort);
+  Future<int> insertItem(Item item) {
+    return _itemInsertionAdapter.insertAndReturnId(
+        item, sqflite.ConflictAlgorithm.abort);
   }
 }
 
@@ -267,7 +282,43 @@ class _$SeasonDao extends SeasonDao {
   }
 
   @override
-  Future<void> insertItem(Season item) async {
-    await _seasonInsertionAdapter.insert(item, sqflite.ConflictAlgorithm.abort);
+  Future<int> insertItem(Season item) {
+    return _seasonInsertionAdapter.insertAndReturnId(
+        item, sqflite.ConflictAlgorithm.abort);
+  }
+}
+
+class _$ItemSeasonDao extends ItemSeasonDao {
+  _$ItemSeasonDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _itemSeasonInsertionAdapter = InsertionAdapter(
+            database,
+            'ItemSeason',
+            (ItemSeason item) => <String, dynamic>{
+                  'item_id': item.itemId,
+                  'season_id': item.seasonId
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _itemSeasonMapper = (Map<String, dynamic> row) => ItemSeason(
+      itemId: row['item_id'] as int, seasonId: row['season_id'] as int);
+
+  final InsertionAdapter<ItemSeason> _itemSeasonInsertionAdapter;
+
+  @override
+  Future<List<ItemSeason>> findBySeason(int seasonId) async {
+    return _queryAdapter.queryList('SELECT * FROM ItemSeason WHERE season_id=?',
+        arguments: <dynamic>[seasonId], mapper: _itemSeasonMapper);
+  }
+
+  @override
+  Future<int> insertItem(ItemSeason item) {
+    return _itemSeasonInsertionAdapter.insertAndReturnId(
+        item, sqflite.ConflictAlgorithm.abort);
   }
 }

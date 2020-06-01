@@ -1,10 +1,40 @@
 {
-  "title": "Bonjour",
   "winter": "Hiver",
   "fall": "Printemps",
   "summer": "Été",
   "autumn": "Automne",
   "pants": "Pantalon",
   "tshirt": "T-Shirt",
-  "sweater": "Pull"
+  "sweater": "Pull",
+  "itemsOverviewScreenTitle": "Vos Vêtements",
+  "editItemScreenTitleAdd": "Ajouter un vêtement",
+  "title": "Titre",
+  "comment": "Commentaire",
+  "quality": "Qualité",
+  "rating": "Note",
+  "picture": "Photo",
+  "errorNoAction": {
+    "male": "Veuillez {} un {}",
+    "female": "Veuillez {} une {}",
+    "other": "Veuillez {} un(e) {}"
+  },
+  "errorMinLength": {
+    "male": "Veuillez renseigner un {} avec au moins {} caractères",
+    "female": "Veuillez renseigner une {} avec au moins {} caractères",
+    "other": "Veuillez renseigner un(e) {} avec au moins {} caractères"
+  },
+  "category": "Catégorie",
+  "takePicture": "Prendre une photo",
+  "noImage": "Pas de photo",
+  "seasons": "Saisons",
+  "season": "Saison",
+  "color": "Couleur",
+  "select": "Sélectionner",
+  "selectSomething": {
+    "male": "Sélectionner un {}",
+    "female": "Sélectionner une {}",
+    "other": "Sélectionner un(e) {}"
+  },
+  "enter": "Renseigner",
+  "take": "Prendre"
 }

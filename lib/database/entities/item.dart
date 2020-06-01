@@ -20,7 +20,7 @@ import 'package:hlamnik/database/entities/season.dart';
 )
 class Item {
   @primaryKey
-  final int id;
+  int id;
   String title;
   double quality;
   double rating;

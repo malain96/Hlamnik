@@ -6,4 +6,7 @@ import 'package:hlamnik/database/entities/color.dart';
 abstract class ColorDao extends AbstractDao<Color> {
   @Query('SELECT * FROM Color')
   Future<List<Color>> listAll();
+
+  @Query('SELECT * FROM Color WHERE code = :code')
+  Future<Color> findByCode(String code);
 }

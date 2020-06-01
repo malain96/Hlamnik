@@ -1,10 +1,40 @@
 {
-  "title": "Hello",
   "winter": "Winter",
   "fall": "Fall",
   "summer": "Summer",
   "autumn": "Autumn",
   "pants": "Pants",
   "tshirt": "T-Shirt",
-  "sweater": "Sweater"
+  "sweater": "Sweater",
+  "itemsOverviewScreenTitle": "Your Items",
+  "editItemScreenTitleAdd": "Add an item",
+  "title": "Title",
+  "comment": "Comment",
+  "quality": "Quality",
+  "rating": "Rating",
+  "picture": "Picture",
+  "errorNoAction": {
+    "male": "Please {} a {}",
+    "female": "Please {} a {}",
+    "other": "Please {} a {}"
+  },
+  "errorMinLength": {
+    "male": "Please enter a {} with {} or more characters",
+    "female": "Please enter a {} with {} or more characters",
+    "other": "Please enter a {} with {} or more characters"
+  },
+  "category": "Category",
+  "takePicture": "Take picture",
+  "noImage": "No Image Taken",
+  "seasons": "Seasons",
+  "season": "Season",
+  "color": "Color",
+  "select": "Select",
+  "selectSomething": {
+    "male": "Select a {}",
+    "female": "Select a {}",
+    "other": "Select a {}"
+  },
+  "enter": "Enter",
+  "take": "Take"
 }

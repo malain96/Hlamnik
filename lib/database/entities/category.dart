@@ -10,4 +10,7 @@ class Category {
     this.id,
     this.name,
   });
+
+  @override
+  String toString() => name;
 }
