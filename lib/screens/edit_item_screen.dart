@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dropdown_search/dropdown_search.dart';
@@ -6,8 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:hlamnik/database/entities/category.dart';
-import 'package:hlamnik/database/entities/color.dart' as Entity;
-import 'package:hlamnik/database/entities/item.dart' as Entity;
+import 'package:hlamnik/database/entities/color.dart' as entity;
+import 'package:hlamnik/database/entities/item.dart' as entity;
 import 'package:hlamnik/database/entities/season.dart';
 import 'package:hlamnik/providers/items.dart';
 import 'package:hlamnik/services/db_service.dart';
@@ -31,24 +32,23 @@ class EditItemScreen extends StatefulWidget {
 
 class _EditItemScreenState extends State<EditItemScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  var _editedItem = Entity.Item(
-      id: null,
-      title: '',
-      picture: '',
-      comment: '',
-      rating: 2.5,
-      quality: 2.5,
-      colorId: null,
-      color: null,
-      categoryId: null,
-      category: null,
-      seasons: []);
-  var _isLoading = false;
+  final _editedItem = entity.Item(
+    id: null,
+    title: '',
+    picture: '',
+    comment: '',
+    rating: 2.5,
+    quality: 2.5,
+    colorId: null,
+    color: null,
+    categoryId: null,
+    category: null,
+    seasons: [],
+  );
+  final _isLoading = false;
   String _seasonError;
   String _colorError;
   String _pictureError;
-  var _autoValidateTitle = false;
-  var _autoValidateCategory = false;
 
   Future _changeColor(Color color) async {
     final db = await DBService.getDatabase;
@@ -62,25 +62,22 @@ class _EditItemScreenState extends State<EditItemScreen> {
     _colorValidation();
   }
 
-  void _selectImage(String path) {
-    _editedItem.picture = path;
+  void _selectImage(String base64) {
+    _editedItem.picture = base64;
     _pictureValidation();
   }
 
   void _selectCategory(Category category) {
     _editedItem.category = category;
     _editedItem.categoryId = category.id;
-    if (!_autoValidateCategory)
-      setState(() {
-        _autoValidateCategory = true;
-      });
   }
 
   void _toggleSeason(Item tag) {
-    if (tag.active)
+    if (tag.active) {
       _editedItem.seasons.add(tag.customData);
-    else
+    } else {
       _editedItem.seasons.removeWhere((season) => season.id == tag.index);
+    }
 
     _seasonValidation();
   }
@@ -89,7 +86,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
 
   void _setQuality(double quality) => _editedItem.quality = quality;
 
-  void _setTitle(String title) =>_editedItem.title = title;
+  void _setTitle(String title) => _editedItem.title = title;
 
   void _setComment(String comment) => _editedItem.comment = comment;
 
@@ -98,7 +95,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
     return await db.categoryDao.listAll();
   }
 
-  Future<List<Entity.Color>> get _colors async {
+  Future<List<entity.Color>> get _colors async {
     final db = await DBService.getDatabase;
     return await db.colorDao.listAll();
   }
@@ -109,7 +106,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
   }
 
   void _seasonValidation() {
-    if (_editedItem.seasons.length == 0)
+    if (_editedItem.seasons.isEmpty) {
       setState(() {
         _seasonError = 'errorNoAction'.tr(
           gender: 'female',
@@ -119,14 +116,15 @@ class _EditItemScreenState extends State<EditItemScreen> {
           ],
         );
       });
-    else
+    } else {
       setState(() {
         _seasonError = null;
       });
+    }
   }
 
   void _colorValidation() {
-    if (_editedItem.seasons.length == 0)
+    if (_editedItem.seasons.isEmpty) {
       setState(() {
         _colorError = 'errorNoAction'.tr(
           gender: 'female',
@@ -136,14 +134,15 @@ class _EditItemScreenState extends State<EditItemScreen> {
           ],
         );
       });
-    else
+    } else {
       setState(() {
         _colorError = null;
       });
+    }
   }
 
   void _pictureValidation() {
-    if (_editedItem.picture.isEmpty)
+    if (_editedItem.picture.isEmpty) {
       setState(() {
         _pictureError = 'errorNoAction'.tr(
           gender: 'female',
@@ -153,17 +152,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
           ],
         );
       });
-    else
+    } else {
       setState(() {
         _pictureError = null;
       });
-  }
-
-  void _titleValidation() {
-    if (!_autoValidateTitle)
-      setState(() {
-        _autoValidateTitle = true;
-      });
+    }
   }
 
   void _saveForm() {
@@ -179,10 +172,13 @@ class _EditItemScreenState extends State<EditItemScreen> {
       return;
     }
 
+    _formKey.currentState.save();
+
     if (_editedItem.id != null) {
       //update
-    } else
+    } else {
       context.read<Items>().addItem(_editedItem);
+    }
 
     Navigator.of(context).pop();
   }
@@ -199,7 +195,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
           actions: <Widget>[
             _isLoading
                 ? LoadingIndicator(
-                    color: kTertiaryColor,
+                    color: AppColors.tertiaryColor,
                   )
                 : IconButton(
                     icon: const Icon(Icons.save),
@@ -226,12 +222,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
                     decoration: InputDecoration(
                       labelText: 'title'.tr(),
                     ),
+                    textCapitalization: TextCapitalization.sentences,
                     textInputAction: TextInputAction.next,
                     autocorrect: true,
-                    autovalidate: _autoValidateTitle,
-                    onChanged: (_) => _titleValidation,
                     validator: (value) {
-                      if (value.isEmpty)
+                      if (value.isEmpty) {
                         return 'errorNoAction'.tr(
                           gender: 'male',
                           args: [
@@ -239,11 +234,13 @@ class _EditItemScreenState extends State<EditItemScreen> {
                             'title'.tr().toLowerCase(),
                           ],
                         );
+                      }
 
-                      if (value.length < 3)
+                      if (value.length < 3) {
                         return 'errorMinLength'.tr(
                             gender: 'male',
                             args: ['title'.tr().toLowerCase(), '3']);
+                      }
                       return null;
                     },
                     onSaved: _setTitle,
@@ -274,7 +271,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           vertical: 7, horizontal: 13),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: kPrimaryColor),
+                        borderSide: BorderSide(color: AppColors.primaryColor),
                       ),
                     ),
                     mode: Mode.DIALOG,
@@ -282,9 +279,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
                     label: 'category'.tr(),
                     onChanged: _selectCategory,
                     selectedItem: _editedItem.category,
-                    autoValidate: _autoValidateCategory,
                     validator: (Category item) {
-                      if (item == null)
+                      if (item == null) {
                         return 'errorNoAction'.tr(
                           gender: 'female',
                           args: [
@@ -292,8 +288,9 @@ class _EditItemScreenState extends State<EditItemScreen> {
                             'category'.tr().toLowerCase(),
                           ],
                         );
-                      else
+                      } else {
                         return null;
+                      }
                     },
                   ),
                   SizedBox(
@@ -304,11 +301,12 @@ class _EditItemScreenState extends State<EditItemScreen> {
                       builder: (context, seasonsSnapshot) {
                         return InputBordered(
                           childLeftPadding: 13,
-                          childTopPadding: 23,
+                          childRightPadding: 13,
+                          childTopPadding: 27,
                           label: 'seasons'.tr(),
                           error: _seasonError,
                           child: Tags(
-                            alignment: WrapAlignment.start,
+                            alignment: WrapAlignment.spaceEvenly,
                             itemCount: seasonsSnapshot.hasData
                                 ? seasonsSnapshot.data.length
                                 : 0,
@@ -320,16 +318,19 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                       index: season.id,
                                       title: season.name,
                                       customData: season,
-                                      active: false,
+                                      active: _editedItem.seasons
+                                          .where((s) => s.id == season.id)
+                                          .isNotEmpty,
+                                      color: AppColors.tertiaryColor,
+                                      activeColor: AppColors.primaryColor,
+                                      textColor: AppColors.secondaryColor,
+                                      textActiveColor: AppColors.secondaryColor,
+                                      onPressed: _toggleSeason,
                                       combine: ItemTagsCombine.withTextBefore,
                                       icon: ItemTagsIcon(
                                         icon: Icons.add,
                                       ),
-                                      color: kTertiaryColor,
-                                      activeColor: kPrimaryColor,
-                                      textColor: kSecondaryColor,
-                                      textActiveColor: kSecondaryColor,
-                                      onPressed: _toggleSeason,
+                                      textStyle: TextStyle(fontSize: 12),
                                     );
                                   }
                                 : null,
@@ -339,7 +340,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                   SizedBox(
                     height: 17,
                   ),
-                  FutureBuilder<List<Entity.Color>>(
+                  FutureBuilder<List<entity.Color>>(
                       future: _colors,
                       builder: (context, colorsSnapshot) {
                         return Column(
@@ -355,7 +356,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                   side: BorderSide(
                                       color: _colorError != null
                                           ? Theme.of(context).errorColor
-                                          : kSecondaryColor),
+                                          : AppColors.secondaryColor),
                                 ),
                                 onPressed: colorsSnapshot.hasData
                                     ? () {
@@ -363,7 +364,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              backgroundColor: kTertiaryColor,
+                                              backgroundColor: AppColors.tertiaryColor,
                                               title: Text('selectSomething'.tr(
                                                   gender: 'female',
                                                   args: [
@@ -373,7 +374,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                                 child: BlockPicker(
                                                   pickerColor: _editedItem
                                                           .color?.getColor ??
-                                                      kTertiaryColor,
+                                                      AppColors.tertiaryColor,
                                                   onColorChanged: _changeColor,
                                                   availableColors:
                                                       colorsSnapshot.data
@@ -389,12 +390,12 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                     : null,
                                 child: Text('color'.tr()),
                                 color: _editedItem.color?.getColor ??
-                                    kTertiaryColor,
+                                    AppColors.tertiaryColor,
                                 textColor: useWhiteForeground(
                                         _editedItem.color?.getColor ??
-                                            kTertiaryColor)
-                                    ? kTertiaryColor
-                                    : kSecondaryColor,
+                                            AppColors.tertiaryColor)
+                                    ? AppColors.tertiaryColor
+                                    : AppColors.secondaryColor,
                               ),
                             ),
                             if (_colorError != null) ErrorText(_colorError),

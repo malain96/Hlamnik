@@ -31,7 +31,7 @@ class RatingInput extends StatelessWidget {
         itemPadding: const EdgeInsets.symmetric(horizontal: 5),
         itemBuilder: (context, _) => Icon(
           Icons.star,
-          color: kPrimaryColor,
+          color: AppColors.primaryColor,
         ),
         onRatingUpdate: (rating) {
           _onPress(rating);

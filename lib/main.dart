@@ -10,8 +10,9 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Seed.initDB();
+  await Seed.initDB();
 
+  //@Todo Replace EasyLocalization by intl ?
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('en'), Locale('fr'), Locale('ru')],

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,8 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/widgets/error_text.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart' as syspaths;
 
 class ImageInput extends StatefulWidget {
   final String error;
@@ -35,10 +34,8 @@ class _ImageInputState extends State<ImageInput> {
     setState(() {
       _image = File(imageFile.path);
     });
-    final appDir = await syspaths.getApplicationDocumentsDirectory();
-    final fileName = path.basename(imageFile.path);
-    final savedImage = await _image.copy('${appDir.path}/$fileName');
-    widget.onSelectImage(savedImage.path);
+    final imageBytes = await imageFile.readAsBytes();
+    widget.onSelectImage(base64Encode(imageBytes));
   }
 
   @override
@@ -55,7 +52,7 @@ class _ImageInputState extends State<ImageInput> {
                 border: Border.all(
                   color: widget.error != null
                       ? Theme.of(context).errorColor
-                      : kSecondaryColor,
+                      : AppColors.secondaryColor,
                 ),
                 borderRadius: BorderRadius.circular(30),
               ),
@@ -74,7 +71,7 @@ class _ImageInputState extends State<ImageInput> {
                       style: TextStyle(
                           color: widget.error != null
                               ? Theme.of(context).errorColor
-                              : kSecondaryColor),
+                              : AppColors.secondaryColor),
                     ),
               alignment: Alignment.center,
             ),
@@ -85,7 +82,7 @@ class _ImageInputState extends State<ImageInput> {
               child: FlatButton.icon(
                 icon: Icon(Icons.camera),
                 label: Text('takePicture'.tr()),
-                textColor: kSecondaryColor,
+                textColor: AppColors.secondaryColor,
                 onPressed: _takePicture,
               ),
             ),

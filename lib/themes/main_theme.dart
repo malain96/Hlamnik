@@ -7,17 +7,19 @@ final ThemeData mainTheme = _buildMainTheme();
 //const kSecondaryColor = Color(0xFF373A36);
 //const kTertiaryColor = Color(0xFFE6E2DD);
 
-const kPrimaryColor = Color(0xFFC6AD8F);
-const kSecondaryColor = Color(0xFF425664);
-const kTertiaryColor = Color(0xFFF6F4F2);
+class AppColors{
+  static const primaryColor = Color(0xFFC6AD8F);
+  static const secondaryColor = Color(0xFF425664);
+  static const tertiaryColor = Color(0xFFF6F4F2);
+}
 
 // Build the theme
 ThemeData _buildMainTheme() {
-  final ThemeData base = ThemeData.light();
+  final base = ThemeData.light();
 
   return ThemeData(
-    primaryColor: kPrimaryColor,
-    accentColor: kSecondaryColor,
+    primaryColor: AppColors.primaryColor,
+    accentColor: AppColors.secondaryColor,
     textTheme: _buildMainTextTheme(base.textTheme),
     appBarTheme: _buildMainAppBarTheme(
       base.appBarTheme,
@@ -27,9 +29,9 @@ ThemeData _buildMainTheme() {
     floatingActionButtonTheme:
         _buildMainFloatingActionButtonTheme(base.floatingActionButtonTheme),
     iconTheme: _buildMainIconTheme(base.iconTheme),
-    canvasColor: kTertiaryColor,
-    cursorColor: kPrimaryColor,
-    textSelectionColor: kPrimaryColor,
+    canvasColor: AppColors.tertiaryColor,
+    cursorColor: AppColors.primaryColor,
+    textSelectionColor: AppColors.primaryColor,
     inputDecorationTheme:
         _buildMainInputDecorationTheme(base.inputDecorationTheme),
   );
@@ -40,12 +42,12 @@ TextTheme _buildMainTextTheme(TextTheme base) {
   return base
       .copyWith(
         subtitle1: TextStyle(
-          color: kSecondaryColor,
+          color: AppColors.secondaryColor,
         ),
       )
       .apply(
-        bodyColor: kSecondaryColor,
-        displayColor: kSecondaryColor,
+        bodyColor: AppColors.secondaryColor,
+        displayColor: AppColors.secondaryColor,
       );
 }
 
@@ -53,13 +55,13 @@ TextTheme _buildMainTextTheme(TextTheme base) {
 AppBarTheme _buildMainAppBarTheme(
     AppBarTheme base, TextTheme textBase, IconThemeData iconBase) {
   return base.copyWith(
-    actionsIconTheme: iconBase.copyWith(color: kTertiaryColor),
-    iconTheme: iconBase.copyWith(color: kTertiaryColor),
+    actionsIconTheme: iconBase.copyWith(color: AppColors.tertiaryColor),
+    iconTheme: iconBase.copyWith(color: AppColors.tertiaryColor),
     textTheme: textBase.copyWith(
       headline6: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: kTertiaryColor,
+        color: AppColors.tertiaryColor,
       ),
     ),
   );
@@ -67,15 +69,15 @@ AppBarTheme _buildMainAppBarTheme(
 
 // Build the main icon theme
 IconThemeData _buildMainIconTheme(IconThemeData base) {
-  return base.copyWith(color: kPrimaryColor);
+  return base.copyWith(color: AppColors.primaryColor);
 }
 
 // Build the main floating action button theme
 FloatingActionButtonThemeData _buildMainFloatingActionButtonTheme(
     FloatingActionButtonThemeData base) {
   return base.copyWith(
-    focusColor: kTertiaryColor,
-    backgroundColor: kPrimaryColor,
+    focusColor: AppColors.tertiaryColor,
+    backgroundColor: AppColors.primaryColor,
   );
 }
 
@@ -87,7 +89,7 @@ InputDecorationTheme _buildMainInputDecorationTheme(InputDecorationTheme base) {
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(30),
       borderSide: BorderSide(
-        color: kSecondaryColor,
+        color: AppColors.secondaryColor,
       ),
     ),
     labelStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),

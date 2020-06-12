@@ -27,17 +27,20 @@ class ItemsOverviewScreen extends StatelessWidget {
         ],
         centerTitle: true,
       ),
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 3 / 2,
+      body: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 5,
+            crossAxisSpacing: 5,
+            childAspectRatio: 1,
+          ),
+          itemCount: items.length,
+          itemBuilder: (_, i) {
+            return GridTile(child: ItemTile(items[i]));
+          },
         ),
-        itemCount: items.length,
-        itemBuilder: (_, i) {
-          return GridTile(child: ItemTile(items[i]));
-        },
       ),
       floatingActionButton: Platform.isAndroid
           ? FloatingActionButton(

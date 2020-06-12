@@ -9,7 +9,7 @@ class LoadingIndicator extends StatelessWidget {
   final Color color;
 
 
-  LoadingIndicator({this.color: kPrimaryColor});
+  LoadingIndicator({this.color = AppColors.primaryColor});
 
   @override
   Widget build(BuildContext context) {

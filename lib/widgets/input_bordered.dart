@@ -9,11 +9,13 @@ class InputBordered extends StatelessWidget {
     @required Widget child,
     double childTopPadding = 18,
     double childLeftPadding = 8,
+    double childRightPadding = 8,
     String error,
   })  : _label = label,
         _child = child,
         _childTopPadding = childTopPadding,
         _childLeftPadding = childLeftPadding,
+        _childRightPadding = childRightPadding,
         _error = error,
         super(key: key);
 
@@ -21,6 +23,7 @@ class InputBordered extends StatelessWidget {
   final Widget _child;
   final double _childTopPadding;
   final double _childLeftPadding;
+  final double _childRightPadding;
   final String _error;
 
   @override
@@ -37,7 +40,7 @@ class InputBordered extends StatelessWidget {
                     border: Border.all(
                       color: _error != null
                           ? Theme.of(context).errorColor
-                          : kSecondaryColor,
+                          : AppColors.secondaryColor,
                     ),
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -45,7 +48,7 @@ class InputBordered extends StatelessWidget {
                   child: null),
             ),
             Container(
-              decoration: BoxDecoration(color: kTertiaryColor),
+              decoration: BoxDecoration(color: AppColors.tertiaryColor),
               padding: const EdgeInsets.only(left: 10, right: 25),
               height: 30,
               child: Text(
@@ -54,16 +57,20 @@ class InputBordered extends StatelessWidget {
                   fontSize: 12,
                   color: _error != null
                       ? Theme.of(context).errorColor
-                      : kSecondaryColor,
+                      : AppColors.secondaryColor,
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: _childTopPadding,
-                left: _childLeftPadding,
+            Container(
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: _childTopPadding,
+                  left: _childLeftPadding,
+                  right: _childRightPadding,
+                ),
+                child: _child,
               ),
-              child: _child,
             ),
           ],
         ),
