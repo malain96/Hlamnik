@@ -5,6 +5,6 @@ import 'abstract_dao.dart';
 
 @dao
 abstract class ItemSeasonDao extends AbstractDao<ItemSeason> {
-  @Query('SELECT * FROM ItemSeason WHERE season_id=:seasonId')
-  Future<List<ItemSeason>> findBySeason(int seasonId);
+  @Query('SELECT * FROM ItemSeason WHERE item_id=:itemId')
+  Future<List<ItemSeason>> findSeasonIdsByItem(int itemId);
 }

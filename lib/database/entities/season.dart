@@ -10,4 +10,7 @@ class Season {
     this.id,
     this.name,
   });
+
+  @override
+  String toString() => name;
 }

@@ -282,6 +282,14 @@ class _$SeasonDao extends SeasonDao {
   }
 
   @override
+  Future<List<Season>> getByIds(List<int> ids) async {
+    final valueList1 = ids.map((value) => "'$value'").join(', ');
+    return _queryAdapter.queryList(
+        'SELECT * FROM Season WHERE id IN ($valueList1)',
+        mapper: _seasonMapper);
+  }
+
+  @override
   Future<int> insertItem(Season item) {
     return _seasonInsertionAdapter.insertAndReturnId(
         item, sqflite.ConflictAlgorithm.abort);
@@ -311,9 +319,9 @@ class _$ItemSeasonDao extends ItemSeasonDao {
   final InsertionAdapter<ItemSeason> _itemSeasonInsertionAdapter;
 
   @override
-  Future<List<ItemSeason>> findBySeason(int seasonId) async {
-    return _queryAdapter.queryList('SELECT * FROM ItemSeason WHERE season_id=?',
-        arguments: <dynamic>[seasonId], mapper: _itemSeasonMapper);
+  Future<List<ItemSeason>> findSeasonIdsByItem(int itemId) async {
+    return _queryAdapter.queryList('SELECT * FROM ItemSeason WHERE item_id=?',
+        arguments: <dynamic>[itemId], mapper: _itemSeasonMapper);
   }
 
   @override

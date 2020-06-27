@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
@@ -13,7 +11,8 @@ import 'package:hlamnik/database/entities/season.dart';
 import 'package:hlamnik/providers/items.dart';
 import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
-import 'package:hlamnik/widgets/error_text.dart';
+import 'package:hlamnik/widgets/color_picker_input.dart';
+import 'package:hlamnik/widgets/custom_dropdown_search.dart';
 import 'package:hlamnik/widgets/image_input.dart';
 import 'package:hlamnik/widgets/input_bordered.dart';
 import 'package:hlamnik/widgets/loading_indicator.dart';
@@ -95,11 +94,6 @@ class _EditItemScreenState extends State<EditItemScreen> {
     return await db.categoryDao.listAll();
   }
 
-  Future<List<entity.Color>> get _colors async {
-    final db = await DBService.getDatabase;
-    return await db.colorDao.listAll();
-  }
-
   Future<List<Season>> get _seasons async {
     final db = await DBService.getDatabase;
     return await db.seasonDao.listAll();
@@ -124,7 +118,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
   }
 
   void _colorValidation() {
-    if (_editedItem.seasons.isEmpty) {
+    if (_editedItem.color == null) {
       setState(() {
         _colorError = 'errorNoAction'.tr(
           gender: 'female',
@@ -265,33 +259,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
                   SizedBox(
                     height: 17,
                   ),
-                  DropdownSearch<Category>(
-                    dropDownSearchDecoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 7, horizontal: 13),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: AppColors.primaryColor),
-                      ),
-                    ),
-                    mode: Mode.DIALOG,
-                    onFind: (_) async => await _categories,
+                  CustomDropdownSearch<Category>(
                     label: 'category'.tr(),
+                    onFind: (_) async => _categories,
                     onChanged: _selectCategory,
                     selectedItem: _editedItem.category,
-                    validator: (Category item) {
-                      if (item == null) {
-                        return 'errorNoAction'.tr(
-                          gender: 'female',
-                          args: [
-                            'select'.tr().toLowerCase(),
-                            'category'.tr().toLowerCase(),
-                          ],
-                        );
-                      } else {
-                        return null;
-                      }
-                    },
                   ),
                   SizedBox(
                     height: 10,
@@ -340,68 +312,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
                   SizedBox(
                     height: 17,
                   ),
-                  FutureBuilder<List<entity.Color>>(
-                      future: _colors,
-                      builder: (context, colorsSnapshot) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            SizedBox(
-                              width: double.infinity,
-                              height: 60,
-                              child: RaisedButton(
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  side: BorderSide(
-                                      color: _colorError != null
-                                          ? Theme.of(context).errorColor
-                                          : AppColors.secondaryColor),
-                                ),
-                                onPressed: colorsSnapshot.hasData
-                                    ? () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              backgroundColor: AppColors.tertiaryColor,
-                                              title: Text('selectSomething'.tr(
-                                                  gender: 'female',
-                                                  args: [
-                                                    'color'.tr().toLowerCase()
-                                                  ])),
-                                              content: SingleChildScrollView(
-                                                child: BlockPicker(
-                                                  pickerColor: _editedItem
-                                                          .color?.getColor ??
-                                                      AppColors.tertiaryColor,
-                                                  onColorChanged: _changeColor,
-                                                  availableColors:
-                                                      colorsSnapshot.data
-                                                          .map((color) =>
-                                                              color.getColor)
-                                                          .toList(),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      }
-                                    : null,
-                                child: Text('color'.tr()),
-                                color: _editedItem.color?.getColor ??
-                                    AppColors.tertiaryColor,
-                                textColor: useWhiteForeground(
-                                        _editedItem.color?.getColor ??
-                                            AppColors.tertiaryColor)
-                                    ? AppColors.tertiaryColor
-                                    : AppColors.secondaryColor,
-                              ),
-                            ),
-                            if (_colorError != null) ErrorText(_colorError),
-                          ],
-                        );
-                      }),
+                  ColorPickerInput(
+                    pickedColor: _editedItem.color?.getColor,
+                    onColorChanged: _changeColor,
+                    error: _colorError,
+                  ),
                   SizedBox(
                     height: 17,
                   ),

@@ -13,8 +13,6 @@ class ItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageBytes = base64Decode(item.picture);
 
-    print(item.title);
-
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(

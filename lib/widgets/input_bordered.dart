@@ -33,7 +33,7 @@ class InputBordered extends StatelessWidget {
       children: <Widget>[
         Stack(
           children: <Widget>[
-            Container(
+            Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Container(
                   decoration: BoxDecoration(
@@ -61,7 +61,7 @@ class InputBordered extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Padding(
                 padding: EdgeInsets.only(

@@ -36,5 +36,7 @@
     "other": "Select a {}"
   },
   "enter": "Enter",
-  "take": "Take"
+  "take": "Take",
+  "filter": "Filter",
+  "noItems": "No items found"
 }

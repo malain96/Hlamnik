@@ -36,5 +36,7 @@
     "other": "Sélectionner un(e) {}"
   },
   "enter": "Renseigner",
-  "take": "Prendre"
+  "take": "Prendre",
+  "filter": "Filtrer",
+  "noItems": "Aucun objet trouvé"
 }
