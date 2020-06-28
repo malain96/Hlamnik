@@ -38,5 +38,9 @@
   "enter": "Renseigner",
   "take": "Prendre",
   "filter": "Filtrer",
-  "noItems": "Aucun objet trouvé"
+  "noItems": "Aucun objet trouvé",
+  "delete": "Supprimer",
+  "deleteConfirm": "Etes-vous sûr de vouloir supprimer cet objet ? Cette action ne peut pas être annulée.",
+  "yes": "Oui",
+  "no": "Non"
 }

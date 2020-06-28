@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,23 +9,22 @@ import 'package:flutter_tags/flutter_tags.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 import 'package:hlamnik/database/entities/item.dart' as entity;
-import 'package:hlamnik/database/entities/season.dart';
 import 'package:hlamnik/providers/items.dart';
 import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/widgets/color_picker_input.dart';
 import 'package:hlamnik/widgets/custom_dropdown_search.dart';
 import 'package:hlamnik/widgets/image_input.dart';
-import 'package:hlamnik/widgets/input_bordered.dart';
 import 'package:hlamnik/widgets/loading_indicator.dart';
 import 'package:hlamnik/widgets/rating_input.dart';
+import 'package:hlamnik/widgets/season_tags_input.dart';
 import 'package:provider/provider.dart';
 
-//@Todo Extract some widgets to make the tree more readable
-//@Todo add the edit logic
+//@TODO Handle image on edit
+//@TODO Investigate why the form isn't reseted when going back to previous page
 
 class EditItemScreen extends StatefulWidget {
-  static const routeName = '/edit-item';
+  static const routeName = '/item/edit';
 
   @override
   _EditItemScreenState createState() => _EditItemScreenState();
@@ -31,7 +32,8 @@ class EditItemScreen extends StatefulWidget {
 
 class _EditItemScreenState extends State<EditItemScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  final _editedItem = entity.Item(
+  var _isLoading = false;
+  entity.Item _editedItem = entity.Item(
     id: null,
     title: '',
     picture: '',
@@ -44,10 +46,27 @@ class _EditItemScreenState extends State<EditItemScreen> {
     category: null,
     seasons: [],
   );
-  final _isLoading = false;
   String _seasonError;
   String _colorError;
   String _pictureError;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+      Duration.zero,
+      () {
+        final entity.Item arg = ModalRoute.of(context).settings.arguments;
+        if (arg != null) {
+          setState(
+            () {
+              _editedItem = arg;
+            },
+          );
+        }
+      },
+    );
+  }
 
   Future _changeColor(Color color) async {
     final db = await DBService.getDatabase;
@@ -77,13 +96,22 @@ class _EditItemScreenState extends State<EditItemScreen> {
     } else {
       _editedItem.seasons.removeWhere((season) => season.id == tag.index);
     }
-
+    // Remove the focus if a textfield is still focused
+    _unFocus();
     _seasonValidation();
   }
 
-  void _setRating(double rating) => _editedItem.rating = rating;
+  void _setRating(double rating) {
+    // Remove the focus if a textfield is still focused
+    _unFocus();
+    _editedItem.rating = rating;
+  }
 
-  void _setQuality(double quality) => _editedItem.quality = quality;
+  void _setQuality(double quality) {
+    // Remove the focus if a textfield is still focused
+    _unFocus();
+    _editedItem.quality = quality;
+  }
 
   void _setTitle(String title) => _editedItem.title = title;
 
@@ -92,11 +120,6 @@ class _EditItemScreenState extends State<EditItemScreen> {
   Future<List<Category>> get _categories async {
     final db = await DBService.getDatabase;
     return await db.categoryDao.listAll();
-  }
-
-  Future<List<Season>> get _seasons async {
-    final db = await DBService.getDatabase;
-    return await db.seasonDao.listAll();
   }
 
   void _seasonValidation() {
@@ -153,7 +176,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
     }
   }
 
-  void _saveForm() {
+  Future _saveForm() async {
     _seasonValidation();
     _colorValidation();
     _pictureValidation();
@@ -166,21 +189,30 @@ class _EditItemScreenState extends State<EditItemScreen> {
       return;
     }
 
+    setState(() {
+      _isLoading = true;
+    });
+
     _formKey.currentState.save();
 
     if (_editedItem.id != null) {
-      //update
+      await context.read<Items>().updateItem(_editedItem);
     } else {
-      context.read<Items>().addItem(_editedItem);
+      await context.read<Items>().addItem(_editedItem);
     }
 
+    setState(() {
+      _isLoading = false;
+    });
     Navigator.of(context).pop();
   }
+
+  void _unFocus() => FocusScope.of(context).unfocus();
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: _unFocus,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -192,145 +224,121 @@ class _EditItemScreenState extends State<EditItemScreen> {
                     color: AppColors.tertiaryColor,
                   )
                 : IconButton(
-                    icon: const Icon(Icons.save),
+                    icon: const Icon(Icons.check),
                     onPressed: _saveForm,
                   ),
           ],
           centerTitle: true,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  ImageInput(
-                    onSelectImage: _selectImage,
-                    error: _pictureError,
-                  ),
-                  SizedBox(
-                    height: 17,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'title'.tr(),
-                    ),
-                    textCapitalization: TextCapitalization.sentences,
-                    textInputAction: TextInputAction.next,
-                    autocorrect: true,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'errorNoAction'.tr(
-                          gender: 'male',
-                          args: [
-                            'enter'.tr().toLowerCase(),
-                            'title'.tr().toLowerCase(),
-                          ],
-                        );
-                      }
-
-                      if (value.length < 3) {
-                        return 'errorMinLength'.tr(
-                            gender: 'male',
-                            args: ['title'.tr().toLowerCase(), '3']);
-                      }
-                      return null;
-                    },
-                    onSaved: _setTitle,
-                    onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  RatingInput(
-                    label: 'rating'.tr(),
-                    initialValue: _editedItem.rating,
-                    onPress: _setRating,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  RatingInput(
-                    label: 'quality'.tr(),
-                    initialValue: _editedItem.quality,
-                    onPress: _setQuality,
-                  ),
-                  SizedBox(
-                    height: 17,
-                  ),
-                  CustomDropdownSearch<Category>(
-                    label: 'category'.tr(),
-                    onFind: (_) async => _categories,
-                    onChanged: _selectCategory,
-                    selectedItem: _editedItem.category,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  FutureBuilder<List<Season>>(
-                      future: _seasons,
-                      builder: (context, seasonsSnapshot) {
-                        return InputBordered(
-                          childLeftPadding: 13,
-                          childRightPadding: 13,
-                          childTopPadding: 27,
-                          label: 'seasons'.tr(),
-                          error: _seasonError,
-                          child: Tags(
-                            alignment: WrapAlignment.spaceEvenly,
-                            itemCount: seasonsSnapshot.hasData
-                                ? seasonsSnapshot.data.length
-                                : 0,
-                            itemBuilder: seasonsSnapshot.hasData
-                                ? (int index) {
-                                    final season = seasonsSnapshot.data[index];
-                                    return ItemTags(
-                                      key: Key(index.toString()),
-                                      index: season.id,
-                                      title: season.name,
-                                      customData: season,
-                                      active: _editedItem.seasons
-                                          .where((s) => s.id == season.id)
-                                          .isNotEmpty,
-                                      color: AppColors.tertiaryColor,
-                                      activeColor: AppColors.primaryColor,
-                                      textColor: AppColors.secondaryColor,
-                                      textActiveColor: AppColors.secondaryColor,
-                                      onPressed: _toggleSeason,
-                                      combine: ItemTagsCombine.withTextBefore,
-                                      icon: ItemTagsIcon(
-                                        icon: Icons.add,
-                                      ),
-                                      textStyle: TextStyle(fontSize: 12),
-                                    );
-                                  }
-                                : null,
+        body: _isLoading
+            ? LoadingIndicator()
+            : Padding(
+                padding: const EdgeInsets.all(20),
+                child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        ImageInput(
+                          onSelectImage: _selectImage,
+                          defaultImage: _editedItem.picture.isNotEmpty
+                              ? Image.memory(
+                                  base64Decode(_editedItem.picture),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                )
+                              : null,
+                          error: _pictureError,
+                        ),
+                        SizedBox(
+                          height: 17,
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'title'.tr(),
                           ),
-                        );
-                      }),
-                  SizedBox(
-                    height: 17,
-                  ),
-                  ColorPickerInput(
-                    pickedColor: _editedItem.color?.getColor,
-                    onColorChanged: _changeColor,
-                    error: _colorError,
-                  ),
-                  SizedBox(
-                    height: 17,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'comment'.tr(),
+                          textCapitalization: TextCapitalization.sentences,
+                          textInputAction: TextInputAction.next,
+                          autocorrect: true,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'errorNoAction'.tr(
+                                gender: 'male',
+                                args: [
+                                  'enter'.tr().toLowerCase(),
+                                  'title'.tr().toLowerCase(),
+                                ],
+                              );
+                            }
+
+                            if (value.length < 3) {
+                              return 'errorMinLength'.tr(
+                                  gender: 'male',
+                                  args: ['title'.tr().toLowerCase(), '3']);
+                            }
+                            return null;
+                          },
+                          onSaved: _setTitle,
+                          onFieldSubmitted: (_) =>
+                              FocusScope.of(context).nextFocus(),
+                          initialValue: _editedItem.title,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        RatingInput(
+                          label: 'rating'.tr(),
+                          initialValue: _editedItem.rating,
+                          onPress: _setRating,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        RatingInput(
+                          label: 'quality'.tr(),
+                          initialValue: _editedItem.quality,
+                          onPress: _setQuality,
+                        ),
+                        SizedBox(
+                          height: 17,
+                        ),
+                        CustomDropdownSearch<Category>(
+                          label: 'category'.tr(),
+                          onFind: (_) async => _categories,
+                          onChanged: _selectCategory,
+                          selectedItem: _editedItem.category,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        SeasonTagsInput(
+                          onPress: _toggleSeason,
+                          activeSeasons: _editedItem.seasons,
+                          error: _seasonError,
+                        ),
+                        SizedBox(
+                          height: 17,
+                        ),
+                        ColorPickerInput(
+                          pickedColor: _editedItem.color?.getColor,
+                          onColorChanged: _changeColor,
+                          error: _colorError,
+                        ),
+                        SizedBox(
+                          height: 17,
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'comment'.tr(),
+                          ),
+                          onSaved: _setComment,
+                          initialValue: _editedItem.comment,
+                        ),
+                      ],
                     ),
-                    onSaved: _setComment,
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }

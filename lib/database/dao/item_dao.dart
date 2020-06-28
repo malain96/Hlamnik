@@ -8,18 +8,17 @@ abstract class ItemDao extends AbstractDao<Item> {
   @Query('SELECT * FROM Item')
   Future<List<Item>> listAll();
 
-  @Query('SELECT * FROM Item WHERE id = :id')
-  Future<Item> findItemById(int id);
-
-  Future<List<Item>> listAllWithSeasons() async {
+  Future<List<Item>> listAllWithJoins() async {
     final db = await DBService.getDatabase;
     final items = await listAll();
     await Future.forEach(items, (Item item) async {
       final itemSeasonList =
           await db.itemSeasonDao.findSeasonIdsByItem(item.id);
-      item.seasons = await db.seasonDao.getByIds(
+      item.seasons = await db.seasonDao.findByIds(
         itemSeasonList.map((itemSeason) => itemSeason.seasonId).toList(),
       );
+      item.category = await db.categoryDao.findById(item.categoryId);
+      item.color = await db.colorDao.findById(item.colorId);
     });
     return items;
   }

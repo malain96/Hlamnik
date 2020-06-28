@@ -13,11 +13,13 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS
-        ? CupertinoActivityIndicator()
-        : CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation<Color>(
-        color,
+    return Center(
+      child: Platform.isIOS
+          ? CupertinoActivityIndicator()
+          : CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(
+          color,
+        ),
       ),
     );
   }

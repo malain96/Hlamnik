@@ -10,10 +10,12 @@ import 'package:image_picker/image_picker.dart';
 class ImageInput extends StatefulWidget {
   final String error;
   final Function onSelectImage;
+  final Image defaultImage;
 
   ImageInput({
+    @required this.onSelectImage,
+    this.defaultImage,
     this.error,
-    this.onSelectImage,
   });
 
   @override
@@ -56,14 +58,16 @@ class _ImageInputState extends State<ImageInput> {
                 ),
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: _image != null
+              child: widget.defaultImage != null || _image != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(30),
-                      child: Image.file(
-                        _image,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
+                      child: _image != null
+                          ? Image.file(
+                              _image,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            )
+                          : widget.defaultImage,
                     )
                   : Text(
                       'noImage'.tr(),

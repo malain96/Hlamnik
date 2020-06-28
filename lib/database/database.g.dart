@@ -137,6 +137,18 @@ class _$CategoryDao extends CategoryDao {
             database,
             'Category',
             (Category item) =>
+                <String, dynamic>{'id': item.id, 'name': item.name}),
+        _categoryUpdateAdapter = UpdateAdapter(
+            database,
+            'Category',
+            ['id'],
+            (Category item) =>
+                <String, dynamic>{'id': item.id, 'name': item.name}),
+        _categoryDeletionAdapter = DeletionAdapter(
+            database,
+            'Category',
+            ['id'],
+            (Category item) =>
                 <String, dynamic>{'id': item.id, 'name': item.name});
 
   final sqflite.DatabaseExecutor database;
@@ -150,6 +162,10 @@ class _$CategoryDao extends CategoryDao {
 
   final InsertionAdapter<Category> _categoryInsertionAdapter;
 
+  final UpdateAdapter<Category> _categoryUpdateAdapter;
+
+  final DeletionAdapter<Category> _categoryDeletionAdapter;
+
   @override
   Future<List<Category>> listAll() async {
     return _queryAdapter.queryList('SELECT * FROM Category',
@@ -157,9 +173,43 @@ class _$CategoryDao extends CategoryDao {
   }
 
   @override
-  Future<int> insertItem(Category item) {
+  Future<Category> findById(int id) async {
+    return _queryAdapter.query('SELECT * FROM Category WHERE id = ?',
+        arguments: <dynamic>[id], mapper: _categoryMapper);
+  }
+
+  @override
+  Future<int> insertValue(Category value) {
     return _categoryInsertionAdapter.insertAndReturnId(
-        item, sqflite.ConflictAlgorithm.abort);
+        value, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<List<int>> insertValues(List<Category> values) {
+    return _categoryInsertionAdapter.insertListAndReturnIds(
+        values, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> updateValue(Category value) {
+    return _categoryUpdateAdapter.updateAndReturnChangedRows(
+        value, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> updateValues(List<Category> values) {
+    return _categoryUpdateAdapter.updateListAndReturnChangedRows(
+        values, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> deleteValue(Category value) {
+    return _categoryDeletionAdapter.deleteAndReturnChangedRows(value);
+  }
+
+  @override
+  Future<int> deleteValues(List<Category> values) {
+    return _categoryDeletionAdapter.deleteListAndReturnChangedRows(values);
   }
 }
 
@@ -169,6 +219,18 @@ class _$ColorDao extends ColorDao {
         _colorInsertionAdapter = InsertionAdapter(
             database,
             'Color',
+            (Color item) =>
+                <String, dynamic>{'id': item.id, 'code': item.code}),
+        _colorUpdateAdapter = UpdateAdapter(
+            database,
+            'Color',
+            ['id'],
+            (Color item) =>
+                <String, dynamic>{'id': item.id, 'code': item.code}),
+        _colorDeletionAdapter = DeletionAdapter(
+            database,
+            'Color',
+            ['id'],
             (Color item) =>
                 <String, dynamic>{'id': item.id, 'code': item.code});
 
@@ -183,6 +245,10 @@ class _$ColorDao extends ColorDao {
 
   final InsertionAdapter<Color> _colorInsertionAdapter;
 
+  final UpdateAdapter<Color> _colorUpdateAdapter;
+
+  final DeletionAdapter<Color> _colorDeletionAdapter;
+
   @override
   Future<List<Color>> listAll() async {
     return _queryAdapter.queryList('SELECT * FROM Color', mapper: _colorMapper);
@@ -195,9 +261,43 @@ class _$ColorDao extends ColorDao {
   }
 
   @override
-  Future<int> insertItem(Color item) {
+  Future<Color> findById(int id) async {
+    return _queryAdapter.query('SELECT * FROM Color WHERE id = ?',
+        arguments: <dynamic>[id], mapper: _colorMapper);
+  }
+
+  @override
+  Future<int> insertValue(Color value) {
     return _colorInsertionAdapter.insertAndReturnId(
-        item, sqflite.ConflictAlgorithm.abort);
+        value, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<List<int>> insertValues(List<Color> values) {
+    return _colorInsertionAdapter.insertListAndReturnIds(
+        values, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> updateValue(Color value) {
+    return _colorUpdateAdapter.updateAndReturnChangedRows(
+        value, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> updateValues(List<Color> values) {
+    return _colorUpdateAdapter.updateListAndReturnChangedRows(
+        values, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> deleteValue(Color value) {
+    return _colorDeletionAdapter.deleteAndReturnChangedRows(value);
+  }
+
+  @override
+  Future<int> deleteValues(List<Color> values) {
+    return _colorDeletionAdapter.deleteListAndReturnChangedRows(values);
   }
 }
 
@@ -207,6 +307,36 @@ class _$ItemDao extends ItemDao {
         _itemInsertionAdapter = InsertionAdapter(
             database,
             'Item',
+            (Item item) => <String, dynamic>{
+                  'id': item.id,
+                  'title': item.title,
+                  'quality': item.quality,
+                  'rating': item.rating,
+                  'picture': item.picture,
+                  'comment': item.comment,
+                  'createdAt': item.createdAt,
+                  'color_id': item.colorId,
+                  'category_id': item.categoryId
+                }),
+        _itemUpdateAdapter = UpdateAdapter(
+            database,
+            'Item',
+            ['id'],
+            (Item item) => <String, dynamic>{
+                  'id': item.id,
+                  'title': item.title,
+                  'quality': item.quality,
+                  'rating': item.rating,
+                  'picture': item.picture,
+                  'comment': item.comment,
+                  'createdAt': item.createdAt,
+                  'color_id': item.colorId,
+                  'category_id': item.categoryId
+                }),
+        _itemDeletionAdapter = DeletionAdapter(
+            database,
+            'Item',
+            ['id'],
             (Item item) => <String, dynamic>{
                   'id': item.id,
                   'title': item.title,
@@ -237,21 +367,47 @@ class _$ItemDao extends ItemDao {
 
   final InsertionAdapter<Item> _itemInsertionAdapter;
 
+  final UpdateAdapter<Item> _itemUpdateAdapter;
+
+  final DeletionAdapter<Item> _itemDeletionAdapter;
+
   @override
   Future<List<Item>> listAll() async {
     return _queryAdapter.queryList('SELECT * FROM Item', mapper: _itemMapper);
   }
 
   @override
-  Future<Item> findItemById(int id) async {
-    return _queryAdapter.query('SELECT * FROM Item WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _itemMapper);
+  Future<int> insertValue(Item value) {
+    return _itemInsertionAdapter.insertAndReturnId(
+        value, sqflite.ConflictAlgorithm.abort);
   }
 
   @override
-  Future<int> insertItem(Item item) {
-    return _itemInsertionAdapter.insertAndReturnId(
-        item, sqflite.ConflictAlgorithm.abort);
+  Future<List<int>> insertValues(List<Item> values) {
+    return _itemInsertionAdapter.insertListAndReturnIds(
+        values, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> updateValue(Item value) {
+    return _itemUpdateAdapter.updateAndReturnChangedRows(
+        value, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> updateValues(List<Item> values) {
+    return _itemUpdateAdapter.updateListAndReturnChangedRows(
+        values, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> deleteValue(Item value) {
+    return _itemDeletionAdapter.deleteAndReturnChangedRows(value);
+  }
+
+  @override
+  Future<int> deleteValues(List<Item> values) {
+    return _itemDeletionAdapter.deleteListAndReturnChangedRows(values);
   }
 }
 
@@ -261,6 +417,18 @@ class _$SeasonDao extends SeasonDao {
         _seasonInsertionAdapter = InsertionAdapter(
             database,
             'Season',
+            (Season item) =>
+                <String, dynamic>{'id': item.id, 'name': item.name}),
+        _seasonUpdateAdapter = UpdateAdapter(
+            database,
+            'Season',
+            ['id'],
+            (Season item) =>
+                <String, dynamic>{'id': item.id, 'name': item.name}),
+        _seasonDeletionAdapter = DeletionAdapter(
+            database,
+            'Season',
+            ['id'],
             (Season item) =>
                 <String, dynamic>{'id': item.id, 'name': item.name});
 
@@ -275,6 +443,10 @@ class _$SeasonDao extends SeasonDao {
 
   final InsertionAdapter<Season> _seasonInsertionAdapter;
 
+  final UpdateAdapter<Season> _seasonUpdateAdapter;
+
+  final DeletionAdapter<Season> _seasonDeletionAdapter;
+
   @override
   Future<List<Season>> listAll() async {
     return _queryAdapter.queryList('SELECT * FROM Season',
@@ -282,7 +454,7 @@ class _$SeasonDao extends SeasonDao {
   }
 
   @override
-  Future<List<Season>> getByIds(List<int> ids) async {
+  Future<List<Season>> findByIds(List<int> ids) async {
     final valueList1 = ids.map((value) => "'$value'").join(', ');
     return _queryAdapter.queryList(
         'SELECT * FROM Season WHERE id IN ($valueList1)',
@@ -290,9 +462,37 @@ class _$SeasonDao extends SeasonDao {
   }
 
   @override
-  Future<int> insertItem(Season item) {
+  Future<int> insertValue(Season value) {
     return _seasonInsertionAdapter.insertAndReturnId(
-        item, sqflite.ConflictAlgorithm.abort);
+        value, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<List<int>> insertValues(List<Season> values) {
+    return _seasonInsertionAdapter.insertListAndReturnIds(
+        values, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> updateValue(Season value) {
+    return _seasonUpdateAdapter.updateAndReturnChangedRows(
+        value, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> updateValues(List<Season> values) {
+    return _seasonUpdateAdapter.updateListAndReturnChangedRows(
+        values, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> deleteValue(Season value) {
+    return _seasonDeletionAdapter.deleteAndReturnChangedRows(value);
+  }
+
+  @override
+  Future<int> deleteValues(List<Season> values) {
+    return _seasonDeletionAdapter.deleteListAndReturnChangedRows(values);
   }
 }
 
@@ -302,6 +502,22 @@ class _$ItemSeasonDao extends ItemSeasonDao {
         _itemSeasonInsertionAdapter = InsertionAdapter(
             database,
             'ItemSeason',
+            (ItemSeason item) => <String, dynamic>{
+                  'item_id': item.itemId,
+                  'season_id': item.seasonId
+                }),
+        _itemSeasonUpdateAdapter = UpdateAdapter(
+            database,
+            'ItemSeason',
+            ['item_id', 'season_id'],
+            (ItemSeason item) => <String, dynamic>{
+                  'item_id': item.itemId,
+                  'season_id': item.seasonId
+                }),
+        _itemSeasonDeletionAdapter = DeletionAdapter(
+            database,
+            'ItemSeason',
+            ['item_id', 'season_id'],
             (ItemSeason item) => <String, dynamic>{
                   'item_id': item.itemId,
                   'season_id': item.seasonId
@@ -318,6 +534,10 @@ class _$ItemSeasonDao extends ItemSeasonDao {
 
   final InsertionAdapter<ItemSeason> _itemSeasonInsertionAdapter;
 
+  final UpdateAdapter<ItemSeason> _itemSeasonUpdateAdapter;
+
+  final DeletionAdapter<ItemSeason> _itemSeasonDeletionAdapter;
+
   @override
   Future<List<ItemSeason>> findSeasonIdsByItem(int itemId) async {
     return _queryAdapter.queryList('SELECT * FROM ItemSeason WHERE item_id=?',
@@ -325,8 +545,36 @@ class _$ItemSeasonDao extends ItemSeasonDao {
   }
 
   @override
-  Future<int> insertItem(ItemSeason item) {
+  Future<int> insertValue(ItemSeason value) {
     return _itemSeasonInsertionAdapter.insertAndReturnId(
-        item, sqflite.ConflictAlgorithm.abort);
+        value, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<List<int>> insertValues(List<ItemSeason> values) {
+    return _itemSeasonInsertionAdapter.insertListAndReturnIds(
+        values, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> updateValue(ItemSeason value) {
+    return _itemSeasonUpdateAdapter.updateAndReturnChangedRows(
+        value, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> updateValues(List<ItemSeason> values) {
+    return _itemSeasonUpdateAdapter.updateListAndReturnChangedRows(
+        values, sqflite.ConflictAlgorithm.abort);
+  }
+
+  @override
+  Future<int> deleteValue(ItemSeason value) {
+    return _itemSeasonDeletionAdapter.deleteAndReturnChangedRows(value);
+  }
+
+  @override
+  Future<int> deleteValues(List<ItemSeason> values) {
+    return _itemSeasonDeletionAdapter.deleteListAndReturnChangedRows(values);
   }
 }

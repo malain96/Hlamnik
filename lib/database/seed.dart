@@ -16,19 +16,19 @@ class Seed {
     final seasons = await seasonDao.listAll();
 
     if (categories.isEmpty) {
-      await categoryDao.insertItem(
+      await categoryDao.insertValue(
         Category(
           id: 1,
           name: 'pants'.tr(),
         ),
       );
-      await categoryDao.insertItem(
+      await categoryDao.insertValue(
         Category(
           id: 2,
           name: 'tshirt'.tr(),
         ),
       );
-      await categoryDao.insertItem(
+      await categoryDao.insertValue(
         Category(
           id: 3,
           name: 'sweater'.tr(),
@@ -37,61 +37,61 @@ class Seed {
     }
 
     if (colors.isEmpty) {
-      await colorDao.insertItem(
+      await colorDao.insertValue(
         Color(
           id: 1,
           code: 'FFFFFF',
         ),
       );
-      await colorDao.insertItem(
+      await colorDao.insertValue(
         Color(
           id: 2,
           code: '000000',
         ),
       );
-      await colorDao.insertItem(
+      await colorDao.insertValue(
         Color(
           id: 3,
           code: 'FF0000',
         ),
       );
-      await colorDao.insertItem(
+      await colorDao.insertValue(
         Color(
           id: 4,
           code: 'FFFF00',
         ),
       );
-      await colorDao.insertItem(
+      await colorDao.insertValue(
         Color(
           id: 5,
           code: '0000FF',
         ),
       );
-      await colorDao.insertItem(
+      await colorDao.insertValue(
         Color(
           id: 6,
           code: '008000',
         ),
       );
-      await colorDao.insertItem(
+      await colorDao.insertValue(
         Color(
           id: 7,
           code: '800080',
         ),
       );
-      await colorDao.insertItem(
+      await colorDao.insertValue(
         Color(
           id: 8,
           code: 'C0C0C0',
         ),
       );
-      await colorDao.insertItem(
+      await colorDao.insertValue(
         Color(
           id: 9,
           code: '000080',
         ),
       );
-      await colorDao.insertItem(
+      await colorDao.insertValue(
         Color(
           id: 10,
           code: '800000',
@@ -100,22 +100,22 @@ class Seed {
     }
 
     if (seasons.isEmpty) {
-      await seasonDao.insertItem(
+      await seasonDao.insertValue(
         Season(
           id: 1,
           name: 'winter'.tr(),
         ),
-      );await seasonDao.insertItem(
+      );await seasonDao.insertValue(
         Season(
           id: 2,
           name: 'fall'.tr(),
         ),
-      );await seasonDao.insertItem(
+      );await seasonDao.insertValue(
         Season(
           id: 3,
           name: 'summer'.tr(),
         ),
-      );await seasonDao.insertItem(
+      );await seasonDao.insertValue(
         Season(
           id: 4,
           name: 'autumn'.tr(),

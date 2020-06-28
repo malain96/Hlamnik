@@ -7,10 +7,11 @@ final ThemeData mainTheme = _buildMainTheme();
 //const kSecondaryColor = Color(0xFF373A36);
 //const kTertiaryColor = Color(0xFFE6E2DD);
 
-class AppColors{
+class AppColors {
   static const primaryColor = Color(0xFFC6AD8F);
   static const secondaryColor = Color(0xFF425664);
   static const tertiaryColor = Color(0xFFF6F4F2);
+  static const errorColor = Color(0xFFFA8072);
 }
 
 // Build the theme
@@ -32,6 +33,7 @@ ThemeData _buildMainTheme() {
     canvasColor: AppColors.tertiaryColor,
     cursorColor: AppColors.primaryColor,
     textSelectionColor: AppColors.primaryColor,
+    errorColor: AppColors.errorColor,
     inputDecorationTheme:
         _buildMainInputDecorationTheme(base.inputDecorationTheme),
   );
@@ -41,9 +43,7 @@ ThemeData _buildMainTheme() {
 TextTheme _buildMainTextTheme(TextTheme base) {
   return base
       .copyWith(
-        subtitle1: TextStyle(
-          color: AppColors.secondaryColor,
-        ),
+        headline1: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
       )
       .apply(
         bodyColor: AppColors.secondaryColor,

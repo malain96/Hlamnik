@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hlamnik/database/seed.dart';
 import 'package:hlamnik/providers/items.dart';
 import 'package:hlamnik/screens/edit_item_screen.dart';
+import 'package:hlamnik/screens/item_details_screen.dart';
 import 'package:hlamnik/screens/items_overview_screen.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ void main() async {
   await Seed.initDB();
 
   //@Todo Replace EasyLocalization by intl ?
+  //@Todo Add an option to export and import data ?
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('en'), Locale('fr'), Locale('ru')],
@@ -37,6 +39,7 @@ class MyApp extends StatelessWidget {
           home: ItemsOverviewScreen(),
           routes: {
             EditItemScreen.routeName: (ctx) => EditItemScreen(),
+            ItemDetailsScreen.routeName: (ctx) => ItemDetailsScreen(),
           },
         ));
   }

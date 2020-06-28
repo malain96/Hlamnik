@@ -8,5 +8,5 @@ abstract class SeasonDao extends AbstractDao<Season> {
   Future<List<Season>> listAll();
 
   @Query('SELECT * FROM Season WHERE id IN (:ids)')
-  Future<List<Season>> getByIds(List<int> ids);
+  Future<List<Season>> findByIds(List<int> ids);
 }

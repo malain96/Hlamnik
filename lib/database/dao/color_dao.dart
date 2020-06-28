@@ -9,4 +9,7 @@ abstract class ColorDao extends AbstractDao<Color> {
 
   @Query('SELECT * FROM Color WHERE code = :code')
   Future<Color> findByCode(String code);
+
+  @Query('SELECT * FROM Color WHERE id = :id')
+  Future<Color> findById(int id);
 }
