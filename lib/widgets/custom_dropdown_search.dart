@@ -35,7 +35,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownSearch<T>(
-      dropDownSearchDecoration: InputDecoration(
+      dropdownSearchDecoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(vertical: 7, horizontal: 13),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),

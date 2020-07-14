@@ -43,7 +43,7 @@ class _$AppDatabaseBuilder {
   /// Creates the database and initializes it.
   Future<AppDatabase> build() async {
     final path = name != null
-        ? join(await sqflite.getDatabasesPath(), name)
+        ? await sqfliteDatabaseFactory.getDatabasePath(name)
         : ':memory:';
     final database = _$AppDatabase();
     database.database = await database.open(
@@ -72,8 +72,7 @@ class _$AppDatabase extends AppDatabase {
 
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback callback]) async {
-    return sqflite.openDatabase(
-      path,
+    final databaseOptions = sqflite.OpenDatabaseOptions(
       version: 1,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
@@ -102,6 +101,7 @@ class _$AppDatabase extends AppDatabase {
         await callback?.onCreate?.call(database, version);
       },
     );
+    return sqfliteDatabaseFactory.openDatabase(path, options: databaseOptions);
   }
 
   @override
@@ -181,25 +181,25 @@ class _$CategoryDao extends CategoryDao {
   @override
   Future<int> insertValue(Category value) {
     return _categoryInsertionAdapter.insertAndReturnId(
-        value, sqflite.ConflictAlgorithm.abort);
+        value, OnConflictStrategy.abort);
   }
 
   @override
   Future<List<int>> insertValues(List<Category> values) {
     return _categoryInsertionAdapter.insertListAndReturnIds(
-        values, sqflite.ConflictAlgorithm.abort);
+        values, OnConflictStrategy.abort);
   }
 
   @override
   Future<int> updateValue(Category value) {
     return _categoryUpdateAdapter.updateAndReturnChangedRows(
-        value, sqflite.ConflictAlgorithm.abort);
+        value, OnConflictStrategy.abort);
   }
 
   @override
   Future<int> updateValues(List<Category> values) {
     return _categoryUpdateAdapter.updateListAndReturnChangedRows(
-        values, sqflite.ConflictAlgorithm.abort);
+        values, OnConflictStrategy.abort);
   }
 
   @override
@@ -269,25 +269,25 @@ class _$ColorDao extends ColorDao {
   @override
   Future<int> insertValue(Color value) {
     return _colorInsertionAdapter.insertAndReturnId(
-        value, sqflite.ConflictAlgorithm.abort);
+        value, OnConflictStrategy.abort);
   }
 
   @override
   Future<List<int>> insertValues(List<Color> values) {
     return _colorInsertionAdapter.insertListAndReturnIds(
-        values, sqflite.ConflictAlgorithm.abort);
+        values, OnConflictStrategy.abort);
   }
 
   @override
   Future<int> updateValue(Color value) {
     return _colorUpdateAdapter.updateAndReturnChangedRows(
-        value, sqflite.ConflictAlgorithm.abort);
+        value, OnConflictStrategy.abort);
   }
 
   @override
   Future<int> updateValues(List<Color> values) {
     return _colorUpdateAdapter.updateListAndReturnChangedRows(
-        values, sqflite.ConflictAlgorithm.abort);
+        values, OnConflictStrategy.abort);
   }
 
   @override
@@ -379,25 +379,25 @@ class _$ItemDao extends ItemDao {
   @override
   Future<int> insertValue(Item value) {
     return _itemInsertionAdapter.insertAndReturnId(
-        value, sqflite.ConflictAlgorithm.abort);
+        value, OnConflictStrategy.abort);
   }
 
   @override
   Future<List<int>> insertValues(List<Item> values) {
     return _itemInsertionAdapter.insertListAndReturnIds(
-        values, sqflite.ConflictAlgorithm.abort);
+        values, OnConflictStrategy.abort);
   }
 
   @override
   Future<int> updateValue(Item value) {
     return _itemUpdateAdapter.updateAndReturnChangedRows(
-        value, sqflite.ConflictAlgorithm.abort);
+        value, OnConflictStrategy.abort);
   }
 
   @override
   Future<int> updateValues(List<Item> values) {
     return _itemUpdateAdapter.updateListAndReturnChangedRows(
-        values, sqflite.ConflictAlgorithm.abort);
+        values, OnConflictStrategy.abort);
   }
 
   @override
@@ -464,25 +464,25 @@ class _$SeasonDao extends SeasonDao {
   @override
   Future<int> insertValue(Season value) {
     return _seasonInsertionAdapter.insertAndReturnId(
-        value, sqflite.ConflictAlgorithm.abort);
+        value, OnConflictStrategy.abort);
   }
 
   @override
   Future<List<int>> insertValues(List<Season> values) {
     return _seasonInsertionAdapter.insertListAndReturnIds(
-        values, sqflite.ConflictAlgorithm.abort);
+        values, OnConflictStrategy.abort);
   }
 
   @override
   Future<int> updateValue(Season value) {
     return _seasonUpdateAdapter.updateAndReturnChangedRows(
-        value, sqflite.ConflictAlgorithm.abort);
+        value, OnConflictStrategy.abort);
   }
 
   @override
   Future<int> updateValues(List<Season> values) {
     return _seasonUpdateAdapter.updateListAndReturnChangedRows(
-        values, sqflite.ConflictAlgorithm.abort);
+        values, OnConflictStrategy.abort);
   }
 
   @override
@@ -547,25 +547,25 @@ class _$ItemSeasonDao extends ItemSeasonDao {
   @override
   Future<int> insertValue(ItemSeason value) {
     return _itemSeasonInsertionAdapter.insertAndReturnId(
-        value, sqflite.ConflictAlgorithm.abort);
+        value, OnConflictStrategy.abort);
   }
 
   @override
   Future<List<int>> insertValues(List<ItemSeason> values) {
     return _itemSeasonInsertionAdapter.insertListAndReturnIds(
-        values, sqflite.ConflictAlgorithm.abort);
+        values, OnConflictStrategy.abort);
   }
 
   @override
   Future<int> updateValue(ItemSeason value) {
     return _itemSeasonUpdateAdapter.updateAndReturnChangedRows(
-        value, sqflite.ConflictAlgorithm.abort);
+        value, OnConflictStrategy.abort);
   }
 
   @override
   Future<int> updateValues(List<ItemSeason> values) {
     return _itemSeasonUpdateAdapter.updateListAndReturnChangedRows(
-        values, sqflite.ConflictAlgorithm.abort);
+        values, OnConflictStrategy.abort);
   }
 
   @override
