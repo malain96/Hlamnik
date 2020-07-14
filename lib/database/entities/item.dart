@@ -51,4 +51,19 @@ class Item {
     this.category,
     this.seasons,
   }) : createdAt = DateTime.now().toIso8601String();
+
+  Item.clone(Item item)
+      : this(
+          id: item.id,
+          title: item.title,
+          quality: item.quality,
+          rating: item.rating,
+          picture: item.picture,
+          comment: item.comment,
+          colorId: item.colorId,
+          categoryId: item.categoryId,
+          color: item.color,
+          category: item.category,
+          seasons: item.seasons,
+        );
 }

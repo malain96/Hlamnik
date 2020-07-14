@@ -20,8 +20,7 @@ import 'package:hlamnik/widgets/rating_input.dart';
 import 'package:hlamnik/widgets/season_tags_input.dart';
 import 'package:provider/provider.dart';
 
-//@TODO Handle image on edit
-//@TODO Investigate why the form isn't reseted when going back to previous page
+//@TODO prevent picture from refreshing all the time
 
 class EditItemScreen extends StatefulWidget {
   static const routeName = '/item/edit';
@@ -32,6 +31,8 @@ class EditItemScreen extends StatefulWidget {
 
 class _EditItemScreenState extends State<EditItemScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+  final titleController = TextEditingController();
+  final commentController = TextEditingController();
   var _isLoading = false;
   entity.Item _editedItem = entity.Item(
     id: null,
@@ -60,12 +61,23 @@ class _EditItemScreenState extends State<EditItemScreen> {
         if (arg != null) {
           setState(
             () {
-              _editedItem = arg;
+              //Create a clone so we don't directly edit the item in the provider
+              _editedItem = entity.Item.clone(arg);
+              titleController.text = _editedItem.title;
+              commentController.text = _editedItem.comment;
             },
           );
         }
       },
     );
+  }
+
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    commentController.dispose();
+    super.dispose();
   }
 
   Future _changeColor(Color color) async {
@@ -254,6 +266,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           height: 17,
                         ),
                         TextFormField(
+                          controller: titleController,
                           decoration: InputDecoration(
                             labelText: 'title'.tr(),
                           ),
@@ -281,7 +294,6 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           onSaved: _setTitle,
                           onFieldSubmitted: (_) =>
                               FocusScope.of(context).nextFocus(),
-                          initialValue: _editedItem.title,
                         ),
                         SizedBox(
                           height: 10,
@@ -328,11 +340,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           height: 17,
                         ),
                         TextFormField(
+                          controller: commentController,
                           decoration: InputDecoration(
                             labelText: 'comment'.tr(),
                           ),
                           onSaved: _setComment,
-                          initialValue: _editedItem.comment,
                         ),
                       ],
                     ),

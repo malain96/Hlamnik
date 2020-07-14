@@ -11,8 +11,6 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Seed.initDB();
-
   //@Todo Replace EasyLocalization by intl ?
   //@Todo Add an option to export and import data ?
   runApp(
@@ -28,6 +26,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Seed.initDB();
+
     return ChangeNotifierProvider(
         create: (_) => Items(),
         child: MaterialApp(
