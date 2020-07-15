@@ -249,6 +249,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                 child: Form(
                   key: _formKey,
                   child: SingleChildScrollView(
+                    //@TODO replace column by wrap and runspacing
                     child: Column(
                       children: <Widget>[
                         ImageInput(

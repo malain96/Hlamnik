@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:floor/floor.dart';
 import 'package:hlamnik/database/dao/item_season_dao.dart';
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:hlamnik/database/dao/category_dao.dart';
 import 'package:hlamnik/database/dao/color_dao.dart';

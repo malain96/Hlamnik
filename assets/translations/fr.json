@@ -42,5 +42,11 @@
   "delete": "Supprimer",
   "deleteConfirm": "Etes-vous sûr de vouloir supprimer cet objet ? Cette action ne peut pas être annulée.",
   "yes": "Oui",
-  "no": "Non"
+  "no": "Non",
+  "addSomething": {
+    "male": "Ajouter un {}",
+    "female": "Ajouter une {}",
+    "other": "Ajouter un(e) {}"
+  },
+  "menu": "Menu"
 }

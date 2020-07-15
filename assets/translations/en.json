@@ -42,5 +42,11 @@
   "delete": "Delete",
   "deleteConfirm": "Are you sure that you want to delete this item ? This action cannot be undone.",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "addSomething": {
+    "male": "Add a {}",
+    "female": "Add a {}",
+    "other": "Add a {}"
+  },
+  "menu": "Menu"
 }

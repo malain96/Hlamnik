@@ -38,8 +38,8 @@ class MyApp extends StatelessWidget {
           theme: mainTheme,
           home: ItemsOverviewScreen(),
           routes: {
-            EditItemScreen.routeName: (ctx) => EditItemScreen(),
-            ItemDetailsScreen.routeName: (ctx) => ItemDetailsScreen(),
+            EditItemScreen.routeName: (_) => EditItemScreen(),
+            ItemDetailsScreen.routeName: (_) => ItemDetailsScreen(),
           },
         ));
   }

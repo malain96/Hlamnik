@@ -15,12 +15,13 @@ import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/widgets/color_picker_input.dart';
 import 'package:hlamnik/widgets/custom_dropdown_search.dart';
 import 'package:hlamnik/widgets/loading_indicator.dart';
+import 'package:hlamnik/widgets/modal_bottom_sheet_form.dart';
 import 'package:hlamnik/widgets/rating_display.dart';
 import 'package:hlamnik/widgets/rating_input.dart';
 import 'package:provider/provider.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 
-//@TODO Add a drawer to add categories and colors
+//@TODO Create the form to add colors
 
 class ItemsOverviewScreen extends StatefulWidget {
   @override
@@ -37,8 +38,7 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
       setState(() {
         _isLoading = true;
       });
-      context.read<Items>().loadItems().then((_) =>
-          setState(() {
+      context.read<Items>().loadItems().then((_) => setState(() {
             _isLoading = false;
           }));
     }
@@ -53,20 +53,19 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
   void _onAddPressed(BuildContext context) =>
       Navigator.of(context).pushNamed(EditItemScreen.routeName);
 
-  void _onFilterPressed(BuildContext context) =>
-      showModalBottomSheet(
+  void _onFilterPressed(BuildContext context) => showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(15),
+          ),
         ),
         builder: (_) => FilterModal(),
       );
 
   @override
   Widget build(BuildContext context) {
-    final items = Provider
-        .of<Items>(context)
-        .items;
+    final items = Provider.of<Items>(context).items;
 
     return Scaffold(
       appBar: AppBar(
@@ -85,37 +84,38 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
         ],
         centerTitle: true,
       ),
+      drawer: MainDrawer(),
       body: _isLoading
           ? LoadingIndicator()
           : items.isEmpty
-          ? Center(
-        child: Text(
-          'noItems'.tr(),
-        ),
-      )
-          : RefreshIndicator(
-        onRefresh: _refreshItems,
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
-              childAspectRatio: 1,
-            ),
-            itemCount: items.length,
-            itemBuilder: (_, i) {
-              return ItemTile(items[i]);
-            },
-          ),
-        ),
-      ),
+              ? Center(
+                  child: Text(
+                    'noItems'.tr(),
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: _refreshItems,
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 5,
+                        childAspectRatio: 1,
+                      ),
+                      itemCount: items.length,
+                      itemBuilder: (_, i) {
+                        return ItemTile(items[i]);
+                      },
+                    ),
+                  ),
+                ),
       floatingActionButton: Platform.isAndroid
           ? FloatingActionButton(
-        onPressed: () => _onAddPressed(context),
-        child: Icon(Icons.add),
-      )
+              onPressed: () => _onAddPressed(context),
+              child: Icon(Icons.add),
+            )
           : null,
     );
   }
@@ -181,78 +181,41 @@ class _FilterModalState extends State<FilterModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      height: MediaQuery
-          .of(context)
-          .size
-          .height / 1.5,
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                    child: Text(
-                      'filter'.tr(),
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headline6,
-                    )),
-                IconButton(
-                  icon: Icon(Icons.check, size: 30),
-                  onPressed: _onSavePressed,
-                ),
-              ],
-            ),
-            _isLoading
-                ? LoadingIndicator()
-                : Column(
-              children: <Widget>[
-                RatingInput(
-                  label: 'rating'.tr(),
-                  initialValue: filter.rating,
-                  onPress: _setRating,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                RatingInput(
-                  label: 'quality'.tr(),
-                  initialValue: filter.quality,
-                  onPress: _setQuality,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                CustomDropdownSearch<Category>(
-                  label: 'category'.tr(),
-                  onFind: (_) async => _categories,
-                  onChanged: _selectCategory,
-                  selectedItem: _selectedCategory,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                CustomDropdownSearch<Season>(
-                  label: 'season'.tr(),
-                  onFind: (_) async => _seasons,
-                  onChanged: _selectSeason,
-                  selectedItem: _selectedSeason,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                ColorPickerInput(
-                  pickedColor: _selectedColor?.getColor,
-                  onColorChanged: _selectColor,
-                ),
-              ],
-            ),
-          ],
-        ),
+    return ModalBottomSheetForm(
+      title: 'filter'.tr(),
+      form: Wrap(
+        runSpacing: 10,
+        children: <Widget>[
+          RatingInput(
+            label: 'rating'.tr(),
+            initialValue: filter.rating,
+            onPress: _setRating,
+          ),
+          RatingInput(
+            label: 'quality'.tr(),
+            initialValue: filter.quality,
+            onPress: _setQuality,
+          ),
+          CustomDropdownSearch<Category>(
+            label: 'category'.tr(),
+            onFind: (_) async => _categories,
+            onChanged: _selectCategory,
+            selectedItem: _selectedCategory,
+          ),
+          CustomDropdownSearch<Season>(
+            label: 'season'.tr(),
+            onFind: (_) async => _seasons,
+            onChanged: _selectSeason,
+            selectedItem: _selectedSeason,
+          ),
+          ColorPickerInput(
+            pickedColor: _selectedColor?.getColor,
+            onColorChanged: _selectColor,
+          ),
+        ],
       ),
+      saveForm: _onSavePressed,
+      isLoading: _isLoading,
     );
   }
 }
@@ -314,17 +277,135 @@ class ItemTile extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   splashColor: AppColors.primaryColor.withOpacity(0.4),
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(
-                        ItemDetailsScreen.routeName,
-                        arguments: item.id,
-                      ), //navigate to detailed screen of the item
+                  onTap: () => Navigator.of(context).pushNamed(
+                    ItemDetailsScreen.routeName,
+                    arguments: item.id,
+                  ), //navigate to detailed screen of the item
                 ),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class MainDrawer extends StatelessWidget {
+  void _showModalBottomSheet(
+          {@required BuildContext context, @required WidgetBuilder builder}) =>
+      showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(15),
+          ),
+        ),
+        builder: builder,
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          SizedBox(
+            height: 100,
+            child: DrawerHeader(
+              child: Text('menu'.tr()),
+            ),
+          ),
+          ListTile(
+              title: Text('addSomething'
+                  .tr(gender: 'female', args: ['category'.tr().toLowerCase()])),
+              onTap: () {
+                Navigator.of(context).pop();
+                _showModalBottomSheet(
+                  context: context,
+                  builder: (_) => CategoryForm(),
+                );
+              }),
+          ListTile(
+            title: Text('Item 2'),
+            onTap: () {
+//                Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CategoryForm extends StatefulWidget {
+  @override
+  _CategoryFormState createState() => _CategoryFormState();
+}
+
+class _CategoryFormState extends State<CategoryForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  var _name = '';
+  var _isLoading = false;
+
+  void _setTitle(String name) => _name = name;
+
+  Future _saveForm() async {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    _formKey.currentState.save();
+
+    final db = await DBService.getDatabase;
+    await db.categoryDao.insertValue(Category(id: null, name: _name));
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ModalBottomSheetForm(
+      title: 'category'.tr(),
+      form: Form(
+        key: _formKey,
+        child: TextFormField(
+          decoration: InputDecoration(
+            labelText: 'title'.tr(),
+          ),
+          textCapitalization: TextCapitalization.sentences,
+          autocorrect: true,
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'errorNoAction'.tr(
+                gender: 'male',
+                args: [
+                  'enter'.tr().toLowerCase(),
+                  'title'.tr().toLowerCase(),
+                ],
+              );
+            }
+
+            if (value.length < 3) {
+              return 'errorMinLength'
+                  .tr(gender: 'male', args: ['title'.tr().toLowerCase(), '3']);
+            }
+            return null;
+          },
+          onSaved: _setTitle,
+          //Should save
+          onFieldSubmitted: (_) => _saveForm(),
+        ),
+      ),
+      saveForm: _saveForm,
+      isLoading: _isLoading,
     );
   }
 }
