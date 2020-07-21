@@ -37,7 +37,6 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "io.github.malain96.hlamnik"
         minSdkVersion 16
         targetSdkVersion 28

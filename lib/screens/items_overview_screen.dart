@@ -22,8 +22,6 @@ import 'package:hlamnik/widgets/rating_input.dart';
 import 'package:provider/provider.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 
-//@TODO Create the form to add colors
-
 class ItemsOverviewScreen extends StatefulWidget {
   @override
   _ItemsOverviewScreenState createState() => _ItemsOverviewScreenState();
@@ -303,6 +301,7 @@ class MainDrawer extends StatelessWidget {
           ),
         ),
         builder: builder,
+        isScrollControlled: true,
       );
 
   @override

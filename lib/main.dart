@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //@Todo Add icon and splash screen
   //@Todo Release first version
   //@Todo Replace EasyLocalization by intl ?
   //@Todo Add an option to export and import data ?

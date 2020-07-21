@@ -42,58 +42,61 @@ class _ImageInputState extends State<ImageInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Container(
-              width: 150,
-              height: 100,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: widget.error != null
-                      ? Theme.of(context).errorColor
-                      : AppColors.secondaryColor,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Container(
+                width: 150,
+                height: 100,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: widget.error != null
+                        ? Theme.of(context).errorColor
+                        : AppColors.secondaryColor,
+                  ),
+                  borderRadius: BorderRadius.circular(30),
                 ),
-                borderRadius: BorderRadius.circular(30),
+                child: widget.defaultImage != null || _image != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: _image != null
+                            ? Image.file(
+                                _image,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              )
+                            : widget.defaultImage,
+                      )
+                    : Text(
+                        'noImage'.tr(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: widget.error != null
+                                ? Theme.of(context).errorColor
+                                : AppColors.secondaryColor),
+                      ),
+                alignment: Alignment.center,
               ),
-              child: widget.defaultImage != null || _image != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: _image != null
-                          ? Image.file(
-                              _image,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            )
-                          : widget.defaultImage,
-                    )
-                  : Text(
-                      'noImage'.tr(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: widget.error != null
-                              ? Theme.of(context).errorColor
-                              : AppColors.secondaryColor),
-                    ),
-              alignment: Alignment.center,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: FlatButton.icon(
-                icon: Icon(Icons.camera),
-                label: Text('takePicture'.tr()),
-                textColor: AppColors.secondaryColor,
-                onPressed: _takePicture,
+              SizedBox(
+                width: 10,
               ),
-            ),
-          ],
-        ),
-        if (widget.error != null) ErrorText(widget.error),
-      ],
+              Expanded(
+                child: FlatButton.icon(
+                  icon: Icon(Icons.camera),
+                  label: Text('takePicture'.tr()),
+                  textColor: AppColors.secondaryColor,
+                  onPressed: _takePicture,
+                ),
+              ),
+            ],
+          ),
+          if (widget.error != null) ErrorText(widget.error),
+        ],
+      ),
     );
   }
 }

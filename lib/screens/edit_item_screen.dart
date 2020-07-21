@@ -72,7 +72,6 @@ class _EditItemScreenState extends State<EditItemScreen> {
     );
   }
 
-
   @override
   void dispose() {
     titleController.dispose();
@@ -249,8 +248,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
                 child: Form(
                   key: _formKey,
                   child: SingleChildScrollView(
-                    //@TODO replace column by wrap and runspacing
-                    child: Column(
+                    child: Wrap(
+                      runSpacing: 10,
                       children: <Widget>[
                         ImageInput(
                           onSelectImage: _selectImage,
@@ -262,9 +261,6 @@ class _EditItemScreenState extends State<EditItemScreen> {
                                 )
                               : null,
                           error: _pictureError,
-                        ),
-                        SizedBox(
-                          height: 17,
                         ),
                         TextFormField(
                           controller: titleController,
@@ -296,24 +292,15 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           onFieldSubmitted: (_) =>
                               FocusScope.of(context).nextFocus(),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
                         RatingInput(
                           label: 'rating'.tr(),
                           initialValue: _editedItem.rating,
                           onPress: _setRating,
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
                         RatingInput(
                           label: 'quality'.tr(),
                           initialValue: _editedItem.quality,
                           onPress: _setQuality,
-                        ),
-                        SizedBox(
-                          height: 17,
                         ),
                         CustomDropdownSearch<Category>(
                           label: 'category'.tr(),
@@ -321,24 +308,15 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           onChanged: _selectCategory,
                           selectedItem: _editedItem.category,
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
                         SeasonTagsInput(
                           onPress: _toggleSeason,
                           activeSeasons: _editedItem.seasons,
                           error: _seasonError,
                         ),
-                        SizedBox(
-                          height: 17,
-                        ),
                         ColorPickerInput(
                           pickedColor: _editedItem.color?.getColor,
                           onColorChanged: _changeColor,
                           error: _colorError,
-                        ),
-                        SizedBox(
-                          height: 17,
                         ),
                         TextFormField(
                           controller: commentController,

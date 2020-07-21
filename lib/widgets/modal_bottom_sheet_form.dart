@@ -17,33 +17,34 @@ class ModalBottomSheetForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height / 1.5,
-      padding: const EdgeInsets.all(8.0),
-      child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: SingleChildScrollView(
-          child: Wrap(
-            runSpacing: 10,
+    final mediaQuery = MediaQuery.of(context);
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: mediaQuery.viewInsets.bottom + 8.0,
+        top: 8.0,
+        right: 8.0,
+        left: 8.0,
+      ),
+      child: Wrap(
+        runSpacing: 10,
+        children: <Widget>[
+          Row(
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                      child: Text(
-                    title,
-                    style: Theme.of(context).textTheme.headline6,
-                  )),
-                  if (!isLoading)
-                    IconButton(
-                      icon: Icon(Icons.check, size: 30),
-                      onPressed: saveForm,
-                    ),
-                ],
-              ),
-              isLoading ? LoadingIndicator() : form,
+              Expanded(
+                  child: Text(
+                title,
+                style: Theme.of(context).textTheme.headline6,
+              )),
+              if (!isLoading)
+                IconButton(
+                  icon: Icon(Icons.check, size: 30),
+                  onPressed: saveForm,
+                ),
             ],
           ),
-        ),
+          isLoading ? LoadingIndicator() : form,
+        ],
       ),
     );
   }
