@@ -1,5 +1,6 @@
 import 'package:floor/floor.dart';
 import 'package:flutter/painting.dart' as flutter;
+import 'package:supercharged/supercharged.dart';
 
 @entity
 class Color {
@@ -13,6 +14,6 @@ class Color {
   });
 
   flutter.Color get getColor {
-    return flutter.Color(int.parse('0xff$code'));
+    return code.toColor();
   }
 }

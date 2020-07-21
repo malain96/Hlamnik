@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/item.dart';
 import 'package:hlamnik/database/entities/season.dart';
@@ -326,9 +327,14 @@ class MainDrawer extends StatelessWidget {
                 );
               }),
           ListTile(
-            title: Text('Item 2'),
+            title: Text('addSomething'
+                .tr(gender: 'female', args: ['color'.tr().toLowerCase()])),
             onTap: () {
-//                Navigator.pop(context);
+              Navigator.of(context).pop();
+              _showModalBottomSheet(
+                context: context,
+                builder: (_) => ColorForm(),
+              );
             },
           ),
         ],
@@ -347,7 +353,7 @@ class _CategoryFormState extends State<CategoryForm> {
   var _name = '';
   var _isLoading = false;
 
-  void _setTitle(String name) => _name = name;
+  void _setName(String name) => _name = name;
 
   Future _saveForm() async {
     if (!_formKey.currentState.validate()) {
@@ -399,9 +405,62 @@ class _CategoryFormState extends State<CategoryForm> {
             }
             return null;
           },
-          onSaved: _setTitle,
+          onSaved: _setName,
           //Should save
           onFieldSubmitted: (_) => _saveForm(),
+        ),
+      ),
+      saveForm: _saveForm,
+      isLoading: _isLoading,
+    );
+  }
+}
+
+class ColorForm extends StatefulWidget {
+  @override
+  _ColorFormState createState() => _ColorFormState();
+}
+
+class _ColorFormState extends State<ColorForm> {
+  var _color = AppColors.primaryColor;
+  var _isLoading = false;
+
+  void _setColor(Color color) => _color = color;
+
+  Future _saveForm() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final db = await DBService.getDatabase;
+    await db.colorDao.insertValue(
+      entity.Color(
+        id: null,
+        code: _color.value.toRadixString(16).padLeft(6, '0').substring(2),
+      ),
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ModalBottomSheetForm(
+      title: 'color'.tr(),
+      form: Container(
+        child: ColorPicker(
+          pickerColor: _color,
+          pickerAreaHeightPercent: 0.7,
+          onColorChanged: _setColor,
+          enableAlpha: false,
+          displayThumbColor: true,
+          showLabel: false,
+          paletteType: PaletteType.hsl,
+          pickerAreaBorderRadius: BorderRadius.circular(15),
         ),
       ),
       saveForm: _saveForm,
