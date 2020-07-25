@@ -11,7 +11,7 @@
 ## Description
 
 Hlamnik is an app developed with [Flutter](https://flutter.dev/) and [Dart](https://dart.dev/). 
-The goal of the app is to allow the user to be able to manage his clothing items.
+The goal of the app is to allow the user to manage his clothing items.
 For now the user can:
 * See a list of all his items
 * Filter the list according to ratings, category, season, color
@@ -39,4 +39,4 @@ You are more than welcome to use and modify the app as you please.
 
 ## License
 
-[MIT](https://github.com/malain96/Hlamnik/blob/master/LICENSE)
+[MIT](https://github.com/malain96/Hlamnik/blob/master/LICENSE.md)
