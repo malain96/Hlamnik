@@ -6,6 +6,7 @@ import 'package:hlamnik/themes/main_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:hlamnik/widgets/input_bordered.dart';
 
+///Widget used to display an input with season tags
 class SeasonTagsInput extends StatelessWidget {
   final OnPressedCallback onPress;
   final List<Season> activeSeasons;
@@ -17,6 +18,7 @@ class SeasonTagsInput extends StatelessWidget {
     this.error,
   });
 
+  ///Loads a list of [Season]
   Future<List<Season>> get _seasons async {
     final db = await DBService.getDatabase;
     return await db.seasonDao.listAll();

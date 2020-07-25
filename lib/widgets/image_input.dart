@@ -7,6 +7,7 @@ import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/widgets/error_text.dart';
 import 'package:image_picker/image_picker.dart';
 
+///Widget used to display an image picker input
 class ImageInput extends StatefulWidget {
   final String error;
   final Function onSelectImage;
@@ -25,6 +26,7 @@ class ImageInput extends StatefulWidget {
 class _ImageInputState extends State<ImageInput> {
   File _image;
 
+  ///Turns an [PickedFile] into base64 string and calls the passed onSelectImage
   Future<void> _takePicture() async {
     final imageFile = await ImagePicker().getImage(
       source: ImageSource.camera,

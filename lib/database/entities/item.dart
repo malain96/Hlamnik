@@ -4,6 +4,7 @@ import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/color.dart';
 import 'package:hlamnik/database/entities/season.dart';
 
+/// Defines the [Item] table
 @Entity(
   foreignKeys: [
     ForeignKey(
@@ -52,6 +53,7 @@ class Item {
     this.seasons,
   }) : createdAt = DateTime.now().toIso8601String();
 
+  ///Clones an existing [Item]
   Item.clone(Item item)
       : this(
           id: item.id,

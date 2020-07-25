@@ -1,5 +1,6 @@
 import 'package:floor/floor.dart';
 
+/// Defines the [Category] table
 @entity
 class Category {
   @primaryKey

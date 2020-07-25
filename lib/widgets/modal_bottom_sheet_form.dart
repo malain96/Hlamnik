@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hlamnik/widgets/loading_indicator.dart';
 
+///Widget used to display a bottom sheet
 class ModalBottomSheetForm extends StatelessWidget {
   final String title;
   final Widget form;
@@ -26,25 +27,27 @@ class ModalBottomSheetForm extends StatelessWidget {
         right: 8.0,
         left: 8.0,
       ),
-      child: Wrap(
-        runSpacing: 10,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                  child: Text(
-                title,
-                style: Theme.of(context).textTheme.headline6,
-              )),
-              if (!isLoading)
-                IconButton(
-                  icon: Icon(Icons.check, size: 30),
-                  onPressed: saveForm,
-                ),
-            ],
-          ),
-          isLoading ? LoadingIndicator() : form,
-        ],
+      child: SingleChildScrollView(
+        child: Wrap(
+          runSpacing: 10,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.headline6,
+                )),
+                if (!isLoading)
+                  IconButton(
+                    icon: Icon(Icons.check, size: 30),
+                    onPressed: saveForm,
+                  ),
+              ],
+            ),
+            isLoading ? LoadingIndicator() : form,
+          ],
+        ),
       ),
     );
   }

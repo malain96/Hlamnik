@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 
-// Display a loading indicator
+///Widget uded to display a loading indicator based on the platform
 class LoadingIndicator extends StatelessWidget {
   final Color color;
 

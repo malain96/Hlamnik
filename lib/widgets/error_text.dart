@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+///Widget used to display an error [message]
 class ErrorText extends StatelessWidget {
   ErrorText(this.message);
 

@@ -1,3 +1,4 @@
+///Class used to filter items
 class Filter {
   double quality;
   double rating;

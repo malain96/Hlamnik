@@ -11,10 +11,8 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //@Todo Release first version
-  //@Todo Replace EasyLocalization by intl ?
-  //@Todo Add an option to export and import data ?
   runApp(
+    // Init translations
     EasyLocalization(
         supportedLocales: [Locale('en'), Locale('fr'), Locale('ru')],
         path: 'assets/translations',
@@ -23,13 +21,14 @@ void main() async {
   );
 }
 
+///Main widget
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     Seed.initDB();
 
-    return ChangeNotifierProvider(
+    return ChangeNotifierProvider( //Provider containing items
         create: (_) => Items(),
         child: MaterialApp(
           localizationsDelegates: context.localizationDelegates,

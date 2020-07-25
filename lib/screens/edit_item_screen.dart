@@ -20,8 +20,7 @@ import 'package:hlamnik/widgets/rating_input.dart';
 import 'package:hlamnik/widgets/season_tags_input.dart';
 import 'package:provider/provider.dart';
 
-//@TODO prevent picture from refreshing all the time
-
+///Screen used to edit/add new items
 class EditItemScreen extends StatefulWidget {
   static const routeName = '/item/edit';
 
@@ -50,6 +49,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
   String _seasonError;
   String _colorError;
   String _pictureError;
+  Image img;
 
   @override
   void initState() {
@@ -63,6 +63,13 @@ class _EditItemScreenState extends State<EditItemScreen> {
             () {
               //Create a clone so we don't directly edit the item in the provider
               _editedItem = entity.Item.clone(arg);
+              img = _editedItem.picture.isNotEmpty
+                  ? Image.memory(
+                      base64Decode(_editedItem.picture),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    )
+                  : null;
               titleController.text = _editedItem.title;
               commentController.text = _editedItem.comment;
             },
@@ -79,6 +86,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
     super.dispose();
   }
 
+  ///Sets the [Color] of the [_editedItem] to the selected [Color]
   Future _changeColor(Color color) async {
     final db = await DBService.getDatabase;
     final dbColor = await db.colorDao
@@ -91,16 +99,19 @@ class _EditItemScreenState extends State<EditItemScreen> {
     _colorValidation();
   }
 
+  ///Sets the picture of the [_editedItem] to the taken picture
   void _selectImage(String base64) {
     _editedItem.picture = base64;
     _pictureValidation();
   }
 
+  ///Sets the [Category] of the [_editedItem] to the selected [Cateogry]
   void _selectCategory(Category category) {
     _editedItem.category = category;
     _editedItem.categoryId = category.id;
   }
 
+  ///Adds or removes a [Season] to the [_editedItem]
   void _toggleSeason(Item tag) {
     if (tag.active) {
       _editedItem.seasons.add(tag.customData);
@@ -112,27 +123,34 @@ class _EditItemScreenState extends State<EditItemScreen> {
     _seasonValidation();
   }
 
+  ///Sets the rating of the [_editedItem] to the selected rating
   void _setRating(double rating) {
     // Remove the focus if a textfield is still focused
     _unFocus();
     _editedItem.rating = rating;
   }
 
+  ///Sets the quality of the [_editedItem] to the selected quality
   void _setQuality(double quality) {
     // Remove the focus if a textfield is still focused
     _unFocus();
     _editedItem.quality = quality;
   }
 
+  ///Sets the title of the [_editedItem] to the typed title
   void _setTitle(String title) => _editedItem.title = title;
 
+  ///Sets the comment of the [_editedItem] to the typed comment
   void _setComment(String comment) => _editedItem.comment = comment;
 
+  ///Returns the list of [Category]
   Future<List<Category>> get _categories async {
     final db = await DBService.getDatabase;
     return await db.categoryDao.listAll();
   }
 
+  ///Validates the [Season] of the [_editedItem] and returns an error message
+  ///The [_editedItem] needs to have one or more [Season]
   void _seasonValidation() {
     if (_editedItem.seasons.isEmpty) {
       setState(() {
@@ -151,6 +169,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
     }
   }
 
+  ///Validates the [Color] of the [_editedItem] and returns an error message
+  ///The [_editedItem] needs to have a [Season]
   void _colorValidation() {
     if (_editedItem.color == null) {
       setState(() {
@@ -169,6 +189,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
     }
   }
 
+  ///Validates the picture of the [_editedItem] and returns an error message
+  ///The [_editedItem] needs to have a picture
   void _pictureValidation() {
     if (_editedItem.picture.isEmpty) {
       setState(() {
@@ -187,6 +209,9 @@ class _EditItemScreenState extends State<EditItemScreen> {
     }
   }
 
+  ///Validates the entire form and saves the data if there is no error
+  ///If the [_editedItem] has an id, updates the existing [Item] in the database
+  ///Otherwise, adds a new [Item] in the database
   Future _saveForm() async {
     _seasonValidation();
     _colorValidation();
@@ -253,13 +278,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                       children: <Widget>[
                         ImageInput(
                           onSelectImage: _selectImage,
-                          defaultImage: _editedItem.picture.isNotEmpty
-                              ? Image.memory(
-                                  base64Decode(_editedItem.picture),
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                )
-                              : null,
+                          defaultImage: img,
                           error: _pictureError,
                         ),
                         TextFormField(

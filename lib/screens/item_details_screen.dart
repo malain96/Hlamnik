@@ -11,12 +11,15 @@ import 'package:hlamnik/widgets/display_field.dart';
 import 'package:hlamnik/widgets/rating_display.dart';
 import 'package:provider/provider.dart';
 
+///Screen used to display all the info of an [Item] as well as editing or deleting it
 class ItemDetailsScreen extends StatelessWidget {
   static const routeName = '/item';
 
+  ///Navigates to the [EditItemScreen] when the edit button is pressed
   void _onEditPressed(BuildContext context, Item item) => Navigator.of(context)
       .pushNamed(EditItemScreen.routeName, arguments: item);
 
+  ///Shows an [AlertDialog] which asks the user the confirm or cancel the deletion
   void _onDeletePressed(BuildContext context, Item item) => showDialog(
         context: context,
         child: AlertDialog(
@@ -43,6 +46,7 @@ class ItemDetailsScreen extends StatelessWidget {
         ),
       );
 
+  ///Deletes the [Item] and navigates back the the root screen
   Future _onDeleteConfirmed(BuildContext context, Item item) async {
     //Navigate to home
     Navigator.popUntil(context, ModalRoute.withName('/'));

@@ -14,6 +14,7 @@ import 'package:hlamnik/database/entities/season.dart';
 
 part 'database.g.dart'; // the generated code will be there
 
+///Class used to generate the database and the daos' queries
 @Database(version: 1, entities: [
   Category,
   Color,

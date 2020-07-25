@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-// Define the main theme of the app
+///Defines the main theme of the app
 final ThemeData mainTheme = _buildMainTheme();
 
 //const kPrimaryColor = Color(0xFFD48166);
 //const kSecondaryColor = Color(0xFF373A36);
 //const kTertiaryColor = Color(0xFFE6E2DD);
 
+///Defines the main colors of the app
 class AppColors {
   static const primaryColor = Color(0xFFC6AD8F);
   static const secondaryColor = Color(0xFF425664);
@@ -14,7 +15,7 @@ class AppColors {
   static const errorColor = Color(0xFFFA8072);
 }
 
-// Build the theme
+///Builds the main theme
 ThemeData _buildMainTheme() {
   final base = ThemeData.light();
 
@@ -39,7 +40,7 @@ ThemeData _buildMainTheme() {
   );
 }
 
-// Build the main text theme
+///Builds the main text theme
 TextTheme _buildMainTextTheme(TextTheme base) {
   return base
       .copyWith(
@@ -51,7 +52,7 @@ TextTheme _buildMainTextTheme(TextTheme base) {
       );
 }
 
-// Build the main appBar theme
+///Builds the main appBar theme
 AppBarTheme _buildMainAppBarTheme(
     AppBarTheme base, TextTheme textBase, IconThemeData iconBase) {
   return base.copyWith(
@@ -67,12 +68,12 @@ AppBarTheme _buildMainAppBarTheme(
   );
 }
 
-// Build the main icon theme
+///Builds the main icon theme
 IconThemeData _buildMainIconTheme(IconThemeData base) {
   return base.copyWith(color: AppColors.primaryColor);
 }
 
-// Build the main floating action button theme
+///Builds the main floating action button theme
 FloatingActionButtonThemeData _buildMainFloatingActionButtonTheme(
     FloatingActionButtonThemeData base) {
   return base.copyWith(
@@ -81,6 +82,7 @@ FloatingActionButtonThemeData _buildMainFloatingActionButtonTheme(
   );
 }
 
+///Builds the main input decoration theme
 InputDecorationTheme _buildMainInputDecorationTheme(InputDecorationTheme base) {
   return base.copyWith(
     border: OutlineInputBorder(

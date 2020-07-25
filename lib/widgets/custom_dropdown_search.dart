@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+///Widget used to create a searchable dropdown
 class CustomDropdownSearch<T> extends StatelessWidget {
   final String label;
   final DropdownSearchOnFind<T> onFind;
@@ -18,6 +19,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
     this.isRequired = false,
   });
 
+  ///Validates the dropdown if it's required
   String _requiredValidator(T item) {
     if (item == null) {
       return 'errorNoAction'.tr(

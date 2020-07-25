@@ -4,6 +4,7 @@ import 'package:hlamnik/database/entities/item_season.dart';
 import 'package:hlamnik/models/filter.dart';
 import 'package:hlamnik/services/db_service.dart';
 
+///[Provider] used to manage a list of [Item] across all screens
 class Items with ChangeNotifier {
   List<Item> _items = [];
 
@@ -11,6 +12,7 @@ class Items with ChangeNotifier {
     return _items;
   }
 
+  ///Retrieve a list of all [Item] from the database sorted by rating
   Future<List<Item>> get _getItems async {
     final db = await DBService.getDatabase;
     final items = await db.itemDao.listAllWithJoins();
@@ -19,6 +21,7 @@ class Items with ChangeNotifier {
     return items;
   }
 
+  ///Add a new [Item] to the database
   Future addItem(Item item) async {
     final db = await DBService.getDatabase;
     final addedItemId = await db.itemDao.insertValue(item);
@@ -36,6 +39,7 @@ class Items with ChangeNotifier {
     notifyListeners();
   }
 
+  ///Update an existing [Item] in the database
   Future updateItem(Item item) async {
     final itemIndex = _items.indexWhere((i) => i.id == item.id);
     final oldItem = _items[itemIndex];
@@ -66,11 +70,13 @@ class Items with ChangeNotifier {
     notifyListeners();
   }
 
+  ///Load all [Item] from the database
   Future loadItems() async {
     _items = await _getItems;
     notifyListeners();
   }
 
+  ///Filter the list of [Item]
   Future filterItems(Filter filter) async {
     var filteredItems = await _getItems;
     // Remove all items which have a quality lower than the filter
@@ -104,13 +110,16 @@ class Items with ChangeNotifier {
     notifyListeners();
   }
 
+  ///Returns the [Item] with the given [id]
   Item getItem(int id) {
     return items.firstWhere((item) => item.id == id);
   }
 
+  ///Deletes an existing [Item] from the database
   Future deleteItem(Item item) async {
     final db = await DBService.getDatabase;
     final itemSeasonList = await db.itemSeasonDao.findSeasonIdsByItem(item.id);
+    //Delete the linked seasons
     await db.itemSeasonDao.deleteValues(itemSeasonList);
     await db.itemDao.deleteValue(item);
     _items.removeWhere((i) => i.id == item.id);

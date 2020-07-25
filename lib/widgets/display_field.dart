@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Display data in a nice way with a title and value
+///Widget used to display data in a nice way with a [title] and [value] or [child]
 class DisplayField extends StatelessWidget {
   final String title;
   final Widget child;

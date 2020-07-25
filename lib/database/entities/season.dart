@@ -1,5 +1,6 @@
 import 'package:floor/floor.dart';
 
+/// Defines the [Season] table
 @entity
 class Season {
   @primaryKey

@@ -22,6 +22,7 @@ import 'package:hlamnik/widgets/rating_input.dart';
 import 'package:provider/provider.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 
+///Screen used to display a list of [Item]
 class ItemsOverviewScreen extends StatefulWidget {
   @override
   _ItemsOverviewScreenState createState() => _ItemsOverviewScreenState();
@@ -47,11 +48,14 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
     super.didChangeDependencies();
   }
 
+  ///Refreshes the list of [Item]
   Future _refreshItems() async => await context.read<Items>().loadItems();
 
+  ///Navigates to the [EditItemScreen]
   void _onAddPressed(BuildContext context) =>
       Navigator.of(context).pushNamed(EditItemScreen.routeName);
 
+  ///Opens a bottom sheet to filter the list of [Item]
   void _onFilterPressed(BuildContext context) => showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -87,10 +91,17 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
       body: _isLoading
           ? LoadingIndicator()
           : items.isEmpty
-              ? Center(
-                  child: Text(
-                    'noItems'.tr(),
-                  ),
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Text(
+                      'noItems'.tr(),
+                      textAlign: TextAlign.center,
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.refresh), onPressed: _refreshItems),
+                  ],
                 )
               : RefreshIndicator(
                   onRefresh: _refreshItems,
@@ -120,6 +131,7 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
   }
 }
 
+///Widget used to filter the list of [Item]
 class FilterModal extends StatefulWidget {
   @override
   _FilterModalState createState() => _FilterModalState();
@@ -130,48 +142,56 @@ class _FilterModalState extends State<FilterModal> {
   Category _selectedCategory;
   Season _selectedSeason;
   entity.Color _selectedColor;
-  var filter = Filter();
+  var _filter = Filter();
 
+  ///Returns a list of [Category]
   Future<List<Category>> get _categories async {
     final db = await DBService.getDatabase;
     return await db.categoryDao.listAll();
   }
 
+  ///Returns a list of [Season]
   Future<List<Season>> get _seasons async {
     final db = await DBService.getDatabase;
     return await db.seasonDao.listAll();
   }
 
-  void _setRating(double rating) => filter.rating = rating;
+  ///Sets the rating of the [_filter] to the selected rating
+  void _setRating(double rating) => _filter.rating = rating;
 
-  void _setQuality(double quality) => filter.quality = quality;
+  ///Sets the quality of the [_filter] to the selected quality
+  void _setQuality(double quality) => _filter.quality = quality;
 
+  ///Sets the [Category] of the [_filter] to the selected category
   void _selectCategory(Category category) {
     _selectedCategory = category;
-    filter.categoryId = category.id;
+    _filter.categoryId = category.id;
   }
 
+  ///Sets the [Season] of the [_filter] to the selected season
   void _selectSeason(Season season) {
     _selectedSeason = season;
-    filter.seasonId = season.id;
+    _filter.seasonId = season.id;
   }
 
+  ///Sets the [Color] of the [_filter] to the selected color
   Future _selectColor(Color color) async {
     final db = await DBService.getDatabase;
     final dbColor = await db.colorDao
         .findByCode(color.toString().substring(10, 16).toUpperCase());
     setState(() {
       _selectedColor = dbColor;
-      filter.colorId = dbColor.id;
+      _filter.colorId = dbColor.id;
     });
     Navigator.of(context).pop();
   }
 
+  ///Filters the list of [Item] with the given [_filter]
   void _onSavePressed() async {
     setState(() {
       _isLoading = true;
     });
-    await context.read<Items>().filterItems(filter);
+    await context.read<Items>().filterItems(_filter);
     setState(() {
       _isLoading = false;
     });
@@ -187,12 +207,12 @@ class _FilterModalState extends State<FilterModal> {
         children: <Widget>[
           RatingInput(
             label: 'rating'.tr(),
-            initialValue: filter.rating,
+            initialValue: _filter.rating,
             onPress: _setRating,
           ),
           RatingInput(
             label: 'quality'.tr(),
-            initialValue: filter.quality,
+            initialValue: _filter.quality,
             onPress: _setQuality,
           ),
           CustomDropdownSearch<Category>(
@@ -219,6 +239,7 @@ class _FilterModalState extends State<FilterModal> {
   }
 }
 
+///Widget used to display an [Item] as a card
 class ItemTile extends StatelessWidget {
   final Item item;
 
@@ -290,7 +311,9 @@ class ItemTile extends StatelessWidget {
   }
 }
 
+///Widget used to display the drawer
 class MainDrawer extends StatelessWidget {
+  ///Opens a bottom sheet with the given content
   void _showModalBottomSheet(
           {@required BuildContext context, @required WidgetBuilder builder}) =>
       showModalBottomSheet(
@@ -342,6 +365,7 @@ class MainDrawer extends StatelessWidget {
   }
 }
 
+///Widget used to add a new [Category]
 class CategoryForm extends StatefulWidget {
   @override
   _CategoryFormState createState() => _CategoryFormState();
@@ -352,8 +376,10 @@ class _CategoryFormState extends State<CategoryForm> {
   var _name = '';
   var _isLoading = false;
 
+  ///Sets the [_name] to the selected name
   void _setName(String name) => _name = name;
 
+  ///Validates and creates the new [Category]
   Future _saveForm() async {
     if (!_formKey.currentState.validate()) {
       return;
@@ -415,6 +441,7 @@ class _CategoryFormState extends State<CategoryForm> {
   }
 }
 
+///Widget used to add a new [Color]
 class ColorForm extends StatefulWidget {
   @override
   _ColorFormState createState() => _ColorFormState();
@@ -424,8 +451,10 @@ class _ColorFormState extends State<ColorForm> {
   var _color = AppColors.primaryColor;
   var _isLoading = false;
 
+  ///Sets the [_color] to the selected color
   void _setColor(Color color) => _color = color;
 
+  ///Validates and creates the new [Color]
   Future _saveForm() async {
     setState(() {
       _isLoading = true;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/widgets/error_text.dart';
 
+///Widget used to display a nicely bordered input
 class InputBordered extends StatelessWidget {
   const InputBordered({
     Key key,

@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/widgets/input_bordered.dart';
 
+///Widget used to display a rating input
 class RatingInput extends StatelessWidget {
   const RatingInput({
     Key key,

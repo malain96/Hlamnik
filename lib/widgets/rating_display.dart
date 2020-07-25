@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+///Widget used to display a rating in a nice way
 class RatingDisplay extends StatelessWidget {
   final double rating;
   final Color textColor;

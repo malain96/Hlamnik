@@ -2,6 +2,7 @@ import 'package:floor/floor.dart';
 import 'package:hlamnik/database/entities/item.dart';
 import 'package:hlamnik/database/entities/season.dart';
 
+/// Defines the [ItemSeason] table
 @Entity(
   primaryKeys: ['item_id', 'season_id'],
   foreignKeys: [

@@ -6,6 +6,7 @@ import 'package:hlamnik/database/entities/color.dart' as entity;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:hlamnik/widgets/error_text.dart';
 
+///Widget used to display a modal containing all available [Color]
 class ColorPickerInput extends StatelessWidget {
   final Color pickedColor;
   final ValueChanged<Color> onColorChanged;
@@ -17,6 +18,7 @@ class ColorPickerInput extends StatelessWidget {
     this.error,
   });
 
+  ///Loads a list of [Color]
   Future<List<entity.Color>> get _colors async {
     final db = await DBService.getDatabase;
     return await db.colorDao.listAll();

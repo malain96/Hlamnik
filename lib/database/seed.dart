@@ -5,36 +5,14 @@ import 'package:hlamnik/database/entities/season.dart';
 import 'package:hlamnik/services/db_service.dart';
 
 class Seed {
+  /// Seeds the database with default values on the first run of the app
   static Future<void> initDB() async {
     final database = await DBService.getDatabase;
-//    final categoryDao = database.categoryDao;
     final colorDao = database.colorDao;
     final seasonDao = database.seasonDao;
 
-//    final categories = await categoryDao.listAll();
     final colors = await colorDao.listAll();
     final seasons = await seasonDao.listAll();
-//
-//    if (categories.isEmpty) {
-//      await categoryDao.insertValue(
-//        Category(
-//          id: 1,
-//          name: 'pants'.tr(),
-//        ),
-//      );
-//      await categoryDao.insertValue(
-//        Category(
-//          id: 2,
-//          name: 'tshirt'.tr(),
-//        ),
-//      );
-//      await categoryDao.insertValue(
-//        Category(
-//          id: 3,
-//          name: 'sweater'.tr(),
-//        ),
-//      );
-//    }
 
     if (colors.isEmpty) {
       await colorDao.insertValue(
