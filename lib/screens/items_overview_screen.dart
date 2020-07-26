@@ -464,7 +464,7 @@ class _ColorFormState extends State<ColorForm> {
     await db.colorDao.insertValue(
       entity.Color(
         id: null,
-        code: _color.value.toRadixString(16).padLeft(6, '0').substring(2),
+        code: _color.value.toRadixString(16).padLeft(6, '0').substring(2).toUpperCase(),
       ),
     );
 
