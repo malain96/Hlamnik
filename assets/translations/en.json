@@ -48,5 +48,6 @@
     "female": "Add a {}",
     "other": "Add a {}"
   },
-  "menu": "Menu"
+  "menu": "Menu",
+  "search": "Search"
 }

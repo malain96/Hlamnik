@@ -36,6 +36,8 @@ class CustomDropdownSearch<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final inputDecorationTheme = Theme.of(context).inputDecorationTheme;
+
     return DropdownSearch<T>(
       dropdownSearchDecoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(vertical: 7, horizontal: 13),
@@ -44,7 +46,19 @@ class CustomDropdownSearch<T> extends StatelessWidget {
           borderSide: BorderSide(color: AppColors.primaryColor),
         ),
       ),
+      showSearchBox: true,
       mode: Mode.DIALOG,
+      popupShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      searchBoxDecoration: InputDecoration(
+        labelText: 'search'.tr(),
+        border: inputDecorationTheme.border,
+        labelStyle: inputDecorationTheme.labelStyle,
+      ),
+      popupTitle: SizedBox(
+        height: 10.0,
+      ),
       onFind: onFind,
       label: label,
       onChanged: onChanged,
