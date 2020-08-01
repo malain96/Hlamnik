@@ -19,6 +19,7 @@ import 'package:hlamnik/widgets/loading_indicator.dart';
 import 'package:hlamnik/widgets/rating_input.dart';
 import 'package:hlamnik/widgets/season_tags_input.dart';
 import 'package:provider/provider.dart';
+import 'package:supercharged/supercharged.dart';
 
 ///Screen used to edit/add new items
 class EditItemScreen extends StatefulWidget {
@@ -86,18 +87,21 @@ class _EditItemScreenState extends State<EditItemScreen> {
     super.dispose();
   }
 
-  ///Sets the [Color] of the [_editedItem] to the selected [Color]
-  Future _changeColor(Color color) async {
+  ///Sets the [entity.Color] of the [_editedItem] from the selected [Color]
+  Future<void> _changeColor(Color color) async {
     final db = await DBService.getDatabase;
     final dbColor = await db.colorDao
         .findByCode(color.toString().substring(10, 16).toUpperCase());
-    setState(() {
-      _editedItem.color = dbColor;
-      _editedItem.colorId = dbColor.id;
-    });
+    _setColor(dbColor);
     Navigator.of(context).pop();
     _colorValidation();
   }
+
+  ///Sets the [entity.Color] of the [_editedItem]
+  void _setColor(entity.Color dbColor) => setState(() {
+        _editedItem.color = dbColor;
+        _editedItem.colorId = dbColor.id;
+      });
 
   ///Sets the picture of the [_editedItem] to the taken picture
   void _selectImage(String base64) {
@@ -105,10 +109,19 @@ class _EditItemScreenState extends State<EditItemScreen> {
     _pictureValidation();
   }
 
-  ///Sets the [Category] of the [_editedItem] to the selected [Cateogry]
+  ///Sets the [Category] of the [_editedItem] to the selected [Category]
   void _selectCategory(Category category) {
     _editedItem.category = category;
     _editedItem.categoryId = category.id;
+  }
+
+  ///Creates a new [Category] returns it
+  Future<Category> _createCategory(String categoryLabel) async {
+    final db = await DBService.getDatabase;
+    var category = Category(name: categoryLabel);
+    category.id = await db.categoryDao.insertValue(category);
+    Navigator.of(context).pop();
+    return category;
   }
 
   ///Adds or removes a [Season] to the [_editedItem]
@@ -146,7 +159,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
   ///Returns the list of [Category]
   Future<List<Category>> get _categories async {
     final db = await DBService.getDatabase;
-    return await db.categoryDao.listAll();
+    final categories = await db.categoryDao.listAll();
+    return categories.sortedByString((category) => category.name.toLowerCase());
   }
 
   ///Validates the [Season] of the [_editedItem] and returns an error message
@@ -326,6 +340,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           onFind: (_) async => _categories,
                           onChanged: _selectCategory,
                           selectedItem: _editedItem.category,
+                          showCreateButton: true,
+                          onCreate: _createCategory,
                         ),
                         SeasonTagsInput(
                           onPress: _toggleSeason,
@@ -336,6 +352,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           pickedColor: _editedItem.color?.getColor,
                           onColorChanged: _changeColor,
                           error: _colorError,
+                          showCreateButton: true,
+                          onCreate: _setColor,
                         ),
                         TextFormField(
                           controller: commentController,

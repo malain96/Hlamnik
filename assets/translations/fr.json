@@ -48,5 +48,7 @@
     "female": "Ajouter une {}",
     "other": "Ajouter un(e) {}"
   },
-  "menu": "Menu"
+  "menu": "Menu",
+  "search": "Rechercher",
+  "noData": "Aucun résultat"
 }

@@ -6,7 +6,7 @@ import 'package:supercharged/supercharged.dart';
 @entity
 class Color {
   @primaryKey
-  final int id;
+  int id;
   String code;
 
   Color({
