@@ -83,7 +83,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
         border: inputDecorationTheme.border,
         labelStyle: inputDecorationTheme.labelStyle,
       ),
-      popupPadding: const EdgeInsets.only(top: 8),
+      popupPadding: const EdgeInsets.symmetric(vertical: 8,),
       onFind: onFind,
       label: label,
       onChanged: onChanged,
@@ -92,6 +92,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
       showCreateButton: showCreateButton,
       onCreate: onCreate,
       popupItemBuilder: _customPopupItemBuilder,
+      noDataText: 'noData'.tr(),
     );
   }
 }
@@ -238,6 +239,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///padding around the popup content
   final EdgeInsets popupPadding;
 
+  ///text displayed when no data is found
+  final String noDataText;
+
   DropdownSearch({
     Key key,
     this.onSaved,
@@ -280,6 +284,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.createButton,
     this.onCreate,
     this.showCreateButton,
+    this.noDataText,
   })  : assert(autoValidate != null),
         assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
@@ -465,6 +470,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       createButton: widget.createButton,
       onCreate: widget.onCreate,
       showCreateButton: widget.showCreateButton,
+      noDataText: widget.noDataText,
     );
   }
 

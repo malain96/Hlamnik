@@ -49,5 +49,6 @@
     "other": "Ajouter un(e) {}"
   },
   "menu": "Menu",
-  "search": "Rechercher"
+  "search": "Rechercher",
+  "noData": "Aucun résultat"
 }

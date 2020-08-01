@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/item.dart';
 import 'package:hlamnik/database/entities/season.dart';
@@ -13,6 +12,8 @@ import 'package:hlamnik/screens/edit_item_screen.dart';
 import 'package:hlamnik/screens/item_details_screen.dart';
 import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
+import 'package:hlamnik/utils/bottom_sheet_utils.dart';
+import 'package:hlamnik/widgets/color_form.dart';
 import 'package:hlamnik/widgets/color_picker_input.dart';
 import 'package:hlamnik/widgets/custom_dropdown_search.dart';
 import 'package:hlamnik/widgets/loading_indicator.dart';
@@ -142,7 +143,7 @@ class _FilterModalState extends State<FilterModal> {
   Category _selectedCategory;
   Season _selectedSeason;
   entity.Color _selectedColor;
-  var _filter = Filter();
+  final _filter = Filter();
 
   ///Returns a list of [Category]
   Future<List<Category>> get _categories async {
@@ -313,20 +314,6 @@ class ItemTile extends StatelessWidget {
 
 ///Widget used to display the drawer
 class MainDrawer extends StatelessWidget {
-  ///Opens a bottom sheet with the given content
-  void _showModalBottomSheet(
-          {@required BuildContext context, @required WidgetBuilder builder}) =>
-      showModalBottomSheet(
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(15),
-          ),
-        ),
-        builder: builder,
-        isScrollControlled: true,
-      );
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -343,7 +330,7 @@ class MainDrawer extends StatelessWidget {
                   .tr(gender: 'female', args: ['category'.tr().toLowerCase()])),
               onTap: () {
                 Navigator.of(context).pop();
-                _showModalBottomSheet(
+                BottomSheetUtils.showCustomModalBottomSheet(
                   context: context,
                   builder: (_) => CategoryForm(),
                 );
@@ -353,7 +340,7 @@ class MainDrawer extends StatelessWidget {
                 .tr(gender: 'female', args: ['color'.tr().toLowerCase()])),
             onTap: () {
               Navigator.of(context).pop();
-              _showModalBottomSheet(
+              BottomSheetUtils.showCustomModalBottomSheet(
                 context: context,
                 builder: (_) => ColorForm(),
               );
@@ -433,62 +420,6 @@ class _CategoryFormState extends State<CategoryForm> {
           onSaved: _setName,
           //Should save
           onFieldSubmitted: (_) => _saveForm(),
-        ),
-      ),
-      saveForm: _saveForm,
-      isLoading: _isLoading,
-    );
-  }
-}
-
-///Widget used to add a new [Color]
-class ColorForm extends StatefulWidget {
-  @override
-  _ColorFormState createState() => _ColorFormState();
-}
-
-class _ColorFormState extends State<ColorForm> {
-  var _color = AppColors.primaryColor;
-  var _isLoading = false;
-
-  ///Sets the [_color] to the selected color
-  void _setColor(Color color) => _color = color;
-
-  ///Validates and creates the new [Color]
-  Future _saveForm() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    final db = await DBService.getDatabase;
-    await db.colorDao.insertValue(
-      entity.Color(
-        id: null,
-        code: _color.value.toRadixString(16).padLeft(6, '0').substring(2).toUpperCase(),
-      ),
-    );
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    Navigator.of(context).pop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ModalBottomSheetForm(
-      title: 'color'.tr(),
-      form: Container(
-        child: ColorPicker(
-          pickerColor: _color,
-          pickerAreaHeightPercent: 0.7,
-          onColorChanged: _setColor,
-          enableAlpha: false,
-          displayThumbColor: true,
-          showLabel: false,
-          paletteType: PaletteType.hsl,
-          pickerAreaBorderRadius: BorderRadius.circular(15),
         ),
       ),
       saveForm: _saveForm,

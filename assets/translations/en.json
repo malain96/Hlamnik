@@ -49,5 +49,6 @@
     "other": "Add a {}"
   },
   "menu": "Menu",
-  "search": "Search"
+  "search": "Search",
+  "noData": "No data found"
 }

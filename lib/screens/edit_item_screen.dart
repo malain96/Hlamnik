@@ -87,18 +87,21 @@ class _EditItemScreenState extends State<EditItemScreen> {
     super.dispose();
   }
 
-  ///Sets the [Color] of the [_editedItem] to the selected [Color]
-  Future _changeColor(Color color) async {
+  ///Sets the [entity.Color] of the [_editedItem] from the selected [Color]
+  Future<void> _changeColor(Color color) async {
     final db = await DBService.getDatabase;
     final dbColor = await db.colorDao
         .findByCode(color.toString().substring(10, 16).toUpperCase());
-    setState(() {
-      _editedItem.color = dbColor;
-      _editedItem.colorId = dbColor.id;
-    });
+    _setColor(dbColor);
     Navigator.of(context).pop();
     _colorValidation();
   }
+
+  ///Sets the [entity.Color] of the [_editedItem]
+  void _setColor(entity.Color dbColor) => setState(() {
+        _editedItem.color = dbColor;
+        _editedItem.colorId = dbColor.id;
+      });
 
   ///Sets the picture of the [_editedItem] to the taken picture
   void _selectImage(String base64) {
@@ -349,6 +352,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           pickedColor: _editedItem.color?.getColor,
                           onColorChanged: _changeColor,
                           error: _colorError,
+                          showCreateButton: true,
+                          onCreate: _setColor,
                         ),
                         TextFormField(
                           controller: commentController,

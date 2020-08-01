@@ -4,6 +4,8 @@ import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:hlamnik/utils/bottom_sheet_utils.dart';
+import 'package:hlamnik/widgets/color_form.dart';
 import 'package:hlamnik/widgets/error_text.dart';
 
 ///Widget used to display a modal containing all available [Color]
@@ -11,17 +13,29 @@ class ColorPickerInput extends StatelessWidget {
   final Color pickedColor;
   final ValueChanged<Color> onColorChanged;
   final String error;
+  final bool showCreateButton;
+  final Function(entity.Color) onCreate;
 
   const ColorPickerInput({
     @required this.pickedColor,
     @required this.onColorChanged,
     this.error,
+    this.showCreateButton = false,
+    this.onCreate,
   });
 
   ///Loads a list of [Color]
   Future<List<entity.Color>> get _colors async {
     final db = await DBService.getDatabase;
     return await db.colorDao.listAll();
+  }
+
+  void _onCreateButtonPressed(BuildContext context) {
+    Navigator.of(context).pop();
+    BottomSheetUtils.showCustomModalBottomSheet(
+      context: context,
+      builder: (_) => ColorForm(afterSave: onCreate,),
+    );
   }
 
   @override
@@ -50,10 +64,25 @@ class ColorPickerInput extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
                                 backgroundColor: AppColors.tertiaryColor,
-                                title: Text('selectSomething'.tr(
-                                    gender: 'female',
-                                    args: ['color'.tr().toLowerCase()])),
+                                title: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Text('selectSomething'.tr(
+                                          gender: 'female',
+                                          args: ['color'.tr().toLowerCase()])),
+                                    ),
+                                    if (showCreateButton)
+                                      IconButton(
+                                        icon: Icon(Icons.add),
+                                        onPressed: () =>
+                                            _onCreateButtonPressed(context),
+                                      ),
+                                  ],
+                                ),
                                 content: SingleChildScrollView(
                                   child: BlockPicker(
                                     pickerColor:
