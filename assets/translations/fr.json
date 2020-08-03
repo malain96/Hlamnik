@@ -50,5 +50,7 @@
   },
   "menu": "Menu",
   "search": "Rechercher",
-  "noData": "Aucun résultat"
+  "noData": "Aucun résultat",
+  "uploadPicture": "Importer une image"
+
 }

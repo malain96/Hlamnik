@@ -26,12 +26,27 @@ class ImageInput extends StatefulWidget {
 class _ImageInputState extends State<ImageInput> {
   File _image;
 
-  ///Turns an [PickedFile] into base64 string and calls the passed onSelectImage
+
+  ///Opens the camera so the user can take a picture
   Future<void> _takePicture() async {
     final imageFile = await ImagePicker().getImage(
       source: ImageSource.camera,
-      maxWidth: 600,
     );
+
+    await _handlePickedFile(imageFile);
+  }
+
+  ///Opens the gallery so the user can pick an image
+  Future<void> _importPicture() async {
+    final imageFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+    );
+
+    await _handlePickedFile(imageFile);
+  }
+
+  ///Turns an [PickedFile] into base64 string and calls the passed onSelectImage
+  Future<void> _handlePickedFile(PickedFile imageFile) async{
     if (imageFile == null) {
       return;
     }
@@ -87,11 +102,21 @@ class _ImageInputState extends State<ImageInput> {
                 width: 10,
               ),
               Expanded(
-                child: FlatButton.icon(
-                  icon: Icon(Icons.camera),
-                  label: Text('takePicture'.tr()),
-                  textColor: AppColors.secondaryColor,
-                  onPressed: _takePicture,
+                child: Column(
+                  children: <Widget>[
+                    FlatButton.icon(
+                      icon: Icon(Icons.camera),
+                      label: Text('takePicture'.tr()),
+                      textColor: AppColors.secondaryColor,
+                      onPressed: _takePicture,
+                    ),
+                    FlatButton.icon(
+                      icon: Icon(Icons.file_upload),
+                      label: Text('uploadPicture'.tr()),
+                      textColor: AppColors.secondaryColor,
+                      onPressed: _importPicture,
+                    ),
+                  ],
                 ),
               ),
             ],
