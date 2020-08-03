@@ -24,7 +24,7 @@
     "other": "Please enter a {} with {} or more characters"
   },
   "category": "Category",
-  "takePicture": "Take picture",
+  "takePicture": "Take",
   "noImage": "No Image Taken",
   "seasons": "Seasons",
   "season": "Season",
@@ -50,5 +50,6 @@
   },
   "menu": "Menu",
   "search": "Search",
-  "noData": "No data found"
+  "noData": "No data found",
+  "uploadPicture": "Import"
 }

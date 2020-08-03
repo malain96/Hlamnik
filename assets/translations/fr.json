@@ -24,7 +24,7 @@
     "other": "Veuillez renseigner un(e) {} avec au moins {} caractères"
   },
   "category": "Catégorie",
-  "takePicture": "Prendre une photo",
+  "takePicture": "Photo",
   "noImage": "Pas de photo",
   "seasons": "Saisons",
   "season": "Saison",
@@ -50,5 +50,7 @@
   },
   "menu": "Menu",
   "search": "Rechercher",
-  "noData": "Aucun résultat"
+  "noData": "Aucun résultat",
+  "uploadPicture": "Importer"
+
 }
