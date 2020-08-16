@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hlamnik/database/entities/item.dart';
+import 'package:hlamnik/database/entities/item_color.dart';
 import 'package:hlamnik/database/entities/item_season.dart';
 import 'package:hlamnik/models/filter.dart';
 import 'package:hlamnik/services/db_service.dart';
@@ -34,6 +35,15 @@ class Items with ChangeNotifier {
         ),
       ),
     );
+    await Future.forEach(
+      item.colors,
+      (color) async => await db.itemColorDao.insertValue(
+        ItemColor(
+          itemId: addedItemId,
+          colorId: color.id,
+        ),
+      ),
+    );
     item.id = addedItemId;
     _items.add(item);
     notifyListeners();
@@ -62,6 +72,26 @@ class Items with ChangeNotifier {
       seasonsToAdd
           .map(
             (season) => ItemSeason(itemId: item.id, seasonId: season.id),
+          )
+          .toList(),
+    );
+    // Retrieve a list of colors to delete and to add
+    final colorsToDelete =
+        oldItem.colors.where((color) => item.colors.contains(color));
+    final colorsToAdd =
+        item.colors.where((color) => oldItem.colors.contains(color));
+    // Delete and add the itemColors after mapping the color to an itemColor
+    await db.itemColorDao.deleteValues(
+      colorsToDelete
+          .map(
+            (color) => ItemColor(itemId: item.id, colorId: color.id),
+          )
+          .toList(),
+    );
+    await db.itemColorDao.insertValues(
+      colorsToAdd
+          .map(
+            (color) => ItemColor(itemId: item.id, colorId: color.id),
           )
           .toList(),
     );
@@ -101,9 +131,16 @@ class Items with ChangeNotifier {
             : false,
       );
     }
-    // Remove all items which are not part of the selected color
-    if (filter.colorId != null) {
-      filteredItems.removeWhere((item) => item.colorId != filter.colorId);
+    // Remove all items which don't have all the selected colors
+    if (filter.colorIdList != null) {
+      filteredItems.removeWhere(
+        (item) => item.colors != null
+            ? item.colors
+                    .where((color) => filter.colorIdList.contains(color.id))
+                    .length !=
+                filter.colorIdList.length
+            : false,
+      );
     }
 
     _items = filteredItems;
@@ -119,8 +156,10 @@ class Items with ChangeNotifier {
   Future deleteItem(Item item) async {
     final db = await DBService.getDatabase;
     final itemSeasonList = await db.itemSeasonDao.findSeasonIdsByItem(item.id);
-    //Delete the linked seasons
+    final itemColorList = await db.itemColorDao.findColorIdsByItem(item.id);
+    //Delete the linked seasons and colors
     await db.itemSeasonDao.deleteValues(itemSeasonList);
+    await db.itemColorDao.deleteValues(itemColorList);
     await db.itemDao.deleteValue(item);
     _items.removeWhere((i) => i.id == item.id);
     notifyListeners();

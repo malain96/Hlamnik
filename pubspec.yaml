@@ -43,12 +43,15 @@ dev_dependencies:
   pedantic: ^1.9.0
   flutter_launcher_icons: ^0.7.5
 
+dependency_overrides:
+  analyzer: '0.39.14'
+
 flutter_icons:
-   android: true
-   ios: true
-   image_path: "assets/icons/icon.png"
-   adaptive_icon_background: "#C6AD8F"
-   adaptive_icon_foreground: "assets/icons/icon_adaptive.png"
+  android: true
+  ios: true
+  image_path: "assets/icons/icon.png"
+  adaptive_icon_background: "#C6AD8F"
+  adaptive_icon_foreground: "assets/icons/icon_adaptive.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
