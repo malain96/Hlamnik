@@ -41,11 +41,10 @@ class _EditItemScreenState extends State<EditItemScreen> {
     comment: '',
     rating: 2.5,
     quality: 2.5,
-    colorId: null,
-    color: null,
     categoryId: null,
     category: null,
     seasons: [],
+    colors: [],
   );
   String _seasonError;
   String _colorError;
@@ -87,20 +86,31 @@ class _EditItemScreenState extends State<EditItemScreen> {
     super.dispose();
   }
 
-  ///Sets the [entity.Color] of the [_editedItem] from the selected [Color]
-  Future<void> _changeColor(Color color) async {
+  ///Sets the [List] of [entity.Color] of the [_editedItem] from the selected [List] of [Color]
+  Future<void> _saveColors(List<Color> colors) async {
     final db = await DBService.getDatabase;
-    final dbColor = await db.colorDao
-        .findByCode(color.toString().substring(10, 16).toUpperCase());
-    _setColor(dbColor);
+    var dbColors = <entity.Color>[];
+    await Future.forEach(
+      colors,
+      (color) async => dbColors.add(
+        await db.colorDao.findByCode(
+          color.toString().substring(10, 16).toUpperCase(),
+        ),
+      ),
+    );
+    _setColors(dbColors);
     Navigator.of(context).pop();
     _colorValidation();
   }
 
-  ///Sets the [entity.Color] of the [_editedItem]
+  ///Adds an [entity.Color] to the [_editedItem]
   void _setColor(entity.Color dbColor) => setState(() {
-        _editedItem.color = dbColor;
-        _editedItem.colorId = dbColor.id;
+        _editedItem.colors.add(dbColor);
+      });
+
+  ///Sets the [List] of [entity.Color] of the [_editedItem]
+  void _setColors(List<entity.Color> dbColors) => setState(() {
+        _editedItem.colors = dbColors;
       });
 
   ///Sets the picture of the [_editedItem] to the taken picture
@@ -184,9 +194,9 @@ class _EditItemScreenState extends State<EditItemScreen> {
   }
 
   ///Validates the [Color] of the [_editedItem] and returns an error message
-  ///The [_editedItem] needs to have a [Season]
+  ///The [_editedItem] needs to have a [Color]
   void _colorValidation() {
-    if (_editedItem.color == null) {
+    if (_editedItem.colors.isEmpty) {
       setState(() {
         _colorError = 'errorNoAction'.tr(
           gender: 'female',
@@ -349,8 +359,10 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           error: _seasonError,
                         ),
                         ColorPickerInput(
-                          pickedColor: _editedItem.color?.getColor,
-                          onColorChanged: _changeColor,
+                          pickedColors: _editedItem.colors
+                              .map((color) => color.getColor)
+                              .toList(),
+                          onSave: _saveColors,
                           error: _colorError,
                           showCreateButton: true,
                           onCreate: _setColor,

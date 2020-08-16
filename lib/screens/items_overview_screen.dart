@@ -140,9 +140,9 @@ class FilterModal extends StatefulWidget {
 
 class _FilterModalState extends State<FilterModal> {
   var _isLoading = false;
+  var _selectedColors = <entity.Color>[];
   Category _selectedCategory;
   Season _selectedSeason;
-  entity.Color _selectedColor;
   final _filter = Filter();
 
   ///Returns a list of [Category]
@@ -175,14 +175,21 @@ class _FilterModalState extends State<FilterModal> {
     _filter.seasonId = season.id;
   }
 
-  ///Sets the [Color] of the [_filter] to the selected color
-  Future _selectColor(Color color) async {
+  ///Sets the [List] of [Color] of the [_filter]
+  Future<void> _selectColors(List<Color> colors) async {
     final db = await DBService.getDatabase;
-    final dbColor = await db.colorDao
-        .findByCode(color.toString().substring(10, 16).toUpperCase());
+    var dbColors = <entity.Color>[];
+    await Future.forEach(
+      colors,
+      (color) async => dbColors.add(
+        await db.colorDao.findByCode(
+          color.toString().substring(10, 16).toUpperCase(),
+        ),
+      ),
+    );
     setState(() {
-      _selectedColor = dbColor;
-      _filter.colorId = dbColor.id;
+      _selectedColors = dbColors;
+      _filter.colorIdList = dbColors.map((dbColor) => dbColor.id).toList();
     });
     Navigator.of(context).pop();
   }
@@ -229,8 +236,9 @@ class _FilterModalState extends State<FilterModal> {
             selectedItem: _selectedSeason,
           ),
           ColorPickerInput(
-            pickedColor: _selectedColor?.getColor,
-            onColorChanged: _selectColor,
+            pickedColors:
+                _selectedColors.map((color) => color.getColor).toList(),
+            onSave: _selectColors,
           ),
         ],
       ),

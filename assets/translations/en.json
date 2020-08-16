@@ -29,6 +29,7 @@
   "seasons": "Seasons",
   "season": "Season",
   "color": "Color",
+  "colors": "Colors",
   "select": "Select",
   "selectSomething": {
     "male": "Select a {}",
@@ -51,5 +52,6 @@
   "menu": "Menu",
   "search": "Search",
   "noData": "No data found",
-  "uploadPicture": "Import"
+  "uploadPicture": "Import",
+  "save": "Save"
 }
