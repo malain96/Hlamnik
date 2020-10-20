@@ -39,6 +39,8 @@ class Item {
   Category category;
   @ignore
   List<Season> seasons;
+  @ignore
+  List<Color> colors;
 
   Item({
     @required this.id,
@@ -53,6 +55,7 @@ class Item {
     this.color,
     this.category,
     this.seasons,
+    this.colors,
   }) : createdAt = DateTime.now().toIso8601String();
 
   ///Clones an existing [Item]
@@ -70,5 +73,6 @@ class Item {
           color: item.color,
           category: item.category,
           seasons: item.seasons,
+          colors: item.colors,
         );
 }

@@ -23,6 +23,7 @@ For now the user can:
 You can see future developments by checking the [issues](https://github.com/malain96/Hlamnik/issues). Feel free to add new issues.
 You are more than welcome to use and modify the app as you please. 
 
+:warning: Note: I don't own a Mac, so the project isn't configured for IOS.
  
 ## Pre-requisites
 

@@ -29,6 +29,7 @@
   "seasons": "Seasons",
   "season": "Season",
   "color": "Color",
+  "colors": "Colors",
   "select": "Select",
   "selectSomething": {
     "male": "Select a {}",
@@ -53,5 +54,7 @@
   "noData": "No data found",
   "year": "Year",
   "boughtLessYear": "Bought less than a year ago",
-  "boughtYearsAgo": "Bought {} year(s) ago"
+  "boughtYearsAgo": "Bought {} year(s) ago",
+  "uploadPicture": "Import",
+  "save": "Save"
 }

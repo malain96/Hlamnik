@@ -29,6 +29,7 @@
   "seasons": "Saisons",
   "season": "Saison",
   "color": "Couleur",
+  "colors": "Couleurs",
   "select": "Sélectionner",
   "selectSomething": {
     "male": "Sélectionner un {}",
@@ -51,6 +52,8 @@
   "menu": "Menu",
   "search": "Rechercher",
   "noData": "Aucun résultat",
+  "uploadPicture": "Importer",
+  "save": "Valider",
   "year": "Année",
   "boughtLessYear": "Acheté il y moins d'un an",
   "boughtYearsAgo": "Acheté il y a {} an(s)"

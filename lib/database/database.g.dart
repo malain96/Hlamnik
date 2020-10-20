@@ -70,6 +70,8 @@ class _$AppDatabase extends AppDatabase {
 
   ItemSeasonDao _itemSeasonDaoInstance;
 
+  ItemColorDao _itemColorDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -92,9 +94,11 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Color` (`id` INTEGER, `code` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Item` (`id` INTEGER, `title` TEXT, `quality` REAL, `rating` REAL, `picture` TEXT, `comment` TEXT, `purchaseYear` TEXT, `createdAt` TEXT, `color_id` INTEGER, `category_id` INTEGER, FOREIGN KEY (`color_id`) REFERENCES `Color` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`category_id`) REFERENCES `Category` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Item` (`id` INTEGER, `title` TEXT, `quality` REAL, `rating` REAL, `picture` TEXT, `comment` TEXT, `createdAt` TEXT, `category_id` INTEGER, FOREIGN KEY (`category_id`) REFERENCES `Category` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ItemSeason` (`item_id` INTEGER, `season_id` INTEGER, FOREIGN KEY (`item_id`) REFERENCES `Item` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`season_id`) REFERENCES `Season` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`item_id`, `season_id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `ItemColor` (`item_id` INTEGER, `color_id` INTEGER, FOREIGN KEY (`item_id`) REFERENCES `Item` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`color_id`) REFERENCES `Color` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`item_id`, `color_id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Season` (`id` INTEGER, `name` TEXT, PRIMARY KEY (`id`))');
 
@@ -128,6 +132,11 @@ class _$AppDatabase extends AppDatabase {
   ItemSeasonDao get itemSeasonDao {
     return _itemSeasonDaoInstance ??= _$ItemSeasonDao(database, changeListener);
   }
+
+  @override
+  ItemColorDao get itemColorDao {
+    return _itemColorDaoInstance ??= _$ItemColorDao(database, changeListener);
+  }
 }
 
 class _$CategoryDao extends CategoryDao {
@@ -157,6 +166,9 @@ class _$CategoryDao extends CategoryDao {
 
   final QueryAdapter _queryAdapter;
 
+  static final _categoryMapper = (Map<String, dynamic> row) =>
+      Category(id: row['id'] as int, name: row['name'] as String);
+
   final InsertionAdapter<Category> _categoryInsertionAdapter;
 
   final UpdateAdapter<Category> _categoryUpdateAdapter;
@@ -166,16 +178,13 @@ class _$CategoryDao extends CategoryDao {
   @override
   Future<List<Category>> listAll() async {
     return _queryAdapter.queryList('SELECT * FROM Category',
-        mapper: (Map<String, dynamic> row) =>
-            Category(id: row['id'] as int, name: row['name'] as String));
+        mapper: _categoryMapper);
   }
 
   @override
   Future<Category> findById(int id) async {
     return _queryAdapter.query('SELECT * FROM Category WHERE id = ?',
-        arguments: <dynamic>[id],
-        mapper: (Map<String, dynamic> row) =>
-            Category(id: row['id'] as int, name: row['name'] as String));
+        arguments: <dynamic>[id], mapper: _categoryMapper);
   }
 
   @override
@@ -240,6 +249,9 @@ class _$ColorDao extends ColorDao {
 
   final QueryAdapter _queryAdapter;
 
+  static final _colorMapper = (Map<String, dynamic> row) =>
+      Color(id: row['id'] as int, code: row['code'] as String);
+
   final InsertionAdapter<Color> _colorInsertionAdapter;
 
   final UpdateAdapter<Color> _colorUpdateAdapter;
@@ -248,25 +260,27 @@ class _$ColorDao extends ColorDao {
 
   @override
   Future<List<Color>> listAll() async {
-    return _queryAdapter.queryList('SELECT * FROM Color',
-        mapper: (Map<String, dynamic> row) =>
-            Color(id: row['id'] as int, code: row['code'] as String));
+    return _queryAdapter.queryList('SELECT * FROM Color', mapper: _colorMapper);
   }
 
   @override
   Future<Color> findByCode(String code) async {
     return _queryAdapter.query('SELECT * FROM Color WHERE code = ?',
-        arguments: <dynamic>[code],
-        mapper: (Map<String, dynamic> row) =>
-            Color(id: row['id'] as int, code: row['code'] as String));
+        arguments: <dynamic>[code], mapper: _colorMapper);
   }
 
   @override
   Future<Color> findById(int id) async {
     return _queryAdapter.query('SELECT * FROM Color WHERE id = ?',
-        arguments: <dynamic>[id],
-        mapper: (Map<String, dynamic> row) =>
-            Color(id: row['id'] as int, code: row['code'] as String));
+        arguments: <dynamic>[id], mapper: _colorMapper);
+  }
+
+  @override
+  Future<List<Color>> findByIds(List<int> ids) async {
+    final valueList1 = ids.map((value) => "'$value'").join(', ');
+    return _queryAdapter.queryList(
+        'SELECT * FROM Color WHERE id IN ($valueList1)',
+        mapper: _colorMapper);
   }
 
   @override
@@ -317,9 +331,7 @@ class _$ItemDao extends ItemDao {
                   'rating': item.rating,
                   'picture': item.picture,
                   'comment': item.comment,
-                  'purchaseYear': item.purchaseYear,
                   'createdAt': item.createdAt,
-                  'color_id': item.colorId,
                   'category_id': item.categoryId
                 }),
         _itemUpdateAdapter = UpdateAdapter(
@@ -333,9 +345,7 @@ class _$ItemDao extends ItemDao {
                   'rating': item.rating,
                   'picture': item.picture,
                   'comment': item.comment,
-                  'purchaseYear': item.purchaseYear,
                   'createdAt': item.createdAt,
-                  'color_id': item.colorId,
                   'category_id': item.categoryId
                 }),
         _itemDeletionAdapter = DeletionAdapter(
@@ -349,9 +359,7 @@ class _$ItemDao extends ItemDao {
                   'rating': item.rating,
                   'picture': item.picture,
                   'comment': item.comment,
-                  'purchaseYear': item.purchaseYear,
                   'createdAt': item.createdAt,
-                  'color_id': item.colorId,
                   'category_id': item.categoryId
                 });
 
@@ -361,6 +369,15 @@ class _$ItemDao extends ItemDao {
 
   final QueryAdapter _queryAdapter;
 
+  static final _itemMapper = (Map<String, dynamic> row) => Item(
+      id: row['id'] as int,
+      title: row['title'] as String,
+      quality: row['quality'] as double,
+      rating: row['rating'] as double,
+      picture: row['picture'] as String,
+      comment: row['comment'] as String,
+      categoryId: row['category_id'] as int);
+
   final InsertionAdapter<Item> _itemInsertionAdapter;
 
   final UpdateAdapter<Item> _itemUpdateAdapter;
@@ -369,17 +386,7 @@ class _$ItemDao extends ItemDao {
 
   @override
   Future<List<Item>> listAll() async {
-    return _queryAdapter.queryList('SELECT * FROM Item',
-        mapper: (Map<String, dynamic> row) => Item(
-            id: row['id'] as int,
-            title: row['title'] as String,
-            quality: row['quality'] as double,
-            rating: row['rating'] as double,
-            picture: row['picture'] as String,
-            comment: row['comment'] as String,
-            purchaseYear: row['purchaseYear'] as String,
-            colorId: row['color_id'] as int,
-            categoryId: row['category_id'] as int));
+    return _queryAdapter.queryList('SELECT * FROM Item', mapper: _itemMapper);
   }
 
   @override
@@ -444,6 +451,9 @@ class _$SeasonDao extends SeasonDao {
 
   final QueryAdapter _queryAdapter;
 
+  static final _seasonMapper = (Map<String, dynamic> row) =>
+      Season(id: row['id'] as int, name: row['name'] as String);
+
   final InsertionAdapter<Season> _seasonInsertionAdapter;
 
   final UpdateAdapter<Season> _seasonUpdateAdapter;
@@ -453,17 +463,15 @@ class _$SeasonDao extends SeasonDao {
   @override
   Future<List<Season>> listAll() async {
     return _queryAdapter.queryList('SELECT * FROM Season',
-        mapper: (Map<String, dynamic> row) =>
-            Season(id: row['id'] as int, name: row['name'] as String));
+        mapper: _seasonMapper);
   }
 
   @override
   Future<List<Season>> findByIds(List<int> ids) async {
-    final valueList0 = ids.map((value) => "'$value'").join(', ');
+    final valueList1 = ids.map((value) => "'$value'").join(', ');
     return _queryAdapter.queryList(
-        'SELECT * FROM Season WHERE id IN ($valueList0)',
-        mapper: (Map<String, dynamic> row) =>
-            Season(id: row['id'] as int, name: row['name'] as String));
+        'SELECT * FROM Season WHERE id IN ($valueList1)',
+        mapper: _seasonMapper);
   }
 
   @override
@@ -534,6 +542,9 @@ class _$ItemSeasonDao extends ItemSeasonDao {
 
   final QueryAdapter _queryAdapter;
 
+  static final _itemSeasonMapper = (Map<String, dynamic> row) => ItemSeason(
+      itemId: row['item_id'] as int, seasonId: row['season_id'] as int);
+
   final InsertionAdapter<ItemSeason> _itemSeasonInsertionAdapter;
 
   final UpdateAdapter<ItemSeason> _itemSeasonUpdateAdapter;
@@ -543,9 +554,7 @@ class _$ItemSeasonDao extends ItemSeasonDao {
   @override
   Future<List<ItemSeason>> findSeasonIdsByItem(int itemId) async {
     return _queryAdapter.queryList('SELECT * FROM ItemSeason WHERE item_id=?',
-        arguments: <dynamic>[itemId],
-        mapper: (Map<String, dynamic> row) => ItemSeason(
-            itemId: row['item_id'] as int, seasonId: row['season_id'] as int));
+        arguments: <dynamic>[itemId], mapper: _itemSeasonMapper);
   }
 
   @override
@@ -580,5 +589,88 @@ class _$ItemSeasonDao extends ItemSeasonDao {
   @override
   Future<int> deleteValues(List<ItemSeason> values) {
     return _itemSeasonDeletionAdapter.deleteListAndReturnChangedRows(values);
+  }
+}
+
+class _$ItemColorDao extends ItemColorDao {
+  _$ItemColorDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _itemColorInsertionAdapter = InsertionAdapter(
+            database,
+            'ItemColor',
+            (ItemColor item) => <String, dynamic>{
+                  'item_id': item.itemId,
+                  'color_id': item.colorId
+                }),
+        _itemColorUpdateAdapter = UpdateAdapter(
+            database,
+            'ItemColor',
+            ['item_id', 'color_id'],
+            (ItemColor item) => <String, dynamic>{
+                  'item_id': item.itemId,
+                  'color_id': item.colorId
+                }),
+        _itemColorDeletionAdapter = DeletionAdapter(
+            database,
+            'ItemColor',
+            ['item_id', 'color_id'],
+            (ItemColor item) => <String, dynamic>{
+                  'item_id': item.itemId,
+                  'color_id': item.colorId
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _itemColorMapper = (Map<String, dynamic> row) =>
+      ItemColor(itemId: row['item_id'] as int, colorId: row['color_id'] as int);
+
+  final InsertionAdapter<ItemColor> _itemColorInsertionAdapter;
+
+  final UpdateAdapter<ItemColor> _itemColorUpdateAdapter;
+
+  final DeletionAdapter<ItemColor> _itemColorDeletionAdapter;
+
+  @override
+  Future<List<ItemColor>> findColorIdsByItem(int itemId) async {
+    return _queryAdapter.queryList('SELECT * FROM ItemColor WHERE item_id=?',
+        arguments: <dynamic>[itemId], mapper: _itemColorMapper);
+  }
+
+  @override
+  Future<int> insertValue(ItemColor value) {
+    return _itemColorInsertionAdapter.insertAndReturnId(
+        value, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<List<int>> insertValues(List<ItemColor> values) {
+    return _itemColorInsertionAdapter.insertListAndReturnIds(
+        values, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> updateValue(ItemColor value) {
+    return _itemColorUpdateAdapter.updateAndReturnChangedRows(
+        value, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> updateValues(List<ItemColor> values) {
+    return _itemColorUpdateAdapter.updateListAndReturnChangedRows(
+        values, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> deleteValue(ItemColor value) {
+    return _itemColorDeletionAdapter.deleteAndReturnChangedRows(value);
+  }
+
+  @override
+  Future<int> deleteValues(List<ItemColor> values) {
+    return _itemColorDeletionAdapter.deleteListAndReturnChangedRows(values);
   }
 }

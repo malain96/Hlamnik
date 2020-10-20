@@ -126,9 +126,18 @@ class ItemDetailsScreen extends StatelessWidget {
                 Expanded(
                   child: DisplayField(
                     title: 'color'.tr(),
-                    child: CircleAvatar(
-                      backgroundColor: item.color.getColor,
-                      radius: 10,
+                    child: Row(
+                      children: item.colors
+                          .map(
+                            (color) => Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                              child: CircleAvatar(
+                                backgroundColor: color.getColor,
+                                radius: 10,
+                              ),
+                            ),
+                          )
+                          .toList(),
                     ),
                   ),
                 ),
