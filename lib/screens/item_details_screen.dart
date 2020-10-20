@@ -59,6 +59,8 @@ class ItemDetailsScreen extends StatelessWidget {
     final item = context.watch<Items>().getItem(id);
     final imageBytes = base64Decode(item.picture);
     final size = MediaQuery.of(context).size;
+    final yearsSincePurchase =
+        DateTime.now().year - int.parse(item.purchaseYear);
 
     return Scaffold(
       appBar: AppBar(
@@ -90,6 +92,12 @@ class ItemDetailsScreen extends StatelessWidget {
             DisplayField(
               title: 'title'.tr(),
               value: item.title,
+            ),
+            DisplayField(
+              title: 'Year'.tr(),
+              value: yearsSincePurchase > 0
+                  ? 'boughtYearsAgo'.tr(args: [yearsSincePurchase.toString()])
+                  : 'boughtLessYear'.tr(),
             ),
             Row(
               children: <Widget>[

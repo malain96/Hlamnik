@@ -92,7 +92,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Color` (`id` INTEGER, `code` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Item` (`id` INTEGER, `title` TEXT, `quality` REAL, `rating` REAL, `picture` TEXT, `comment` TEXT, `createdAt` TEXT, `color_id` INTEGER, `category_id` INTEGER, FOREIGN KEY (`color_id`) REFERENCES `Color` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`category_id`) REFERENCES `Category` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Item` (`id` INTEGER, `title` TEXT, `quality` REAL, `rating` REAL, `picture` TEXT, `comment` TEXT, `purchaseYear` TEXT, `createdAt` TEXT, `color_id` INTEGER, `category_id` INTEGER, FOREIGN KEY (`color_id`) REFERENCES `Color` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`category_id`) REFERENCES `Category` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ItemSeason` (`item_id` INTEGER, `season_id` INTEGER, FOREIGN KEY (`item_id`) REFERENCES `Item` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`season_id`) REFERENCES `Season` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`item_id`, `season_id`))');
         await database.execute(
@@ -157,9 +157,6 @@ class _$CategoryDao extends CategoryDao {
 
   final QueryAdapter _queryAdapter;
 
-  static final _categoryMapper = (Map<String, dynamic> row) =>
-      Category(id: row['id'] as int, name: row['name'] as String);
-
   final InsertionAdapter<Category> _categoryInsertionAdapter;
 
   final UpdateAdapter<Category> _categoryUpdateAdapter;
@@ -169,13 +166,16 @@ class _$CategoryDao extends CategoryDao {
   @override
   Future<List<Category>> listAll() async {
     return _queryAdapter.queryList('SELECT * FROM Category',
-        mapper: _categoryMapper);
+        mapper: (Map<String, dynamic> row) =>
+            Category(id: row['id'] as int, name: row['name'] as String));
   }
 
   @override
   Future<Category> findById(int id) async {
     return _queryAdapter.query('SELECT * FROM Category WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _categoryMapper);
+        arguments: <dynamic>[id],
+        mapper: (Map<String, dynamic> row) =>
+            Category(id: row['id'] as int, name: row['name'] as String));
   }
 
   @override
@@ -240,9 +240,6 @@ class _$ColorDao extends ColorDao {
 
   final QueryAdapter _queryAdapter;
 
-  static final _colorMapper = (Map<String, dynamic> row) =>
-      Color(id: row['id'] as int, code: row['code'] as String);
-
   final InsertionAdapter<Color> _colorInsertionAdapter;
 
   final UpdateAdapter<Color> _colorUpdateAdapter;
@@ -251,19 +248,25 @@ class _$ColorDao extends ColorDao {
 
   @override
   Future<List<Color>> listAll() async {
-    return _queryAdapter.queryList('SELECT * FROM Color', mapper: _colorMapper);
+    return _queryAdapter.queryList('SELECT * FROM Color',
+        mapper: (Map<String, dynamic> row) =>
+            Color(id: row['id'] as int, code: row['code'] as String));
   }
 
   @override
   Future<Color> findByCode(String code) async {
     return _queryAdapter.query('SELECT * FROM Color WHERE code = ?',
-        arguments: <dynamic>[code], mapper: _colorMapper);
+        arguments: <dynamic>[code],
+        mapper: (Map<String, dynamic> row) =>
+            Color(id: row['id'] as int, code: row['code'] as String));
   }
 
   @override
   Future<Color> findById(int id) async {
     return _queryAdapter.query('SELECT * FROM Color WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _colorMapper);
+        arguments: <dynamic>[id],
+        mapper: (Map<String, dynamic> row) =>
+            Color(id: row['id'] as int, code: row['code'] as String));
   }
 
   @override
@@ -314,6 +317,7 @@ class _$ItemDao extends ItemDao {
                   'rating': item.rating,
                   'picture': item.picture,
                   'comment': item.comment,
+                  'purchaseYear': item.purchaseYear,
                   'createdAt': item.createdAt,
                   'color_id': item.colorId,
                   'category_id': item.categoryId
@@ -329,6 +333,7 @@ class _$ItemDao extends ItemDao {
                   'rating': item.rating,
                   'picture': item.picture,
                   'comment': item.comment,
+                  'purchaseYear': item.purchaseYear,
                   'createdAt': item.createdAt,
                   'color_id': item.colorId,
                   'category_id': item.categoryId
@@ -344,6 +349,7 @@ class _$ItemDao extends ItemDao {
                   'rating': item.rating,
                   'picture': item.picture,
                   'comment': item.comment,
+                  'purchaseYear': item.purchaseYear,
                   'createdAt': item.createdAt,
                   'color_id': item.colorId,
                   'category_id': item.categoryId
@@ -355,16 +361,6 @@ class _$ItemDao extends ItemDao {
 
   final QueryAdapter _queryAdapter;
 
-  static final _itemMapper = (Map<String, dynamic> row) => Item(
-      id: row['id'] as int,
-      title: row['title'] as String,
-      quality: row['quality'] as double,
-      rating: row['rating'] as double,
-      picture: row['picture'] as String,
-      comment: row['comment'] as String,
-      colorId: row['color_id'] as int,
-      categoryId: row['category_id'] as int);
-
   final InsertionAdapter<Item> _itemInsertionAdapter;
 
   final UpdateAdapter<Item> _itemUpdateAdapter;
@@ -373,7 +369,17 @@ class _$ItemDao extends ItemDao {
 
   @override
   Future<List<Item>> listAll() async {
-    return _queryAdapter.queryList('SELECT * FROM Item', mapper: _itemMapper);
+    return _queryAdapter.queryList('SELECT * FROM Item',
+        mapper: (Map<String, dynamic> row) => Item(
+            id: row['id'] as int,
+            title: row['title'] as String,
+            quality: row['quality'] as double,
+            rating: row['rating'] as double,
+            picture: row['picture'] as String,
+            comment: row['comment'] as String,
+            purchaseYear: row['purchaseYear'] as String,
+            colorId: row['color_id'] as int,
+            categoryId: row['category_id'] as int));
   }
 
   @override
@@ -438,9 +444,6 @@ class _$SeasonDao extends SeasonDao {
 
   final QueryAdapter _queryAdapter;
 
-  static final _seasonMapper = (Map<String, dynamic> row) =>
-      Season(id: row['id'] as int, name: row['name'] as String);
-
   final InsertionAdapter<Season> _seasonInsertionAdapter;
 
   final UpdateAdapter<Season> _seasonUpdateAdapter;
@@ -450,15 +453,17 @@ class _$SeasonDao extends SeasonDao {
   @override
   Future<List<Season>> listAll() async {
     return _queryAdapter.queryList('SELECT * FROM Season',
-        mapper: _seasonMapper);
+        mapper: (Map<String, dynamic> row) =>
+            Season(id: row['id'] as int, name: row['name'] as String));
   }
 
   @override
   Future<List<Season>> findByIds(List<int> ids) async {
-    final valueList1 = ids.map((value) => "'$value'").join(', ');
+    final valueList0 = ids.map((value) => "'$value'").join(', ');
     return _queryAdapter.queryList(
-        'SELECT * FROM Season WHERE id IN ($valueList1)',
-        mapper: _seasonMapper);
+        'SELECT * FROM Season WHERE id IN ($valueList0)',
+        mapper: (Map<String, dynamic> row) =>
+            Season(id: row['id'] as int, name: row['name'] as String));
   }
 
   @override
@@ -529,9 +534,6 @@ class _$ItemSeasonDao extends ItemSeasonDao {
 
   final QueryAdapter _queryAdapter;
 
-  static final _itemSeasonMapper = (Map<String, dynamic> row) => ItemSeason(
-      itemId: row['item_id'] as int, seasonId: row['season_id'] as int);
-
   final InsertionAdapter<ItemSeason> _itemSeasonInsertionAdapter;
 
   final UpdateAdapter<ItemSeason> _itemSeasonUpdateAdapter;
@@ -541,7 +543,9 @@ class _$ItemSeasonDao extends ItemSeasonDao {
   @override
   Future<List<ItemSeason>> findSeasonIdsByItem(int itemId) async {
     return _queryAdapter.queryList('SELECT * FROM ItemSeason WHERE item_id=?',
-        arguments: <dynamic>[itemId], mapper: _itemSeasonMapper);
+        arguments: <dynamic>[itemId],
+        mapper: (Map<String, dynamic> row) => ItemSeason(
+            itemId: row['item_id'] as int, seasonId: row['season_id'] as int));
   }
 
   @override

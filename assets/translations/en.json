@@ -50,5 +50,8 @@
   },
   "menu": "Menu",
   "search": "Search",
-  "noData": "No data found"
+  "noData": "No data found",
+  "year": "Year",
+  "boughtLessYear": "Bought less than a year ago",
+  "boughtYearsAgo": "Bought {} year(s) ago"
 }

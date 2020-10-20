@@ -50,5 +50,8 @@
   },
   "menu": "Menu",
   "search": "Rechercher",
-  "noData": "Aucun résultat"
+  "noData": "Aucun résultat",
+  "year": "Année",
+  "boughtLessYear": "Acheté il y moins d'un an",
+  "boughtYearsAgo": "Acheté il y a {} an(s)"
 }

@@ -27,6 +27,7 @@ class Item {
   double rating;
   String picture;
   String comment;
+  String purchaseYear;
   final String createdAt;
   @ColumnInfo(name: 'color_id')
   int colorId;
@@ -46,6 +47,7 @@ class Item {
     @required this.rating,
     @required this.picture,
     @required this.comment,
+    @required this.purchaseYear,
     this.colorId,
     this.categoryId,
     this.color,
@@ -62,6 +64,7 @@ class Item {
           rating: item.rating,
           picture: item.picture,
           comment: item.comment,
+          purchaseYear: item.purchaseYear,
           colorId: item.colorId,
           categoryId: item.categoryId,
           color: item.color,
