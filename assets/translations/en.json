@@ -24,7 +24,7 @@
     "other": "Please enter a {} with {} or more characters"
   },
   "category": "Category",
-  "takePicture": "Take",
+  "takePicture": "Take picture",
   "noImage": "No Image Taken",
   "seasons": "Seasons",
   "season": "Season",
@@ -52,6 +52,9 @@
   "menu": "Menu",
   "search": "Search",
   "noData": "No data found",
+  "year": "Year",
+  "boughtLessYear": "Bought less than a year ago",
+  "boughtYearsAgo": "Bought {} year(s) ago",
   "uploadPicture": "Import",
   "save": "Save"
 }

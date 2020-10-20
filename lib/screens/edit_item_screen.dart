@@ -18,6 +18,7 @@ import 'package:hlamnik/widgets/image_input.dart';
 import 'package:hlamnik/widgets/loading_indicator.dart';
 import 'package:hlamnik/widgets/rating_input.dart';
 import 'package:hlamnik/widgets/season_tags_input.dart';
+import 'package:hlamnik/widgets/year_picker_input.dart';
 import 'package:provider/provider.dart';
 import 'package:supercharged/supercharged.dart';
 
@@ -39,6 +40,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
     title: '',
     picture: '',
     comment: '',
+    purchaseYear: DateTime.now().year.toString(),
     rating: 2.5,
     quality: 2.5,
     categoryId: null,
@@ -165,6 +167,12 @@ class _EditItemScreenState extends State<EditItemScreen> {
 
   ///Sets the comment of the [_editedItem] to the typed comment
   void _setComment(String comment) => _editedItem.comment = comment;
+
+  ///Sets the purchase year of the [_editedItem] to the selected year
+  void _setPurchaseYear(int year) => setState(() {
+        _editedItem.purchaseYear = year.toString();
+        Navigator.of(context).pop();
+      });
 
   ///Returns the list of [Category]
   Future<List<Category>> get _categories async {
@@ -334,6 +342,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           onSaved: _setTitle,
                           onFieldSubmitted: (_) =>
                               FocusScope.of(context).nextFocus(),
+                        ),
+                        YearPickerInput(
+                          onYearChanged: _setPurchaseYear,
+                          pickedYear: _editedItem.purchaseYear,
+                          error: null,
                         ),
                         RatingInput(
                           label: 'rating'.tr(),

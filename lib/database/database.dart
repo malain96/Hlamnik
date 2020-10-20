@@ -14,6 +14,7 @@ import 'package:hlamnik/database/entities/item_season.dart';
 import 'package:hlamnik/database/entities/item_color.dart';
 import 'package:hlamnik/database/entities/season.dart';
 
+//Run 'flutter packages pub run build_runner build' to generate
 part 'database.g.dart'; // the generated code will be there
 
 ///Class used to generate the database and the daos' queries

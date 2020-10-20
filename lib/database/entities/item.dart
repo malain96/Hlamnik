@@ -8,6 +8,11 @@ import 'package:hlamnik/database/entities/season.dart';
 @Entity(
   foreignKeys: [
     ForeignKey(
+      childColumns: ['color_id'],
+      parentColumns: ['id'],
+      entity: Color,
+    ),
+    ForeignKey(
       childColumns: ['category_id'],
       parentColumns: ['id'],
       entity: Category,
@@ -22,7 +27,12 @@ class Item {
   double rating;
   String picture;
   String comment;
+  String purchaseYear;
   final String createdAt;
+  @ColumnInfo(name: 'color_id')
+  int colorId;
+  @ignore
+  Color color;
   @ColumnInfo(name: 'category_id')
   int categoryId;
   @ignore
@@ -39,7 +49,10 @@ class Item {
     @required this.rating,
     @required this.picture,
     @required this.comment,
+    @required this.purchaseYear,
+    this.colorId,
     this.categoryId,
+    this.color,
     this.category,
     this.seasons,
     this.colors,
@@ -54,7 +67,10 @@ class Item {
           rating: item.rating,
           picture: item.picture,
           comment: item.comment,
+          purchaseYear: item.purchaseYear,
+          colorId: item.colorId,
           categoryId: item.categoryId,
+          color: item.color,
           category: item.category,
           seasons: item.seasons,
           colors: item.colors,
