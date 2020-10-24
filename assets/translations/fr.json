@@ -56,5 +56,6 @@
   "save": "Valider",
   "year": "Année",
   "boughtLessYear": "Acheté il y moins d'un an",
-  "boughtYearsAgo": "Acheté il y a {} an(s)"
+  "boughtYearsAgo": "Acheté il y a {} an(s)",
+  "brand": "Marque"
 }

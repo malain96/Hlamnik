@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:hlamnik/database/entities/brand.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 import 'package:hlamnik/database/entities/item.dart' as entity;
@@ -45,6 +46,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
     quality: 2.5,
     categoryId: null,
     category: null,
+    brandId: null,
+    brand: null,
     seasons: [],
     colors: [],
   );
@@ -136,6 +139,21 @@ class _EditItemScreenState extends State<EditItemScreen> {
     return category;
   }
 
+  ///Sets the [Brand] of the [_editedItem] to the selected [Brand]
+  void _selectBrand(Brand brand) {
+    _editedItem.brand = brand;
+    _editedItem.brandId = brand.id;
+  }
+
+  ///Creates a new [Brand] returns it
+  Future<Brand> _createBrand(String brandLabel) async {
+    final db = await DBService.getDatabase;
+    var brand = Brand(name: brandLabel);
+    brand.id = await db.brandDao.insertValue(brand);
+    Navigator.of(context).pop();
+    return brand;
+  }
+
   ///Adds or removes a [Season] to the [_editedItem]
   void _toggleSeason(Item tag) {
     if (tag.active) {
@@ -179,6 +197,13 @@ class _EditItemScreenState extends State<EditItemScreen> {
     final db = await DBService.getDatabase;
     final categories = await db.categoryDao.listAll();
     return categories.sortedByString((category) => category.name.toLowerCase());
+  }
+
+  ///Returns the list of [Brand]
+  Future<List<Brand>> get _brands async {
+    final db = await DBService.getDatabase;
+    final categories = await db.brandDao.listAll();
+    return categories.sortedByString((brand) => brand.name.toLowerCase());
   }
 
   ///Validates the [Season] of the [_editedItem] and returns an error message
@@ -365,6 +390,14 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           selectedItem: _editedItem.category,
                           showCreateButton: true,
                           onCreate: _createCategory,
+                        ),
+                        CustomDropdownSearch<Brand>(
+                          label: 'brand'.tr(),
+                          onFind: (_) async => _brands,
+                          onChanged: _selectBrand,
+                          selectedItem: _editedItem.brand,
+                          showCreateButton: true,
+                          onCreate: _createBrand,
                         ),
                         SeasonTagsInput(
                           onPress: _toggleSeason,

@@ -1,5 +1,6 @@
 import 'package:floor/floor.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hlamnik/database/entities/brand.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/color.dart';
 import 'package:hlamnik/database/entities/season.dart';
@@ -8,9 +9,9 @@ import 'package:hlamnik/database/entities/season.dart';
 @Entity(
   foreignKeys: [
     ForeignKey(
-      childColumns: ['color_id'],
+      childColumns: ['brand_id'],
       parentColumns: ['id'],
-      entity: Color,
+      entity: Brand,
     ),
     ForeignKey(
       childColumns: ['category_id'],
@@ -29,14 +30,16 @@ class Item {
   String comment;
   String purchaseYear;
   final String createdAt;
-  @ColumnInfo(name: 'color_id')
-  int colorId;
   @ignore
   Color color;
   @ColumnInfo(name: 'category_id')
   int categoryId;
+  @ColumnInfo(name: 'brand_id')
+  int brandId;
   @ignore
   Category category;
+  @ignore
+  Brand brand;
   @ignore
   List<Season> seasons;
   @ignore
@@ -50,10 +53,11 @@ class Item {
     @required this.picture,
     @required this.comment,
     @required this.purchaseYear,
-    this.colorId,
+    this.brandId,
     this.categoryId,
     this.color,
     this.category,
+    this.brand,
     this.seasons,
     this.colors,
   }) : createdAt = DateTime.now().toIso8601String();
@@ -68,8 +72,9 @@ class Item {
           picture: item.picture,
           comment: item.comment,
           purchaseYear: item.purchaseYear,
-          colorId: item.colorId,
           categoryId: item.categoryId,
+          brandId: item.brandId,
+          brand: item.brand,
           color: item.color,
           category: item.category,
           seasons: item.seasons,

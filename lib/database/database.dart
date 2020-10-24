@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:floor/floor.dart';
+import 'package:hlamnik/database/dao/brand_dao.dart';
 import 'package:hlamnik/database/dao/item_color_dao.dart';
 import 'package:hlamnik/database/dao/item_season_dao.dart';
+import 'package:hlamnik/database/entities/brand.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:hlamnik/database/dao/category_dao.dart';
 import 'package:hlamnik/database/dao/color_dao.dart';
@@ -25,6 +27,7 @@ part 'database.g.dart'; // the generated code will be there
   ItemSeason,
   ItemColor,
   Season,
+  Brand,
 ])
 abstract class AppDatabase extends FloorDatabase {
   CategoryDao get categoryDao;
@@ -38,4 +41,6 @@ abstract class AppDatabase extends FloorDatabase {
   ItemSeasonDao get itemSeasonDao;
 
   ItemColorDao get itemColorDao;
+
+  BrandDao get brandDao;
 }

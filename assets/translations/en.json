@@ -56,5 +56,6 @@
   "boughtLessYear": "Bought less than a year ago",
   "boughtYearsAgo": "Bought {} year(s) ago",
   "uploadPicture": "Import",
-  "save": "Save"
+  "save": "Save",
+  "brand": "Brand"
 }
