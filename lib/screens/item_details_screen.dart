@@ -125,23 +125,27 @@ class ItemDetailsScreen extends StatelessWidget {
                 ),
                 Expanded(
                   child: DisplayField(
-                    title: 'color'.tr(),
-                    child: Row(
-                      children: item.colors
-                          .map(
-                            (color) => Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                              child: CircleAvatar(
-                                backgroundColor: color.getColor,
-                                radius: 10,
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
+                    title: 'brand'.tr(),
+                    value: item.brand.name,
                   ),
                 ),
               ],
+            ),
+            DisplayField(
+              title: 'color'.tr(),
+              child: Row(
+                children: item.colors
+                    .map(
+                      (color) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                    child: CircleAvatar(
+                      backgroundColor: color.getColor,
+                      radius: 10,
+                    ),
+                  ),
+                )
+                    .toList(),
+              ),
             ),
             DisplayField(
               title: 'seasons'.tr(),

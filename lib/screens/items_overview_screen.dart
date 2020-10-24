@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:hlamnik/database/entities/brand.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/item.dart';
 import 'package:hlamnik/database/entities/season.dart';
@@ -20,6 +21,7 @@ import 'package:hlamnik/widgets/loading_indicator.dart';
 import 'package:hlamnik/widgets/modal_bottom_sheet_form.dart';
 import 'package:hlamnik/widgets/rating_display.dart';
 import 'package:hlamnik/widgets/rating_input.dart';
+import 'package:hlamnik/widgets/simple_name_form.dart';
 import 'package:provider/provider.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 
@@ -322,6 +324,18 @@ class ItemTile extends StatelessWidget {
 
 ///Widget used to display the drawer
 class MainDrawer extends StatelessWidget {
+  ///Saves a new [Category] in the database
+  Future<void> onSaveCategory(String value) async {
+    final db = await DBService.getDatabase;
+    await db.categoryDao.insertValue(Category(id: null, name: value));
+  }
+
+  ///Saves a new [Brand] in the database
+  Future<void> onSaveBrand(String value) async {
+    final db = await DBService.getDatabase;
+    await db.brandDao.insertValue(Brand(id: null, name: value));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -340,7 +354,18 @@ class MainDrawer extends StatelessWidget {
                 Navigator.of(context).pop();
                 BottomSheetUtils.showCustomModalBottomSheet(
                   context: context,
-                  builder: (_) => CategoryForm(),
+                  builder: (_) => SimpleNameForm(title: 'category'.tr(), onSave: onSaveCategory),
+                );
+              }),
+          ListTile(
+              title: Text('addSomething'
+                  .tr(gender: 'female', args: ['brand'.tr().toLowerCase()])),
+              onTap: () {
+                Navigator.of(context).pop();
+                BottomSheetUtils.showCustomModalBottomSheet(
+                  context: context,
+                  builder: (_) =>
+                      SimpleNameForm(title: 'brand'.tr(), onSave: onSaveBrand),
                 );
               }),
           ListTile(
@@ -356,82 +381,6 @@ class MainDrawer extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-///Widget used to add a new [Category]
-class CategoryForm extends StatefulWidget {
-  @override
-  _CategoryFormState createState() => _CategoryFormState();
-}
-
-class _CategoryFormState extends State<CategoryForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
-  var _name = '';
-  var _isLoading = false;
-
-  ///Sets the [_name] to the selected name
-  void _setName(String name) => _name = name;
-
-  ///Validates and creates the new [Category]
-  Future _saveForm() async {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    _formKey.currentState.save();
-
-    final db = await DBService.getDatabase;
-    await db.categoryDao.insertValue(Category(id: null, name: _name));
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    Navigator.of(context).pop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ModalBottomSheetForm(
-      title: 'category'.tr(),
-      form: Form(
-        key: _formKey,
-        child: TextFormField(
-          decoration: InputDecoration(
-            labelText: 'title'.tr(),
-          ),
-          textCapitalization: TextCapitalization.sentences,
-          autocorrect: true,
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'errorNoAction'.tr(
-                gender: 'male',
-                args: [
-                  'enter'.tr().toLowerCase(),
-                  'title'.tr().toLowerCase(),
-                ],
-              );
-            }
-
-            if (value.length < 3) {
-              return 'errorMinLength'
-                  .tr(gender: 'male', args: ['title'.tr().toLowerCase(), '3']);
-            }
-            return null;
-          },
-          onSaved: _setName,
-          //Should save
-          onFieldSubmitted: (_) => _saveForm(),
-        ),
-      ),
-      saveForm: _saveForm,
-      isLoading: _isLoading,
     );
   }
 }
