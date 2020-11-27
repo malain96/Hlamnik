@@ -5,9 +5,11 @@ import 'package:easy_localization/easy_localization.dart';
 ///Widget used to add a new entity with just a name
 class SimpleNameForm extends StatefulWidget {
   final String title;
-  final Future<void> Function(String value) onSave;
+  final int id;
+  final String oldValue;
+  final void Function(int id,String value) onSave;
 
-  const SimpleNameForm({Key key, @required this.title,@required this.onSave}) : super(key: key);
+  const SimpleNameForm({Key key, @required this.title,@required this.onSave, this.id, this.oldValue}) : super(key: key);
   
   @override
   _SimpleNameFormState createState() => _SimpleNameFormState();
@@ -21,8 +23,8 @@ class _SimpleNameFormState extends State<SimpleNameForm> {
   ///Sets the [_name] to the selected name
   void _setName(String name) => _name = name;
 
-  ///Validates and creates the new entity
-  Future _saveForm() async {
+  ///Validates and creates/edits the entity
+  Future<void>_saveForm() async {
     if (!_formKey.currentState.validate()) {
       return;
     }
@@ -33,7 +35,7 @@ class _SimpleNameFormState extends State<SimpleNameForm> {
 
     _formKey.currentState.save();
 
-    await widget.onSave(_name);
+    await widget.onSave(widget.id, _name);
 
     setState(() {
       _isLoading = false;
@@ -49,6 +51,7 @@ class _SimpleNameFormState extends State<SimpleNameForm> {
       form: Form(
         key: _formKey,
         child: TextFormField(
+          initialValue: widget.oldValue,
           decoration: InputDecoration(
             labelText: 'title'.tr(),
           ),

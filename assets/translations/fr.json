@@ -57,5 +57,7 @@
   "year": "Année",
   "boughtLessYear": "Acheté il y moins d'un an",
   "boughtYearsAgo": "Acheté il y a {} an(s)",
-  "brand": "Marque"
+  "brand": "Marque",
+  "usedError": "Vous ne pouvez pas supprimer cette valeur car il est utilisé par un ou plusieurs objets",
+  "ok": "Ok"
 }

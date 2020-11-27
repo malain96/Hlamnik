@@ -57,5 +57,8 @@
   "boughtYearsAgo": "Bought {} year(s) ago",
   "uploadPicture": "Import",
   "save": "Save",
-  "brand": "Brand"
+  "brand": "Brand",
+  "error": "Error",
+  "usedError":  "You can't delete this value because it's used by an item or more",
+  "ok": "Ok"
 }

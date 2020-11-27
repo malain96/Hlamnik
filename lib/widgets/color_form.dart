@@ -25,7 +25,7 @@ class _ColorFormState extends State<ColorForm> {
   void _setColor(Color color) => _color = color;
 
   ///Validates and creates the new [Color]
-  Future _saveForm() async {
+  Future<void>_saveForm() async {
     setState(() {
       _isLoading = true;
     });
