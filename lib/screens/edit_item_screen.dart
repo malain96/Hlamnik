@@ -269,7 +269,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
   ///Validates the entire form and saves the data if there is no error
   ///If the [_editedItem] has an id, updates the existing [Item] in the database
   ///Otherwise, adds a new [Item] in the database
-  Future _saveForm() async {
+  Future<void>_saveForm() async {
     _seasonValidation();
     _colorValidation();
     _pictureValidation();

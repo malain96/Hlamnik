@@ -8,6 +8,7 @@ import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/item.dart';
 import 'package:hlamnik/database/entities/season.dart';
 import 'package:hlamnik/models/filter.dart';
+import 'package:hlamnik/providers/admin_crud.dart';
 import 'package:hlamnik/providers/items.dart';
 import 'package:hlamnik/screens/edit_item_screen.dart';
 import 'package:hlamnik/screens/item_details_screen.dart';
@@ -16,6 +17,7 @@ import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/utils/bottom_sheet_utils.dart';
 import 'package:hlamnik/widgets/color_form.dart';
 import 'package:hlamnik/widgets/color_picker_input.dart';
+import 'package:hlamnik/widgets/crud_name_widget.dart';
 import 'package:hlamnik/widgets/custom_dropdown_search.dart';
 import 'package:hlamnik/widgets/loading_indicator.dart';
 import 'package:hlamnik/widgets/modal_bottom_sheet_form.dart';
@@ -52,7 +54,7 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
   }
 
   ///Refreshes the list of [Item]
-  Future _refreshItems() async => await context.read<Items>().loadItems();
+  Future<void> _refreshItems() async => await context.read<Items>().loadItems();
 
   ///Navigates to the [EditItemScreen]
   void _onAddPressed(BuildContext context) =>
@@ -324,16 +326,42 @@ class ItemTile extends StatelessWidget {
 
 ///Widget used to display the drawer
 class MainDrawer extends StatelessWidget {
-  ///Saves a new [Category] in the database
-  Future<void> onSaveCategory(String value) async {
-    final db = await DBService.getDatabase;
-    await db.categoryDao.insertValue(Category(id: null, name: value));
+  ///Created or edit a [Brand] in the database
+  void _onAddOrEditPressedBrand(BuildContext context, Brand brand) {
+    BottomSheetUtils.showCustomModalBottomSheet(
+      context: context,
+      builder: (_) => SimpleNameForm(
+        title: 'brand'.tr(),
+        onSave: (int id, String name) {
+          if (id != null) {
+            context.read<AdminCrud>().editBrand(id, name);
+          } else {
+            context.read<AdminCrud>().addBrand(name);
+          }
+        },
+        id: brand?.id,
+        oldValue: brand?.name,
+      ),
+    );
   }
 
-  ///Saves a new [Brand] in the database
-  Future<void> onSaveBrand(String value) async {
-    final db = await DBService.getDatabase;
-    await db.brandDao.insertValue(Brand(id: null, name: value));
+  ///Created or edit a [Category] in the database
+  void _onAddOrEditPressedCategory(BuildContext context, Category category) {
+    BottomSheetUtils.showCustomModalBottomSheet(
+      context: context,
+      builder: (_) => SimpleNameForm(
+        title: 'category'.tr(),
+        onSave: (int id, String name) {
+          if (id != null) {
+            context.read<AdminCrud>().editCategory(id, name);
+          } else {
+            context.read<AdminCrud>().addCategory(name);
+          }
+        },
+        id: category?.id,
+        oldValue: category?.name,
+      ),
+    );
   }
 
   @override
@@ -348,26 +376,54 @@ class MainDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-              title: Text('addSomething'
-                  .tr(gender: 'female', args: ['category'.tr().toLowerCase()])),
-              onTap: () {
-                Navigator.of(context).pop();
-                BottomSheetUtils.showCustomModalBottomSheet(
-                  context: context,
-                  builder: (_) => SimpleNameForm(title: 'category'.tr(), onSave: onSaveCategory),
-                );
-              }),
+            title: Text('category'.tr()),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => CrudNameWidget<Category>(
+                    title: 'category'.tr(),
+                    values: context.watch<AdminCrud>().categories,
+                    onAddOrEditPressed: (Category category) =>
+                        _onAddOrEditPressedCategory(context, category),
+                    loadValues: () =>
+                        context.read<AdminCrud>().loadCategories(),
+                    onDelete: (int index) async {
+                      try {
+                        await context.read<AdminCrud>().removeCategory(index);
+                      } catch (_) {
+                        rethrow;
+                      }
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
           ListTile(
-              title: Text('addSomething'
-                  .tr(gender: 'female', args: ['brand'.tr().toLowerCase()])),
-              onTap: () {
-                Navigator.of(context).pop();
-                BottomSheetUtils.showCustomModalBottomSheet(
-                  context: context,
-                  builder: (_) =>
-                      SimpleNameForm(title: 'brand'.tr(), onSave: onSaveBrand),
-                );
-              }),
+            title: Text('brand'.tr()),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => CrudNameWidget<Brand>(
+                    title: 'brand'.tr(),
+                    values: context.watch<AdminCrud>().brands,
+                    onAddOrEditPressed: (Brand brand) =>
+                        _onAddOrEditPressedBrand(context, brand),
+                    loadValues: () => context.read<AdminCrud>().loadBrands(),
+                    onDelete: (int index) async {
+                      try {
+                        await context.read<AdminCrud>().removeCategory(index);
+                      } catch (_) {
+                        rethrow;
+                      }
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
           ListTile(
             title: Text('addSomething'
                 .tr(gender: 'female', args: ['color'.tr().toLowerCase()])),

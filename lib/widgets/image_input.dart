@@ -112,9 +112,6 @@ class _ImageInputState extends State<ImageInput> {
                 ),
                 alignment: Alignment.center,
               ),
-              SizedBox(
-                width: 10,
-              ),
               Expanded(
                 child: Column(
                   children: <Widget>[

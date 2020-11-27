@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hlamnik/database/seed.dart';
+import 'package:hlamnik/providers/admin_crud.dart';
 import 'package:hlamnik/providers/items.dart';
 import 'package:hlamnik/screens/edit_item_screen.dart';
 import 'package:hlamnik/screens/item_details_screen.dart';
@@ -28,19 +29,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Seed.initDB();
 
-    return ChangeNotifierProvider( //Provider containing items
-        create: (_) => Items(),
-        child: MaterialApp(
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          title: 'Hlamnik',
-          theme: mainTheme,
-          home: ItemsOverviewScreen(),
-          routes: {
-            EditItemScreen.routeName: (_) => EditItemScreen(),
-            ItemDetailsScreen.routeName: (_) => ItemDetailsScreen(),
-          },
-        ));
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Items()),
+        ChangeNotifierProvider(create: (_) => AdminCrud()),
+      ],
+      child: MaterialApp(
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        title: 'Hlamnik',
+        theme: mainTheme,
+        home: ItemsOverviewScreen(),
+        routes: {
+          EditItemScreen.routeName: (_) => EditItemScreen(),
+          ItemDetailsScreen.routeName: (_) => ItemDetailsScreen(),
+        },
+      ),
+    );
   }
 }

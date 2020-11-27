@@ -23,7 +23,7 @@ class Items with ChangeNotifier {
   }
 
   ///Add a new [Item] to the database
-  Future addItem(Item item) async {
+  Future<void>addItem(Item item) async {
     final db = await DBService.getDatabase;
     final addedItemId = await db.itemDao.insertValue(item);
     await Future.forEach(
@@ -50,7 +50,7 @@ class Items with ChangeNotifier {
   }
 
   ///Update an existing [Item] in the database
-  Future updateItem(Item item) async {
+  Future<void>updateItem(Item item) async {
     final itemIndex = _items.indexWhere((i) => i.id == item.id);
     final oldItem = _items[itemIndex];
     final db = await DBService.getDatabase;
@@ -101,13 +101,13 @@ class Items with ChangeNotifier {
   }
 
   ///Load all [Item] from the database
-  Future loadItems() async {
+  Future<void> loadItems() async {
     _items = await _getItems;
     notifyListeners();
   }
 
   ///Filter the list of [Item]
-  Future filterItems(Filter filter) async {
+  Future<void>filterItems(Filter filter) async {
     var filteredItems = await _getItems;
     // Remove all items which have a quality lower than the filter
     if (filter.quality != null) {
@@ -153,7 +153,7 @@ class Items with ChangeNotifier {
   }
 
   ///Deletes an existing [Item] from the database
-  Future deleteItem(Item item) async {
+  Future<void>deleteItem(Item item) async {
     final db = await DBService.getDatabase;
     final itemSeasonList = await db.itemSeasonDao.findSeasonIdsByItem(item.id);
     final itemColorList = await db.itemColorDao.findColorIdsByItem(item.id);

@@ -47,7 +47,7 @@ class ItemDetailsScreen extends StatelessWidget {
       );
 
   ///Deletes the [Item] and navigates back the the root screen
-  Future _onDeleteConfirmed(BuildContext context, Item item) async {
+  Future<void>_onDeleteConfirmed(BuildContext context, Item item) async {
     //Navigate to home
     Navigator.popUntil(context, ModalRoute.withName('/'));
     await context.read<Items>().deleteItem(item);
@@ -94,7 +94,7 @@ class ItemDetailsScreen extends StatelessWidget {
               value: item.title,
             ),
             DisplayField(
-              title: 'Year'.tr(),
+              title: 'year'.tr(),
               value: yearsSincePurchase > 0
                   ? 'boughtYearsAgo'.tr(args: [yearsSincePurchase.toString()])
                   : 'boughtLessYear'.tr(),

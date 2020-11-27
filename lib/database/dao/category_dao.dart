@@ -6,7 +6,7 @@ import 'package:hlamnik/database/entities/category.dart';
 @dao
 abstract class CategoryDao extends AbstractDao<Category> {
   ///Query the database and returns all [Category]
-  @Query('SELECT * FROM Category')
+  @Query('SELECT * FROM Category ORDER BY name ASC')
   Future<List<Category>> listAll();
 
   ///Query the database and returns the [Category] with the given [id]

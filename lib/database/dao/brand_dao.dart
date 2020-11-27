@@ -6,7 +6,7 @@ import 'package:hlamnik/database/entities/brand.dart';
 @dao
 abstract class BrandDao extends AbstractDao<Brand> {
   ///Query the database and returns all [Brand]
-  @Query('SELECT * FROM Brand')
+  @Query('SELECT * FROM Brand ORDER BY name ASC')
   Future<List<Brand>> listAll();
 
   ///Query the database and returns the [Brand] with the given [id]
