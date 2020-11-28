@@ -10,6 +10,7 @@ import 'package:hlamnik/database/entities/brand.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 import 'package:hlamnik/database/entities/item.dart' as entity;
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/providers/items.dart';
 import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
@@ -220,11 +221,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
   void _seasonValidation() {
     if (_editedItem.seasons.isEmpty) {
       setState(() {
-        _seasonError = 'errorNoAction'.tr(
+        _seasonError = LocaleKeys.errorNoAction.tr(
           gender: 'female',
           args: [
-            'select'.tr().toLowerCase(),
-            'season'.tr().toLowerCase(),
+            LocaleKeys.select.tr().toLowerCase(),
+            LocaleKeys.season.tr().toLowerCase(),
           ],
         );
       });
@@ -240,11 +241,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
   void _colorValidation() {
     if (_editedItem.colors.isEmpty) {
       setState(() {
-        _colorError = 'errorNoAction'.tr(
+        _colorError = LocaleKeys.errorNoAction.tr(
           gender: 'female',
           args: [
-            'select'.tr().toLowerCase(),
-            'color'.tr().toLowerCase(),
+            LocaleKeys.select.tr().toLowerCase(),
+            LocaleKeys.color.tr().toLowerCase(),
           ],
         );
       });
@@ -260,11 +261,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
   void _pictureValidation() {
     if (_editedItem.picture.isEmpty) {
       setState(() {
-        _pictureError = 'errorNoAction'.tr(
+        _pictureError = LocaleKeys.errorNoAction.tr(
           gender: 'female',
           args: [
-            'take'.tr().toLowerCase(),
-            'picture'.tr().toLowerCase(),
+            LocaleKeys.take.tr().toLowerCase(),
+            LocaleKeys.picture.tr().toLowerCase(),
           ],
         );
       });
@@ -318,7 +319,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'editItemScreenTitleAdd'.tr(),
+            LocaleKeys.editItemScreenTitleAdd.tr(),
           ),
           actions: <Widget>[
             _isLoading
@@ -350,26 +351,26 @@ class _EditItemScreenState extends State<EditItemScreen> {
                         TextFormField(
                           controller: titleController,
                           decoration: InputDecoration(
-                            labelText: 'title'.tr(),
+                            labelText: LocaleKeys.title.tr(),
                           ),
                           textCapitalization: TextCapitalization.sentences,
                           textInputAction: TextInputAction.next,
                           autocorrect: true,
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'errorNoAction'.tr(
+                              return LocaleKeys.errorNoAction.tr(
                                 gender: 'male',
                                 args: [
-                                  'enter'.tr().toLowerCase(),
-                                  'title'.tr().toLowerCase(),
+                                  LocaleKeys.enter.tr().toLowerCase(),
+                                  LocaleKeys.title.tr().toLowerCase(),
                                 ],
                               );
                             }
 
                             if (value.length < 3) {
-                              return 'errorMinLength'.tr(
+                              return LocaleKeys.errorMinLength.tr(
                                   gender: 'male',
-                                  args: ['title'.tr().toLowerCase(), '3']);
+                                  args: [LocaleKeys.title.tr().toLowerCase(), '3']);
                             }
                             return null;
                           },
@@ -383,17 +384,17 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           error: null,
                         ),
                         RatingInput(
-                          label: 'rating'.tr(),
+                          label: LocaleKeys.rating.tr(),
                           initialValue: _editedItem.rating,
                           onPress: _setRating,
                         ),
                         RatingInput(
-                          label: 'quality'.tr(),
+                          label: LocaleKeys.quality.tr(),
                           initialValue: _editedItem.quality,
                           onPress: _setQuality,
                         ),
                         CustomDropdownSearch<Category>(
-                          label: 'category'.tr(),
+                          label: LocaleKeys.category.tr(),
                           onFind: (_) async => _categories,
                           onChanged: _selectCategory,
                           selectedItem: _editedItem.category,
@@ -401,7 +402,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           onCreate: _createCategory,
                         ),
                         CustomDropdownSearch<Brand>(
-                          label: 'brand'.tr(),
+                          label: LocaleKeys.brand.tr(),
                           onFind: (_) async => _brands,
                           onChanged: _selectBrand,
                           selectedItem: _editedItem.brand,
@@ -423,14 +424,14 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           onCreate: _setColor,
                         ),
                         SwitchInput(
-                          label: 'isBrokenInput'.tr(),
+                          label: LocaleKeys.isBrokenInput.tr(),
                           value: _editedItem.isBroken,
                           onChanged: _toggleIsBroken,
                         ),
                         TextFormField(
                           controller: commentController,
                           decoration: InputDecoration(
-                            labelText: 'comment'.tr(),
+                            labelText: LocaleKeys.comment.tr(),
                           ),
                           onSaved: _setComment,
                         ),

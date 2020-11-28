@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -29,10 +30,10 @@ class CustomDropdownSearch<T> extends StatelessWidget {
   ///Validates the dropdown if it's required
   String _requiredValidator(T item) {
     if (item == null) {
-      return 'errorNoAction'.tr(
+      return LocaleKeys.errorNoAction.tr(
         gender: 'female',
         args: [
-          'select'.tr().toLowerCase(),
+          LocaleKeys.select.tr().toLowerCase(),
           label.toLowerCase(),
         ],
       );
@@ -79,7 +80,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
       ),
       searchBoxDecoration: InputDecoration(
-        labelText: 'search'.tr(),
+        labelText: LocaleKeys.search.tr(),
         border: inputDecorationTheme.border,
         labelStyle: inputDecorationTheme.labelStyle,
       ),
@@ -92,7 +93,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
       showCreateButton: showCreateButton,
       onCreate: onCreate,
       popupItemBuilder: _customPopupItemBuilder,
-      noDataText: 'noData'.tr(),
+      noDataText: LocaleKeys.noData.tr(),
     );
   }
 }
