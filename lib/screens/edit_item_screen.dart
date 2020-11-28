@@ -19,6 +19,7 @@ import 'package:hlamnik/widgets/image_input.dart';
 import 'package:hlamnik/widgets/loading_indicator.dart';
 import 'package:hlamnik/widgets/rating_input.dart';
 import 'package:hlamnik/widgets/season_tags_input.dart';
+import 'package:hlamnik/widgets/switch_input.dart';
 import 'package:hlamnik/widgets/year_picker_input.dart';
 import 'package:provider/provider.dart';
 import 'package:supercharged/supercharged.dart';
@@ -42,6 +43,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
     picture: '',
     comment: '',
     purchaseYear: DateTime.now().year.toString(),
+    isBroken: false,
     rating: 2.5,
     quality: 2.5,
     categoryId: null,
@@ -192,6 +194,13 @@ class _EditItemScreenState extends State<EditItemScreen> {
         Navigator.of(context).pop();
       });
 
+  ///Toggles the isBroken flag of the [_editedItem]
+  void _toggleIsBroken(bool isBroken) {
+    setState(() {
+      _editedItem.isBroken = isBroken;
+    });
+  }
+
   ///Returns the list of [Category]
   Future<List<Category>> get _categories async {
     final db = await DBService.getDatabase;
@@ -269,7 +278,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
   ///Validates the entire form and saves the data if there is no error
   ///If the [_editedItem] has an id, updates the existing [Item] in the database
   ///Otherwise, adds a new [Item] in the database
-  Future<void>_saveForm() async {
+  Future<void> _saveForm() async {
     _seasonValidation();
     _colorValidation();
     _pictureValidation();
@@ -412,6 +421,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           error: _colorError,
                           showCreateButton: true,
                           onCreate: _setColor,
+                        ),
+                        SwitchInput(
+                          label: 'isBrokenInput'.tr(),
+                          value: _editedItem.isBroken,
+                          onChanged: _toggleIsBroken,
                         ),
                         TextFormField(
                           controller: commentController,

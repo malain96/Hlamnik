@@ -24,6 +24,7 @@ import 'package:hlamnik/widgets/modal_bottom_sheet_form.dart';
 import 'package:hlamnik/widgets/rating_display.dart';
 import 'package:hlamnik/widgets/rating_input.dart';
 import 'package:hlamnik/widgets/simple_name_form.dart';
+import 'package:hlamnik/widgets/switch_input.dart';
 import 'package:provider/provider.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 
@@ -198,6 +199,13 @@ class _FilterModalState extends State<FilterModal> {
     Navigator.of(context).pop();
   }
 
+  ///Sets the isBroken flag of the [_filter] to the selected category
+  void _toggleShowOnlyIsBroken(bool showOnlyIsBroken) {
+    setState(() {
+      _filter.showOnlyIsBroken = showOnlyIsBroken;
+    });
+  }
+
   ///Filters the list of [Item] with the given [_filter]
   void _onSavePressed() async {
     setState(() {
@@ -214,37 +222,46 @@ class _FilterModalState extends State<FilterModal> {
   Widget build(BuildContext context) {
     return ModalBottomSheetForm(
       title: 'filter'.tr(),
-      form: Wrap(
-        runSpacing: 10,
-        children: <Widget>[
-          RatingInput(
-            label: 'rating'.tr(),
-            initialValue: _filter.rating,
-            onPress: _setRating,
+      form: Expanded(
+        child: SingleChildScrollView(
+          child: Wrap(
+            runSpacing: 10,
+            children: <Widget>[
+              RatingInput(
+                label: 'rating'.tr(),
+                initialValue: _filter.rating,
+                onPress: _setRating,
+              ),
+              RatingInput(
+                label: 'quality'.tr(),
+                initialValue: _filter.quality,
+                onPress: _setQuality,
+              ),
+              CustomDropdownSearch<Category>(
+                label: 'category'.tr(),
+                onFind: (_) async => _categories,
+                onChanged: _selectCategory,
+                selectedItem: _selectedCategory,
+              ),
+              CustomDropdownSearch<Season>(
+                label: 'season'.tr(),
+                onFind: (_) async => _seasons,
+                onChanged: _selectSeason,
+                selectedItem: _selectedSeason,
+              ),
+              ColorPickerInput(
+                pickedColors:
+                    _selectedColors.map((color) => color.getColor).toList(),
+                onSave: _selectColors,
+              ),
+              SwitchInput(
+                label: 'isBrokenFilter'.tr(),
+                value: _filter.showOnlyIsBroken,
+                onChanged: _toggleShowOnlyIsBroken,
+              ),
+            ],
           ),
-          RatingInput(
-            label: 'quality'.tr(),
-            initialValue: _filter.quality,
-            onPress: _setQuality,
-          ),
-          CustomDropdownSearch<Category>(
-            label: 'category'.tr(),
-            onFind: (_) async => _categories,
-            onChanged: _selectCategory,
-            selectedItem: _selectedCategory,
-          ),
-          CustomDropdownSearch<Season>(
-            label: 'season'.tr(),
-            onFind: (_) async => _seasons,
-            onChanged: _selectSeason,
-            selectedItem: _selectedSeason,
-          ),
-          ColorPickerInput(
-            pickedColors:
-                _selectedColors.map((color) => color.getColor).toList(),
-            onSave: _selectColors,
-          ),
-        ],
+        ),
       ),
       saveForm: _onSavePressed,
       isLoading: _isLoading,
@@ -257,6 +274,14 @@ class ItemTile extends StatelessWidget {
   final Item item;
 
   ItemTile(this.item);
+
+  Widget _roundedContainer(Widget child) => Container(
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+            color: AppColors.secondaryColor.withOpacity(0.6),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        child: child,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -294,14 +319,24 @@ class ItemTile extends StatelessWidget {
             Positioned(
               left: 8,
               top: 8,
-              child: Container(
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                    color: AppColors.secondaryColor.withOpacity(0.6),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                child: RatingDisplay(
+              child: _roundedContainer(
+                RatingDisplay(
                   item.rating,
                   textColor: AppColors.primaryColor,
+                ),
+              ),
+            ),
+            Visibility(
+              visible: item.isBroken,
+              child: Positioned(
+                right: 8,
+                top: 8,
+                child: _roundedContainer(
+                  Icon(
+                    Icons.build,
+                    color: AppColors.errorColor,
+                    size: 20,
+                  ),
                 ),
               ),
             ),
@@ -414,7 +449,7 @@ class MainDrawer extends StatelessWidget {
                     loadValues: () => context.read<AdminCrud>().loadBrands(),
                     onDelete: (int index) async {
                       try {
-                        await context.read<AdminCrud>().removeCategory(index);
+                        await context.read<AdminCrud>().removeBrand(index);
                       } catch (_) {
                         rethrow;
                       }

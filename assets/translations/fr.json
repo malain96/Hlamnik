@@ -59,5 +59,8 @@
   "boughtYearsAgo": "Acheté il y a {} an(s)",
   "brand": "Marque",
   "usedError": "Vous ne pouvez pas supprimer cette valeur car il est utilisé par un ou plusieurs objets",
-  "ok": "Ok"
+  "ok": "Ok",
+  "isBrokenInput": "Cet objet doit être réparé",
+  "isBrokenDisplay": "Doit être réparé",
+  "isBrokenFilter": "Montrer seulement à réparer"
 }

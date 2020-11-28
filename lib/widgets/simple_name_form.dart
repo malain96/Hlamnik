@@ -51,6 +51,7 @@ class _SimpleNameFormState extends State<SimpleNameForm> {
       form: Form(
         key: _formKey,
         child: TextFormField(
+          autofocus: true,
           initialValue: widget.oldValue,
           decoration: InputDecoration(
             labelText: 'title'.tr(),

@@ -5,6 +5,7 @@ class Filter {
   List<int> colorIdList;
   int categoryId;
   int seasonId;
+  bool showOnlyIsBroken;
 
   Filter({
     this.quality = 0,
@@ -12,5 +13,6 @@ class Filter {
     this.colorIdList,
     this.categoryId,
     this.seasonId,
+    this.showOnlyIsBroken = false,
   });
 }

@@ -29,6 +29,7 @@ class Item {
   String picture;
   String comment;
   String purchaseYear;
+  bool isBroken;
   final String createdAt;
   @ignore
   Color color;
@@ -52,6 +53,7 @@ class Item {
     @required this.rating,
     @required this.picture,
     @required this.comment,
+    @required this.isBroken,
     @required this.purchaseYear,
     this.brandId,
     this.categoryId,
@@ -65,19 +67,20 @@ class Item {
   ///Clones an existing [Item]
   Item.clone(Item item)
       : this(
-          id: item.id,
-          title: item.title,
-          quality: item.quality,
-          rating: item.rating,
-          picture: item.picture,
-          comment: item.comment,
-          purchaseYear: item.purchaseYear,
-          categoryId: item.categoryId,
-          brandId: item.brandId,
-          brand: item.brand,
-          color: item.color,
-          category: item.category,
-          seasons: item.seasons,
-          colors: item.colors,
-        );
+    id: item.id,
+    title: item.title,
+    quality: item.quality,
+    rating: item.rating,
+    picture: item.picture,
+    comment: item.comment,
+    isBroken: item.isBroken,
+    purchaseYear: item.purchaseYear,
+    categoryId: item.categoryId,
+    brandId: item.brandId,
+    brand: item.brand,
+    color: item.color,
+    category: item.category,
+    seasons: item.seasons,
+    colors: item.colors,
+  );
 }
