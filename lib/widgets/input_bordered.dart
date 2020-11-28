@@ -6,7 +6,7 @@ import 'package:hlamnik/widgets/error_text.dart';
 class InputBordered extends StatelessWidget {
   const InputBordered({
     Key key,
-    @required String label,
+    String label,
     @required Widget child,
     double childTopPadding = 18,
     double childLeftPadding = 8,
@@ -48,20 +48,21 @@ class InputBordered extends StatelessWidget {
                   height: 60,
                   child: null),
             ),
-            Container(
-              decoration: BoxDecoration(color: AppColors.tertiaryColor),
-              padding: const EdgeInsets.only(left: 10, right: 25),
-              height: 30,
-              child: Text(
-                _label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: _error != null
-                      ? Theme.of(context).errorColor
-                      : AppColors.secondaryColor,
+            if (_label != null)
+              Container(
+                decoration: BoxDecoration(color: AppColors.tertiaryColor),
+                padding: const EdgeInsets.only(left: 10, right: 25),
+                height: 30,
+                child: Text(
+                  _label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: _error != null
+                        ? Theme.of(context).errorColor
+                        : AppColors.secondaryColor,
+                  ),
                 ),
               ),
-            ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Padding(

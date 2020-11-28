@@ -47,7 +47,7 @@ class ItemDetailsScreen extends StatelessWidget {
       );
 
   ///Deletes the [Item] and navigates back the the root screen
-  Future<void>_onDeleteConfirmed(BuildContext context, Item item) async {
+  Future<void> _onDeleteConfirmed(BuildContext context, Item item) async {
     //Navigate to home
     Navigator.popUntil(context, ModalRoute.withName('/'));
     await context.read<Items>().deleteItem(item);
@@ -137,19 +137,23 @@ class ItemDetailsScreen extends StatelessWidget {
                 children: item.colors
                     .map(
                       (color) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                    child: CircleAvatar(
-                      backgroundColor: color.getColor,
-                      radius: 10,
-                    ),
-                  ),
-                )
+                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                        child: CircleAvatar(
+                          backgroundColor: color.getColor,
+                          radius: 10,
+                        ),
+                      ),
+                    )
                     .toList(),
               ),
             ),
             DisplayField(
               title: 'seasons'.tr(),
               value: item.seasons.map((season) => season.name).join(' - '),
+            ),
+            DisplayField(
+              title: 'isBrokenDisplay'.tr(),
+              value: item.isBroken ? 'yes'.tr() : 'no'.tr(),
             ),
             DisplayField(
               title: 'comment'.tr(),

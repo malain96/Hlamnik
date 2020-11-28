@@ -142,6 +142,11 @@ class Items with ChangeNotifier {
             : false,
       );
     }
+    // Remove all items which are not broken
+    if (filter.showOnlyIsBroken) {
+      filteredItems.removeWhere((item) => !item.isBroken);
+    }
+
 
     _items = filteredItems;
     notifyListeners();

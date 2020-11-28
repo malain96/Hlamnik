@@ -60,5 +60,8 @@
   "brand": "Brand",
   "error": "Error",
   "usedError":  "You can't delete this value because it's used by an item or more",
-  "ok": "Ok"
+  "ok": "Ok",
+  "isBrokenInput": "This item needs to be fixed",
+  "isBrokenDisplay": "Needs to be fixed",
+  "isBrokenFilter": "Show only needs to be fixed"
 }

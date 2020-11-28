@@ -27,27 +27,25 @@ class ModalBottomSheetForm extends StatelessWidget {
         right: 8.0,
         left: 8.0,
       ),
-      child: SingleChildScrollView(
-        child: Wrap(
-          runSpacing: 10,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                    child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.headline6,
-                )),
-                if (!isLoading)
-                  IconButton(
-                    icon: Icon(Icons.check, size: 30),
-                    onPressed: saveForm,
-                  ),
-              ],
-            ),
-            isLoading ? LoadingIndicator() : form,
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: <Widget>[
+              Expanded(
+                  child: Text(
+                title,
+                style: Theme.of(context).textTheme.headline6,
+              )),
+              if (!isLoading)
+                IconButton(
+                  icon: Icon(Icons.check, size: 30),
+                  onPressed: saveForm,
+                ),
+            ],
+          ),
+          isLoading ? LoadingIndicator() : form,
+        ],
       ),
     );
   }
