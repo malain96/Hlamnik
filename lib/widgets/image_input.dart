@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/widgets/error_text.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -101,7 +102,7 @@ class _ImageInputState extends State<ImageInput> {
                       : widget.defaultImage,
                 )
                     : Text(
-                  'noImage'.tr(),
+                  LocaleKeys.noImage.tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: widget.error != null
@@ -117,13 +118,13 @@ class _ImageInputState extends State<ImageInput> {
                   children: <Widget>[
                     FlatButton.icon(
                       icon: Icon(Icons.camera),
-                      label: Text('takePicture'.tr()),
+                      label: Text(LocaleKeys.takePicture.tr()),
                       textColor: AppColors.secondaryColor,
                       onPressed: _takePicture,
                     ),
                     FlatButton.icon(
                       icon: Icon(Icons.file_upload),
-                      label: Text('uploadPicture'.tr()),
+                      label: Text(LocaleKeys.uploadPicture.tr()),
                       textColor: AppColors.secondaryColor,
                       onPressed: _importPicture,
                     ),

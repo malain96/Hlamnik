@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -21,9 +22,9 @@ class YearPickerInput extends StatelessWidget {
     context: context,
     builder: (BuildContext context) => SimpleDialog(
       title: Text(
-        'selectSomething'.tr(
+        LocaleKeys.selectSomething.tr(
           gender: 'female',
-          args: ['year'.tr().toLowerCase()],
+          args: [LocaleKeys.year.tr().toLowerCase()],
         ),
       ),
       children: years
@@ -66,7 +67,7 @@ class YearPickerInput extends StatelessWidget {
                       : AppColors.secondaryColor),
             ),
             onPressed: () => _showYearsDialog(context, years),
-            child: Text(pickedYear ?? 'year'.tr()),
+            child: Text(pickedYear ?? LocaleKeys.year.tr()),
             color: AppColors.tertiaryColor,
             textColor: AppColors.secondaryColor,
           ),

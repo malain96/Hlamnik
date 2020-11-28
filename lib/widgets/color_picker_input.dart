@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
@@ -55,8 +56,8 @@ class ColorPickerInput extends StatelessWidget {
             title: Row(
               children: <Widget>[
                 Expanded(
-                  child: Text('selectSomething'.tr(
-                      gender: 'female', args: ['colors'.tr().toLowerCase()])),
+                  child: Text(LocaleKeys.selectSomething.tr(
+                      gender: 'female', args: [LocaleKeys.colors.tr().toLowerCase()])),
                 ),
                 if (showCreateButton)
                   IconButton(
@@ -77,7 +78,7 @@ class ColorPickerInput extends StatelessWidget {
                 ),
                 RaisedButton(
                   onPressed: () => onSave(pickedColors),
-                  child: Text('save'.tr()),
+                  child: Text(LocaleKeys.save.tr()),
                   color: AppColors.primaryColor,
                   textColor: AppColors.secondaryColor,
                   shape: RoundedRectangleBorder(
@@ -172,7 +173,7 @@ class ColorPickerInput extends StatelessWidget {
                         Align(
                           alignment: Alignment.center,
                           child: Text(
-                            'colors'.tr(),
+                            LocaleKeys.colors.tr(),
                             style: TextStyle(
                               color: getButtonTextColor,
                             ),

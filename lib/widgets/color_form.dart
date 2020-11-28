@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -56,7 +57,7 @@ class _ColorFormState extends State<ColorForm> {
   @override
   Widget build(BuildContext context) {
     return ModalBottomSheetForm(
-      title: 'color'.tr(),
+      title: LocaleKeys.color.tr(),
       form: Container(
         child: ColorPicker(
           pickerColor: _color,

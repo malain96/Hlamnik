@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:hlamnik/widgets/async_data_display.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -55,11 +56,11 @@ class _CrudNameWidgetState<T> extends State<CrudNameWidget<T>> {
       await showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          title: Text('error'.tr()),
-          content: Text('usedError'.tr()),
+          title: Text(LocaleKeys.error.tr()),
+          content: Text(LocaleKeys.usedError.tr()),
           actions: [
             FlatButton(
-              child: Text('ok'.tr()),
+              child: Text(LocaleKeys.ok.tr()),
               onPressed: () {
                 Navigator.of(context).pop();
               },

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:hlamnik/database/entities/item.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/providers/items.dart';
 import 'package:hlamnik/screens/edit_item_screen.dart';
 import 'package:hlamnik/themes/main_theme.dart';
@@ -23,14 +24,14 @@ class ItemDetailsScreen extends StatelessWidget {
   void _onDeletePressed(BuildContext context, Item item) => showDialog(
         context: context,
         child: AlertDialog(
-          title: Text('delete'.tr()),
-          content: Text('deleteConfirm'.tr()),
+          title: Text(LocaleKeys.delete.tr()),
+          content: Text(LocaleKeys.deleteConfirm.tr()),
           actions: <Widget>[
             SizedBox(
               width: 50,
               child: FlatButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text('no'.tr()),
+                child: Text(LocaleKeys.no.tr()),
                 textColor: AppColors.secondaryColor,
               ),
             ),
@@ -38,7 +39,7 @@ class ItemDetailsScreen extends StatelessWidget {
               width: 50,
               child: FlatButton(
                 onPressed: () => _onDeleteConfirmed(context, item),
-                child: Text('yes'.tr()),
+                child: Text(LocaleKeys.yes.tr()),
                 textColor: AppColors.errorColor,
               ),
             ),
@@ -90,26 +91,26 @@ class ItemDetailsScreen extends StatelessWidget {
               ),
             ),
             DisplayField(
-              title: 'title'.tr(),
+              title: LocaleKeys.title.tr(),
               value: item.title,
             ),
             DisplayField(
-              title: 'year'.tr(),
+              title: LocaleKeys.year.tr(),
               value: yearsSincePurchase > 0
-                  ? 'boughtYearsAgo'.tr(args: [yearsSincePurchase.toString()])
-                  : 'boughtLessYear'.tr(),
+                  ? LocaleKeys.boughtYearsAgo.tr(args: [yearsSincePurchase.toString()])
+                  : LocaleKeys.boughtLessYear.tr(),
             ),
             Row(
               children: <Widget>[
                 Expanded(
                   child: DisplayField(
-                    title: 'rating'.tr(),
+                    title: LocaleKeys.rating.tr(),
                     child: RatingDisplay(item.rating),
                   ),
                 ),
                 Expanded(
                   child: DisplayField(
-                    title: 'quality'.tr(),
+                    title: LocaleKeys.quality.tr(),
                     child: RatingDisplay(item.quality),
                   ),
                 ),
@@ -119,20 +120,20 @@ class ItemDetailsScreen extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: DisplayField(
-                    title: 'category'.tr(),
+                    title: LocaleKeys.category.tr(),
                     value: item.category.name,
                   ),
                 ),
                 Expanded(
                   child: DisplayField(
-                    title: 'brand'.tr(),
+                    title: LocaleKeys.brand.tr(),
                     value: item.brand.name,
                   ),
                 ),
               ],
             ),
             DisplayField(
-              title: 'color'.tr(),
+              title: LocaleKeys.color.tr(),
               child: Row(
                 children: item.colors
                     .map(
@@ -148,15 +149,15 @@ class ItemDetailsScreen extends StatelessWidget {
               ),
             ),
             DisplayField(
-              title: 'seasons'.tr(),
+              title: LocaleKeys.seasons.tr(),
               value: item.seasons.map((season) => season.name).join(' - '),
             ),
             DisplayField(
-              title: 'isBrokenDisplay'.tr(),
-              value: item.isBroken ? 'yes'.tr() : 'no'.tr(),
+              title: LocaleKeys.isBrokenDisplay.tr(),
+              value: item.isBroken ? LocaleKeys.yes.tr() : LocaleKeys.no.tr(),
             ),
             DisplayField(
-              title: 'comment'.tr(),
+              title: LocaleKeys.comment.tr(),
               value: item.comment,
             ),
           ],

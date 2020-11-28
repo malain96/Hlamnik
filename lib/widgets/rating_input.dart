@@ -23,7 +23,7 @@ class RatingInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return InputBordered(
       label: _label,
-      child: RatingBar(
+      child: RatingBar.builder(
         initialRating: _initialValue,
         minRating: 0.5,
         direction: Axis.horizontal,

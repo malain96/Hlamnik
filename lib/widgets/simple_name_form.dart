@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/widgets/modal_bottom_sheet_form.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -54,24 +55,24 @@ class _SimpleNameFormState extends State<SimpleNameForm> {
           autofocus: true,
           initialValue: widget.oldValue,
           decoration: InputDecoration(
-            labelText: 'title'.tr(),
+            labelText: LocaleKeys.title.tr(),
           ),
           textCapitalization: TextCapitalization.sentences,
           autocorrect: true,
           validator: (value) {
             if (value.isEmpty) {
-              return 'errorNoAction'.tr(
+              return LocaleKeys.errorNoAction.tr(
                 gender: 'male',
                 args: [
-                  'enter'.tr().toLowerCase(),
-                  'title'.tr().toLowerCase(),
+                  LocaleKeys.enter.tr().toLowerCase(),
+                  LocaleKeys.title.tr().toLowerCase(),
                 ],
               );
             }
 
             if (value.length < 3) {
-              return 'errorMinLength'
-                  .tr(gender: 'male', args: ['title'.tr().toLowerCase(), '3']);
+              return LocaleKeys.errorMinLength
+                  .tr(gender: 'male', args: [LocaleKeys.title.tr().toLowerCase(), '3']);
             }
             return null;
           },

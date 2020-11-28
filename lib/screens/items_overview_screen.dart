@@ -7,6 +7,7 @@ import 'package:hlamnik/database/entities/brand.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/item.dart';
 import 'package:hlamnik/database/entities/season.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/models/filter.dart';
 import 'package:hlamnik/providers/admin_crud.dart';
 import 'package:hlamnik/providers/items.dart';
@@ -79,7 +80,7 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'itemsOverviewScreenTitle'.tr(),
+          LocaleKeys.itemsOverviewScreenTitle.tr(),
         ),
         actions: <Widget>[
           IconButton(
@@ -102,7 +103,7 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Text(
-                      'noItems'.tr(),
+                      LocaleKeys.noItems.tr(),
                       textAlign: TextAlign.center,
                     ),
                     IconButton(
@@ -221,30 +222,30 @@ class _FilterModalState extends State<FilterModal> {
   @override
   Widget build(BuildContext context) {
     return ModalBottomSheetForm(
-      title: 'filter'.tr(),
+      title: LocaleKeys.filter.tr(),
       form: Expanded(
         child: SingleChildScrollView(
           child: Wrap(
             runSpacing: 10,
             children: <Widget>[
               RatingInput(
-                label: 'rating'.tr(),
+                label: LocaleKeys.rating.tr(),
                 initialValue: _filter.rating,
                 onPress: _setRating,
               ),
               RatingInput(
-                label: 'quality'.tr(),
+                label: LocaleKeys.quality.tr(),
                 initialValue: _filter.quality,
                 onPress: _setQuality,
               ),
               CustomDropdownSearch<Category>(
-                label: 'category'.tr(),
+                label: LocaleKeys.category.tr(),
                 onFind: (_) async => _categories,
                 onChanged: _selectCategory,
                 selectedItem: _selectedCategory,
               ),
               CustomDropdownSearch<Season>(
-                label: 'season'.tr(),
+                label: LocaleKeys.season.tr(),
                 onFind: (_) async => _seasons,
                 onChanged: _selectSeason,
                 selectedItem: _selectedSeason,
@@ -255,7 +256,7 @@ class _FilterModalState extends State<FilterModal> {
                 onSave: _selectColors,
               ),
               SwitchInput(
-                label: 'isBrokenFilter'.tr(),
+                label: LocaleKeys.isBrokenFilter.tr(),
                 value: _filter.showOnlyIsBroken,
                 onChanged: _toggleShowOnlyIsBroken,
               ),
@@ -366,7 +367,7 @@ class MainDrawer extends StatelessWidget {
     BottomSheetUtils.showCustomModalBottomSheet(
       context: context,
       builder: (_) => SimpleNameForm(
-        title: 'brand'.tr(),
+        title: LocaleKeys.brand.tr(),
         onSave: (int id, String name) {
           if (id != null) {
             context.read<AdminCrud>().editBrand(id, name);
@@ -385,7 +386,7 @@ class MainDrawer extends StatelessWidget {
     BottomSheetUtils.showCustomModalBottomSheet(
       context: context,
       builder: (_) => SimpleNameForm(
-        title: 'category'.tr(),
+        title: LocaleKeys.category.tr(),
         onSave: (int id, String name) {
           if (id != null) {
             context.read<AdminCrud>().editCategory(id, name);
@@ -407,17 +408,17 @@ class MainDrawer extends StatelessWidget {
           SizedBox(
             height: 100,
             child: DrawerHeader(
-              child: Text('menu'.tr()),
+              child: Text(LocaleKeys.menu.tr()),
             ),
           ),
           ListTile(
-            title: Text('category'.tr()),
+            title: Text(LocaleKeys.category.tr()),
             onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => CrudNameWidget<Category>(
-                    title: 'category'.tr(),
+                    title: LocaleKeys.category.tr(),
                     values: context.watch<AdminCrud>().categories,
                     onAddOrEditPressed: (Category category) =>
                         _onAddOrEditPressedCategory(context, category),
@@ -436,13 +437,13 @@ class MainDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('brand'.tr()),
+            title: Text(LocaleKeys.brand.tr()),
             onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => CrudNameWidget<Brand>(
-                    title: 'brand'.tr(),
+                    title: LocaleKeys.brand.tr(),
                     values: context.watch<AdminCrud>().brands,
                     onAddOrEditPressed: (Brand brand) =>
                         _onAddOrEditPressedBrand(context, brand),
@@ -460,8 +461,8 @@ class MainDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('addSomething'
-                .tr(gender: 'female', args: ['color'.tr().toLowerCase()])),
+            title: Text(LocaleKeys.addSomething
+                .tr(gender: 'female', args: [LocaleKeys.color.tr().toLowerCase()])),
             onTap: () {
               Navigator.of(context).pop();
               BottomSheetUtils.showCustomModalBottomSheet(
