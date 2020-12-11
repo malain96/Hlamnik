@@ -160,7 +160,6 @@ class _EditItemScreenState extends State<EditItemScreen> {
 
   ///Adds or removes a [Season] to the [_editedItem]
   void _toggleSeason(Item tag) {
-    print(context.read<Items>().items[2].seasons);
     if (tag.active) {
       _editedItem.seasons.add(tag.customData);
     } else {
