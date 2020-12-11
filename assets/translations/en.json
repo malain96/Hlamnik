@@ -59,9 +59,13 @@
   "save": "Save",
   "brand": "Brand",
   "error": "Error",
-  "usedError":  "You can't delete this value because it's used by an item or more",
+  "usedError": "You can't delete this value because it's used by an item or more",
   "ok": "Ok",
   "isBrokenInput": "This item needs to be fixed",
   "isBrokenDisplay": "Needs to be fixed",
-  "isBrokenFilter": "Show only needs to be fixed"
+  "isBrokenFilter": "Show only needs to be fixed",
+  "exportDb": "Export data",
+  "importDb": "Import data",
+  "fileDownloaded": "File saved to Downloads",
+  "importCompleted": "Import completed"
 }

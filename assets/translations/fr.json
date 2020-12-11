@@ -62,5 +62,9 @@
   "ok": "Ok",
   "isBrokenInput": "Cet objet doit être réparé",
   "isBrokenDisplay": "Doit être réparé",
-  "isBrokenFilter": "Montrer seulement à réparer"
+  "isBrokenFilter": "Montrer seulement à réparer",
+  "exportDb": "Exporter les données",
+  "importDb": "Importer des données",
+  "fileDownloaded": "Fichier sauvegardé dans Téléchargements",
+  "importCompleted": "Import terminé"
 }

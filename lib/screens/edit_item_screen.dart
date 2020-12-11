@@ -70,7 +70,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
           setState(
             () {
               //Create a clone so we don't directly edit the item in the provider
-              _editedItem = entity.Item.clone(arg);
+              _editedItem =
+                  entity.Item.fromJson(jsonDecode(jsonEncode(arg.toJson())));
               img = _editedItem.picture.isNotEmpty
                   ? Image.memory(
                       base64Decode(_editedItem.picture),
@@ -159,6 +160,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
 
   ///Adds or removes a [Season] to the [_editedItem]
   void _toggleSeason(Item tag) {
+    print(context.read<Items>().items[2].seasons);
     if (tag.active) {
       _editedItem.seasons.add(tag.customData);
     } else {
@@ -370,7 +372,10 @@ class _EditItemScreenState extends State<EditItemScreen> {
                             if (value.length < 3) {
                               return LocaleKeys.errorMinLength.tr(
                                   gender: 'male',
-                                  args: [LocaleKeys.title.tr().toLowerCase(), '3']);
+                                  args: [
+                                    LocaleKeys.title.tr().toLowerCase(),
+                                    '3'
+                                  ]);
                             }
                             return null;
                           },

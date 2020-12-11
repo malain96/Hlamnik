@@ -461,14 +461,35 @@ class MainDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text(LocaleKeys.addSomething
-                .tr(gender: 'female', args: [LocaleKeys.color.tr().toLowerCase()])),
+            title: Text(LocaleKeys.addSomething.tr(
+                gender: 'female', args: [LocaleKeys.color.tr().toLowerCase()])),
             onTap: () {
               Navigator.of(context).pop();
               BottomSheetUtils.showCustomModalBottomSheet(
                 context: context,
                 builder: (_) => ColorForm(),
               );
+            },
+          ),
+          ListTile(
+            title: Text(LocaleKeys.exportDb.tr()),
+            onTap: () async {
+              Navigator.of(context).pop();
+              DBService.exportDb();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(LocaleKeys.fileDownloaded.tr()),
+              ));
+            },
+          ),
+          ListTile(
+            title: Text(LocaleKeys.importDb.tr()),
+            onTap: () async {
+              await DBService.importDb();
+              Navigator.of(context).pop();
+              await context.read<Items>().loadItems();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(LocaleKeys.importCompleted.tr()),
+              ));
             },
           ),
         ],

@@ -4,6 +4,9 @@ import 'package:hlamnik/database/entities/brand.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/color.dart';
 import 'package:hlamnik/database/entities/season.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'item.g.dart';
 
 /// Defines the [Item] table
 @Entity(
@@ -20,6 +23,7 @@ import 'package:hlamnik/database/entities/season.dart';
     ),
   ],
 )
+@JsonSerializable(nullable: false)
 class Item {
   @primaryKey
   int id;
@@ -31,8 +35,6 @@ class Item {
   String purchaseYear;
   bool isBroken;
   final String createdAt;
-  @ignore
-  Color color;
   @ColumnInfo(name: 'category_id')
   int categoryId;
   @ColumnInfo(name: 'brand_id')
@@ -57,30 +59,14 @@ class Item {
     @required this.purchaseYear,
     this.brandId,
     this.categoryId,
-    this.color,
     this.category,
     this.brand,
     this.seasons,
     this.colors,
   }) : createdAt = DateTime.now().toIso8601String();
 
-  ///Clones an existing [Item]
-  Item.clone(Item item)
-      : this(
-    id: item.id,
-    title: item.title,
-    quality: item.quality,
-    rating: item.rating,
-    picture: item.picture,
-    comment: item.comment,
-    isBroken: item.isBroken,
-    purchaseYear: item.purchaseYear,
-    categoryId: item.categoryId,
-    brandId: item.brandId,
-    brand: item.brand,
-    color: item.color,
-    category: item.category,
-    seasons: item.seasons,
-    colors: item.colors,
-  );
+  ///Converts JSON to Item
+  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
+  ///Converts Item to JSON
+  Map<String, dynamic> toJson() => _$ItemToJson(this);
 }

@@ -23,7 +23,7 @@ class Items with ChangeNotifier {
   }
 
   ///Add a new [Item] to the database
-  Future<void>addItem(Item item) async {
+  Future<void> addItem(Item item) async {
     final db = await DBService.getDatabase;
     final addedItemId = await db.itemDao.insertValue(item);
     await Future.forEach(
@@ -50,16 +50,17 @@ class Items with ChangeNotifier {
   }
 
   ///Update an existing [Item] in the database
-  Future<void>updateItem(Item item) async {
+  Future<void> updateItem(Item item) async {
     final itemIndex = _items.indexWhere((i) => i.id == item.id);
     final oldItem = _items[itemIndex];
     final db = await DBService.getDatabase;
     await db.itemDao.updateValue(item);
     // Retrieve a list of seasons to delete and to add
-    final seasonsToDelete =
-        oldItem.seasons.where((season) => item.seasons.contains(season));
-    final seasonsToAdd =
-        item.seasons.where((season) => oldItem.seasons.contains(season));
+    final seasonsToDelete = oldItem.seasons.where((oldSeason) =>
+        !item.seasons.map((season) => season.name).contains(oldSeason.name));
+    final seasonsToAdd = item.seasons.where((season) => !oldItem.seasons
+        .map((oldSeason) => oldSeason.name)
+        .contains(season.name));
     // Delete and add the itemSeasons after mapping the season to an itemSeason
     await db.itemSeasonDao.deleteValues(
       seasonsToDelete
@@ -76,10 +77,10 @@ class Items with ChangeNotifier {
           .toList(),
     );
     // Retrieve a list of colors to delete and to add
-    final colorsToDelete =
-        oldItem.colors.where((color) => item.colors.contains(color));
-    final colorsToAdd =
-        item.colors.where((color) => oldItem.colors.contains(color));
+    final colorsToDelete = oldItem.colors.where((oldColor) =>
+        !item.colors.map((color) => color.code).contains(oldColor.code));
+    final colorsToAdd = item.colors.where((color) =>
+        !oldItem.colors.map((oldColor) => oldColor.code).contains(color.code));
     // Delete and add the itemColors after mapping the color to an itemColor
     await db.itemColorDao.deleteValues(
       colorsToDelete
@@ -107,7 +108,7 @@ class Items with ChangeNotifier {
   }
 
   ///Filter the list of [Item]
-  Future<void>filterItems(Filter filter) async {
+  Future<void> filterItems(Filter filter) async {
     var filteredItems = await _getItems;
     // Remove all items which have a quality lower than the filter
     if (filter.quality != null) {
@@ -147,7 +148,6 @@ class Items with ChangeNotifier {
       filteredItems.removeWhere((item) => !item.isBroken);
     }
 
-
     _items = filteredItems;
     notifyListeners();
   }
@@ -158,7 +158,7 @@ class Items with ChangeNotifier {
   }
 
   ///Deletes an existing [Item] from the database
-  Future<void>deleteItem(Item item) async {
+  Future<void> deleteItem(Item item) async {
     final db = await DBService.getDatabase;
     final itemSeasonList = await db.itemSeasonDao.findSeasonIdsByItem(item.id);
     final itemColorList = await db.itemColorDao.findColorIdsByItem(item.id);
