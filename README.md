@@ -20,9 +20,10 @@ For now the user can:
 * Delete an item
 * Add new colors and categories
 
-You can see future developments by checking the [issues](https://github.com/malain96/Hlamnik/issues). Feel free to add new issues.
+You can see Future<void>developments by checking the [issues](https://github.com/malain96/Hlamnik/issues). Feel free to add new issues.
 You are more than welcome to use and modify the app as you please. 
 
+:warning: Note: I don't own a Mac, so the project isn't configured for IOS.
  
 ## Pre-requisites
 
@@ -34,6 +35,8 @@ You are more than welcome to use and modify the app as you please.
 
 * Clone or download the repository 
 * Open the project in your favorite IDE (Android Studio or VS Code)
+* Generate the database using `flutter packages pub run build_runner build`
+* Generate the localizations using `flutter pub run easy_localization:generate -S assets/translations -f keys -o locale_keys.g.dart`
 * Launch an emulator or connect your phone
 * Run the app
 

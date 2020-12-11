@@ -3,11 +3,11 @@ import 'package:floor/floor.dart';
 /// Abstract class use to extend all daos and perform basic insert/delete/update actions
 abstract class AbstractDao<T> {
   ///Inserts the given [value] in the database and returns the generated id
-  @insert
+  @Insert(onConflict: OnConflictStrategy.ignore)
   Future<int> insertValue(T value);
 
   ///Inserts the given [values] in the database and returns a list of generated id
-  @insert
+  @Insert(onConflict: OnConflictStrategy.ignore)
   Future<List<int>> insertValues(List<T> values);
 
   ///Updates the given [value] in the database and returns the number of affected rows

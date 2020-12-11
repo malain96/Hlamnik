@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:hlamnik/database/entities/season.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -33,7 +34,7 @@ class SeasonTagsInput extends StatelessWidget {
           childLeftPadding: 13,
           childRightPadding: 13,
           childTopPadding: 27,
-          label: 'seasons'.tr(),
+          label: LocaleKeys.seasons.tr(),
           error: error,
           child: Tags(
             alignment: WrapAlignment.spaceEvenly,
