@@ -2,15 +2,17 @@
 class Filter {
   double quality;
   double rating;
-  int colorId;
+  List<int> colorIdList;
   int categoryId;
   int seasonId;
+  bool showOnlyIsBroken;
 
   Filter({
     this.quality = 0,
     this.rating = 0,
-    this.colorId,
+    this.colorIdList,
     this.categoryId,
     this.seasonId,
+    this.showOnlyIsBroken = false,
   });
 }

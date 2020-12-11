@@ -1,5 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
-//import 'package:hlamnik/database/entities/category.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/database/entities/color.dart';
 import 'package:hlamnik/database/entities/season.dart';
 import 'package:hlamnik/services/db_service.dart';
@@ -81,22 +81,22 @@ class Seed {
       await seasonDao.insertValue(
         Season(
           id: 1,
-          name: 'winter'.tr(),
+          name: LocaleKeys.winter.tr(),
         ),
       );await seasonDao.insertValue(
         Season(
           id: 2,
-          name: 'fall'.tr(),
+          name: LocaleKeys.fall.tr(),
         ),
       );await seasonDao.insertValue(
         Season(
           id: 3,
-          name: 'summer'.tr(),
+          name: LocaleKeys.summer.tr(),
         ),
       );await seasonDao.insertValue(
         Season(
           id: 4,
-          name: 'autumn'.tr(),
+          name: LocaleKeys.autumn.tr(),
         ),
       );
     }

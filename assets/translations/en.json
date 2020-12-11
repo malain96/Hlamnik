@@ -29,6 +29,7 @@
   "seasons": "Seasons",
   "season": "Season",
   "color": "Color",
+  "colors": "Colors",
   "select": "Select",
   "selectSomething": {
     "male": "Select a {}",
@@ -48,5 +49,23 @@
     "female": "Add a {}",
     "other": "Add a {}"
   },
-  "menu": "Menu"
+  "menu": "Menu",
+  "search": "Search",
+  "noData": "No data found",
+  "year": "Year",
+  "boughtLessYear": "Bought less than a year ago",
+  "boughtYearsAgo": "Bought {} year(s) ago",
+  "uploadPicture": "Import",
+  "save": "Save",
+  "brand": "Brand",
+  "error": "Error",
+  "usedError": "You can't delete this value because it's used by an item or more",
+  "ok": "Ok",
+  "isBrokenInput": "This item needs to be fixed",
+  "isBrokenDisplay": "Needs to be fixed",
+  "isBrokenFilter": "Show only needs to be fixed",
+  "exportDb": "Export data",
+  "importDb": "Import data",
+  "fileDownloaded": "File saved to Downloads",
+  "importCompleted": "Import completed"
 }

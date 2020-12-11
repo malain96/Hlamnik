@@ -3,22 +3,29 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:hlamnik/database/entities/brand.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/item.dart';
 import 'package:hlamnik/database/entities/season.dart';
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/models/filter.dart';
+import 'package:hlamnik/providers/admin_crud.dart';
 import 'package:hlamnik/providers/items.dart';
 import 'package:hlamnik/screens/edit_item_screen.dart';
 import 'package:hlamnik/screens/item_details_screen.dart';
 import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
+import 'package:hlamnik/utils/bottom_sheet_utils.dart';
+import 'package:hlamnik/widgets/color_form.dart';
 import 'package:hlamnik/widgets/color_picker_input.dart';
+import 'package:hlamnik/widgets/crud_name_widget.dart';
 import 'package:hlamnik/widgets/custom_dropdown_search.dart';
 import 'package:hlamnik/widgets/loading_indicator.dart';
 import 'package:hlamnik/widgets/modal_bottom_sheet_form.dart';
 import 'package:hlamnik/widgets/rating_display.dart';
 import 'package:hlamnik/widgets/rating_input.dart';
+import 'package:hlamnik/widgets/simple_name_form.dart';
+import 'package:hlamnik/widgets/switch_input.dart';
 import 'package:provider/provider.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 
@@ -49,7 +56,7 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
   }
 
   ///Refreshes the list of [Item]
-  Future _refreshItems() async => await context.read<Items>().loadItems();
+  Future<void> _refreshItems() async => await context.read<Items>().loadItems();
 
   ///Navigates to the [EditItemScreen]
   void _onAddPressed(BuildContext context) =>
@@ -73,7 +80,7 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'itemsOverviewScreenTitle'.tr(),
+          LocaleKeys.itemsOverviewScreenTitle.tr(),
         ),
         actions: <Widget>[
           IconButton(
@@ -96,7 +103,7 @@ class _ItemsOverviewScreenState extends State<ItemsOverviewScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Text(
-                      'noItems'.tr(),
+                      LocaleKeys.noItems.tr(),
                       textAlign: TextAlign.center,
                     ),
                     IconButton(
@@ -139,10 +146,10 @@ class FilterModal extends StatefulWidget {
 
 class _FilterModalState extends State<FilterModal> {
   var _isLoading = false;
+  var _selectedColors = <entity.Color>[];
   Category _selectedCategory;
   Season _selectedSeason;
-  entity.Color _selectedColor;
-  var _filter = Filter();
+  final _filter = Filter();
 
   ///Returns a list of [Category]
   Future<List<Category>> get _categories async {
@@ -174,16 +181,30 @@ class _FilterModalState extends State<FilterModal> {
     _filter.seasonId = season.id;
   }
 
-  ///Sets the [Color] of the [_filter] to the selected color
-  Future _selectColor(Color color) async {
+  ///Sets the [List] of [Color] of the [_filter]
+  Future<void> _selectColors(List<Color> colors) async {
     final db = await DBService.getDatabase;
-    final dbColor = await db.colorDao
-        .findByCode(color.toString().substring(10, 16).toUpperCase());
+    var dbColors = <entity.Color>[];
+    await Future.forEach(
+      colors,
+      (color) async => dbColors.add(
+        await db.colorDao.findByCode(
+          color.toString().substring(10, 16).toUpperCase(),
+        ),
+      ),
+    );
     setState(() {
-      _selectedColor = dbColor;
-      _filter.colorId = dbColor.id;
+      _selectedColors = dbColors;
+      _filter.colorIdList = dbColors.map((dbColor) => dbColor.id).toList();
     });
     Navigator.of(context).pop();
+  }
+
+  ///Sets the isBroken flag of the [_filter] to the selected category
+  void _toggleShowOnlyIsBroken(bool showOnlyIsBroken) {
+    setState(() {
+      _filter.showOnlyIsBroken = showOnlyIsBroken;
+    });
   }
 
   ///Filters the list of [Item] with the given [_filter]
@@ -201,37 +222,47 @@ class _FilterModalState extends State<FilterModal> {
   @override
   Widget build(BuildContext context) {
     return ModalBottomSheetForm(
-      title: 'filter'.tr(),
-      form: Wrap(
-        runSpacing: 10,
-        children: <Widget>[
-          RatingInput(
-            label: 'rating'.tr(),
-            initialValue: _filter.rating,
-            onPress: _setRating,
+      title: LocaleKeys.filter.tr(),
+      form: Expanded(
+        child: SingleChildScrollView(
+          child: Wrap(
+            runSpacing: 10,
+            children: <Widget>[
+              RatingInput(
+                label: LocaleKeys.rating.tr(),
+                initialValue: _filter.rating,
+                onPress: _setRating,
+              ),
+              RatingInput(
+                label: LocaleKeys.quality.tr(),
+                initialValue: _filter.quality,
+                onPress: _setQuality,
+              ),
+              CustomDropdownSearch<Category>(
+                label: LocaleKeys.category.tr(),
+                onFind: (_) async => _categories,
+                onChanged: _selectCategory,
+                selectedItem: _selectedCategory,
+              ),
+              CustomDropdownSearch<Season>(
+                label: LocaleKeys.season.tr(),
+                onFind: (_) async => _seasons,
+                onChanged: _selectSeason,
+                selectedItem: _selectedSeason,
+              ),
+              ColorPickerInput(
+                pickedColors:
+                    _selectedColors.map((color) => color.getColor).toList(),
+                onSave: _selectColors,
+              ),
+              SwitchInput(
+                label: LocaleKeys.isBrokenFilter.tr(),
+                value: _filter.showOnlyIsBroken,
+                onChanged: _toggleShowOnlyIsBroken,
+              ),
+            ],
           ),
-          RatingInput(
-            label: 'quality'.tr(),
-            initialValue: _filter.quality,
-            onPress: _setQuality,
-          ),
-          CustomDropdownSearch<Category>(
-            label: 'category'.tr(),
-            onFind: (_) async => _categories,
-            onChanged: _selectCategory,
-            selectedItem: _selectedCategory,
-          ),
-          CustomDropdownSearch<Season>(
-            label: 'season'.tr(),
-            onFind: (_) async => _seasons,
-            onChanged: _selectSeason,
-            selectedItem: _selectedSeason,
-          ),
-          ColorPickerInput(
-            pickedColor: _selectedColor?.getColor,
-            onColorChanged: _selectColor,
-          ),
-        ],
+        ),
       ),
       saveForm: _onSavePressed,
       isLoading: _isLoading,
@@ -244,6 +275,14 @@ class ItemTile extends StatelessWidget {
   final Item item;
 
   ItemTile(this.item);
+
+  Widget _roundedContainer(Widget child) => Container(
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+            color: AppColors.secondaryColor.withOpacity(0.6),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        child: child,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -281,14 +320,24 @@ class ItemTile extends StatelessWidget {
             Positioned(
               left: 8,
               top: 8,
-              child: Container(
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                    color: AppColors.secondaryColor.withOpacity(0.6),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                child: RatingDisplay(
+              child: _roundedContainer(
+                RatingDisplay(
                   item.rating,
                   textColor: AppColors.primaryColor,
+                ),
+              ),
+            ),
+            Visibility(
+              visible: item.isBroken,
+              child: Positioned(
+                right: 8,
+                top: 8,
+                child: _roundedContainer(
+                  Icon(
+                    Icons.build,
+                    color: AppColors.errorColor,
+                    size: 20,
+                  ),
                 ),
               ),
             ),
@@ -313,19 +362,43 @@ class ItemTile extends StatelessWidget {
 
 ///Widget used to display the drawer
 class MainDrawer extends StatelessWidget {
-  ///Opens a bottom sheet with the given content
-  void _showModalBottomSheet(
-          {@required BuildContext context, @required WidgetBuilder builder}) =>
-      showModalBottomSheet(
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(15),
-          ),
-        ),
-        builder: builder,
-        isScrollControlled: true,
-      );
+  ///Created or edit a [Brand] in the database
+  void _onAddOrEditPressedBrand(BuildContext context, Brand brand) {
+    BottomSheetUtils.showCustomModalBottomSheet(
+      context: context,
+      builder: (_) => SimpleNameForm(
+        title: LocaleKeys.brand.tr(),
+        onSave: (int id, String name) {
+          if (id != null) {
+            context.read<AdminCrud>().editBrand(id, name);
+          } else {
+            context.read<AdminCrud>().addBrand(name);
+          }
+        },
+        id: brand?.id,
+        oldValue: brand?.name,
+      ),
+    );
+  }
+
+  ///Created or edit a [Category] in the database
+  void _onAddOrEditPressedCategory(BuildContext context, Category category) {
+    BottomSheetUtils.showCustomModalBottomSheet(
+      context: context,
+      builder: (_) => SimpleNameForm(
+        title: LocaleKeys.category.tr(),
+        onSave: (int id, String name) {
+          if (id != null) {
+            context.read<AdminCrud>().editCategory(id, name);
+          } else {
+            context.read<AdminCrud>().addCategory(name);
+          }
+        },
+        id: category?.id,
+        oldValue: category?.name,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -335,164 +408,92 @@ class MainDrawer extends StatelessWidget {
           SizedBox(
             height: 100,
             child: DrawerHeader(
-              child: Text('menu'.tr()),
+              child: Text(LocaleKeys.menu.tr()),
             ),
           ),
           ListTile(
-              title: Text('addSomething'
-                  .tr(gender: 'female', args: ['category'.tr().toLowerCase()])),
-              onTap: () {
-                Navigator.of(context).pop();
-                _showModalBottomSheet(
-                  context: context,
-                  builder: (_) => CategoryForm(),
-                );
-              }),
-          ListTile(
-            title: Text('addSomething'
-                .tr(gender: 'female', args: ['color'.tr().toLowerCase()])),
+            title: Text(LocaleKeys.category.tr()),
             onTap: () {
               Navigator.of(context).pop();
-              _showModalBottomSheet(
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => CrudNameWidget<Category>(
+                    title: LocaleKeys.category.tr(),
+                    values: context.watch<AdminCrud>().categories,
+                    onAddOrEditPressed: (Category category) =>
+                        _onAddOrEditPressedCategory(context, category),
+                    loadValues: () =>
+                        context.read<AdminCrud>().loadCategories(),
+                    onDelete: (int index) async {
+                      try {
+                        await context.read<AdminCrud>().removeCategory(index);
+                      } catch (_) {
+                        rethrow;
+                      }
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: Text(LocaleKeys.brand.tr()),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => CrudNameWidget<Brand>(
+                    title: LocaleKeys.brand.tr(),
+                    values: context.watch<AdminCrud>().brands,
+                    onAddOrEditPressed: (Brand brand) =>
+                        _onAddOrEditPressedBrand(context, brand),
+                    loadValues: () => context.read<AdminCrud>().loadBrands(),
+                    onDelete: (int index) async {
+                      try {
+                        await context.read<AdminCrud>().removeBrand(index);
+                      } catch (_) {
+                        rethrow;
+                      }
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: Text(LocaleKeys.addSomething.tr(
+                gender: 'female', args: [LocaleKeys.color.tr().toLowerCase()])),
+            onTap: () {
+              Navigator.of(context).pop();
+              BottomSheetUtils.showCustomModalBottomSheet(
                 context: context,
                 builder: (_) => ColorForm(),
               );
             },
           ),
+          ListTile(
+            title: Text(LocaleKeys.exportDb.tr()),
+            onTap: () async {
+              Navigator.of(context).pop();
+              DBService.exportDb();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(LocaleKeys.fileDownloaded.tr()),
+              ));
+            },
+          ),
+          ListTile(
+            title: Text(LocaleKeys.importDb.tr()),
+            onTap: () async {
+              await DBService.importDb();
+              Navigator.of(context).pop();
+              await context.read<Items>().loadItems();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(LocaleKeys.importCompleted.tr()),
+              ));
+            },
+          ),
         ],
       ),
-    );
-  }
-}
-
-///Widget used to add a new [Category]
-class CategoryForm extends StatefulWidget {
-  @override
-  _CategoryFormState createState() => _CategoryFormState();
-}
-
-class _CategoryFormState extends State<CategoryForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
-  var _name = '';
-  var _isLoading = false;
-
-  ///Sets the [_name] to the selected name
-  void _setName(String name) => _name = name;
-
-  ///Validates and creates the new [Category]
-  Future _saveForm() async {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    _formKey.currentState.save();
-
-    final db = await DBService.getDatabase;
-    await db.categoryDao.insertValue(Category(id: null, name: _name));
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    Navigator.of(context).pop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ModalBottomSheetForm(
-      title: 'category'.tr(),
-      form: Form(
-        key: _formKey,
-        child: TextFormField(
-          decoration: InputDecoration(
-            labelText: 'title'.tr(),
-          ),
-          textCapitalization: TextCapitalization.sentences,
-          autocorrect: true,
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'errorNoAction'.tr(
-                gender: 'male',
-                args: [
-                  'enter'.tr().toLowerCase(),
-                  'title'.tr().toLowerCase(),
-                ],
-              );
-            }
-
-            if (value.length < 3) {
-              return 'errorMinLength'
-                  .tr(gender: 'male', args: ['title'.tr().toLowerCase(), '3']);
-            }
-            return null;
-          },
-          onSaved: _setName,
-          //Should save
-          onFieldSubmitted: (_) => _saveForm(),
-        ),
-      ),
-      saveForm: _saveForm,
-      isLoading: _isLoading,
-    );
-  }
-}
-
-///Widget used to add a new [Color]
-class ColorForm extends StatefulWidget {
-  @override
-  _ColorFormState createState() => _ColorFormState();
-}
-
-class _ColorFormState extends State<ColorForm> {
-  var _color = AppColors.primaryColor;
-  var _isLoading = false;
-
-  ///Sets the [_color] to the selected color
-  void _setColor(Color color) => _color = color;
-
-  ///Validates and creates the new [Color]
-  Future _saveForm() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    final db = await DBService.getDatabase;
-    await db.colorDao.insertValue(
-      entity.Color(
-        id: null,
-        code: _color.value.toRadixString(16).padLeft(6, '0').substring(2).toUpperCase(),
-      ),
-    );
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    Navigator.of(context).pop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ModalBottomSheetForm(
-      title: 'color'.tr(),
-      form: Container(
-        child: ColorPicker(
-          pickerColor: _color,
-          pickerAreaHeightPercent: 0.7,
-          onColorChanged: _setColor,
-          enableAlpha: false,
-          displayThumbColor: true,
-          showLabel: false,
-          paletteType: PaletteType.hsl,
-          pickerAreaBorderRadius: BorderRadius.circular(15),
-        ),
-      ),
-      saveForm: _saveForm,
-      isLoading: _isLoading,
     );
   }
 }

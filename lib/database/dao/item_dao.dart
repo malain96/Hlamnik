@@ -7,7 +7,7 @@ import 'package:hlamnik/services/db_service.dart';
 @dao
 abstract class ItemDao extends AbstractDao<Item> {
   ///Query the database and returns all [Item]
-  @Query('SELECT * FROM Item')
+  @Query('SELECT * FROM Item ORDER BY title ASC')
   Future<List<Item>> listAll();
 
   ///Query the database and returns all [Item] with their children
@@ -20,8 +20,12 @@ abstract class ItemDao extends AbstractDao<Item> {
       item.seasons = await db.seasonDao.findByIds(
         itemSeasonList.map((itemSeason) => itemSeason.seasonId).toList(),
       );
+      final itemColorList = await db.itemColorDao.findColorIdsByItem(item.id);
+      item.colors = await db.colorDao.findByIds(
+        itemColorList.map((itemColor) => itemColor.colorId).toList(),
+      );
       item.category = await db.categoryDao.findById(item.categoryId);
-      item.color = await db.colorDao.findById(item.colorId);
+      item.brand = await db.brandDao.findById(item.brandId);
     });
     return items;
   }

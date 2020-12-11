@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:hlamnik/database/entities/brand.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/color.dart' as entity;
 import 'package:hlamnik/database/entities/item.dart' as entity;
+import 'package:hlamnik/generated/locale_keys.g.dart';
 import 'package:hlamnik/providers/items.dart';
 import 'package:hlamnik/services/db_service.dart';
 import 'package:hlamnik/themes/main_theme.dart';
@@ -18,7 +20,10 @@ import 'package:hlamnik/widgets/image_input.dart';
 import 'package:hlamnik/widgets/loading_indicator.dart';
 import 'package:hlamnik/widgets/rating_input.dart';
 import 'package:hlamnik/widgets/season_tags_input.dart';
+import 'package:hlamnik/widgets/switch_input.dart';
+import 'package:hlamnik/widgets/year_picker_input.dart';
 import 'package:provider/provider.dart';
+import 'package:supercharged/supercharged.dart';
 
 ///Screen used to edit/add new items
 class EditItemScreen extends StatefulWidget {
@@ -38,13 +43,16 @@ class _EditItemScreenState extends State<EditItemScreen> {
     title: '',
     picture: '',
     comment: '',
+    purchaseYear: DateTime.now().year.toString(),
+    isBroken: false,
     rating: 2.5,
     quality: 2.5,
-    colorId: null,
-    color: null,
     categoryId: null,
     category: null,
+    brandId: null,
+    brand: null,
     seasons: [],
+    colors: [],
   );
   String _seasonError;
   String _colorError;
@@ -62,7 +70,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
           setState(
             () {
               //Create a clone so we don't directly edit the item in the provider
-              _editedItem = entity.Item.clone(arg);
+              _editedItem =
+                  entity.Item.fromJson(jsonDecode(jsonEncode(arg.toJson())));
               img = _editedItem.picture.isNotEmpty
                   ? Image.memory(
                       base64Decode(_editedItem.picture),
@@ -86,18 +95,32 @@ class _EditItemScreenState extends State<EditItemScreen> {
     super.dispose();
   }
 
-  ///Sets the [Color] of the [_editedItem] to the selected [Color]
-  Future _changeColor(Color color) async {
+  ///Sets the [List] of [entity.Color] of the [_editedItem] from the selected [List] of [Color]
+  Future<void> _saveColors(List<Color> colors) async {
     final db = await DBService.getDatabase;
-    final dbColor = await db.colorDao
-        .findByCode(color.toString().substring(10, 16).toUpperCase());
-    setState(() {
-      _editedItem.color = dbColor;
-      _editedItem.colorId = dbColor.id;
-    });
+    var dbColors = <entity.Color>[];
+    await Future.forEach(
+      colors,
+      (color) async => dbColors.add(
+        await db.colorDao.findByCode(
+          color.toString().substring(10, 16).toUpperCase(),
+        ),
+      ),
+    );
+    _setColors(dbColors);
     Navigator.of(context).pop();
     _colorValidation();
   }
+
+  ///Adds an [entity.Color] to the [_editedItem]
+  void _setColor(entity.Color dbColor) => setState(() {
+        _editedItem.colors.add(dbColor);
+      });
+
+  ///Sets the [List] of [entity.Color] of the [_editedItem]
+  void _setColors(List<entity.Color> dbColors) => setState(() {
+        _editedItem.colors = dbColors;
+      });
 
   ///Sets the picture of the [_editedItem] to the taken picture
   void _selectImage(String base64) {
@@ -105,14 +128,39 @@ class _EditItemScreenState extends State<EditItemScreen> {
     _pictureValidation();
   }
 
-  ///Sets the [Category] of the [_editedItem] to the selected [Cateogry]
+  ///Sets the [Category] of the [_editedItem] to the selected [Category]
   void _selectCategory(Category category) {
     _editedItem.category = category;
     _editedItem.categoryId = category.id;
   }
 
+  ///Creates a new [Category] returns it
+  Future<Category> _createCategory(String categoryLabel) async {
+    final db = await DBService.getDatabase;
+    var category = Category(name: categoryLabel);
+    category.id = await db.categoryDao.insertValue(category);
+    Navigator.of(context).pop();
+    return category;
+  }
+
+  ///Sets the [Brand] of the [_editedItem] to the selected [Brand]
+  void _selectBrand(Brand brand) {
+    _editedItem.brand = brand;
+    _editedItem.brandId = brand.id;
+  }
+
+  ///Creates a new [Brand] returns it
+  Future<Brand> _createBrand(String brandLabel) async {
+    final db = await DBService.getDatabase;
+    var brand = Brand(name: brandLabel);
+    brand.id = await db.brandDao.insertValue(brand);
+    Navigator.of(context).pop();
+    return brand;
+  }
+
   ///Adds or removes a [Season] to the [_editedItem]
   void _toggleSeason(Item tag) {
+    print(context.read<Items>().items[2].seasons);
     if (tag.active) {
       _editedItem.seasons.add(tag.customData);
     } else {
@@ -143,10 +191,31 @@ class _EditItemScreenState extends State<EditItemScreen> {
   ///Sets the comment of the [_editedItem] to the typed comment
   void _setComment(String comment) => _editedItem.comment = comment;
 
+  ///Sets the purchase year of the [_editedItem] to the selected year
+  void _setPurchaseYear(int year) => setState(() {
+        _editedItem.purchaseYear = year.toString();
+        Navigator.of(context).pop();
+      });
+
+  ///Toggles the isBroken flag of the [_editedItem]
+  void _toggleIsBroken(bool isBroken) {
+    setState(() {
+      _editedItem.isBroken = isBroken;
+    });
+  }
+
   ///Returns the list of [Category]
   Future<List<Category>> get _categories async {
     final db = await DBService.getDatabase;
-    return await db.categoryDao.listAll();
+    final categories = await db.categoryDao.listAll();
+    return categories.sortedByString((category) => category.name.toLowerCase());
+  }
+
+  ///Returns the list of [Brand]
+  Future<List<Brand>> get _brands async {
+    final db = await DBService.getDatabase;
+    final categories = await db.brandDao.listAll();
+    return categories.sortedByString((brand) => brand.name.toLowerCase());
   }
 
   ///Validates the [Season] of the [_editedItem] and returns an error message
@@ -154,11 +223,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
   void _seasonValidation() {
     if (_editedItem.seasons.isEmpty) {
       setState(() {
-        _seasonError = 'errorNoAction'.tr(
+        _seasonError = LocaleKeys.errorNoAction.tr(
           gender: 'female',
           args: [
-            'select'.tr().toLowerCase(),
-            'season'.tr().toLowerCase(),
+            LocaleKeys.select.tr().toLowerCase(),
+            LocaleKeys.season.tr().toLowerCase(),
           ],
         );
       });
@@ -170,15 +239,15 @@ class _EditItemScreenState extends State<EditItemScreen> {
   }
 
   ///Validates the [Color] of the [_editedItem] and returns an error message
-  ///The [_editedItem] needs to have a [Season]
+  ///The [_editedItem] needs to have a [Color]
   void _colorValidation() {
-    if (_editedItem.color == null) {
+    if (_editedItem.colors.isEmpty) {
       setState(() {
-        _colorError = 'errorNoAction'.tr(
+        _colorError = LocaleKeys.errorNoAction.tr(
           gender: 'female',
           args: [
-            'select'.tr().toLowerCase(),
-            'color'.tr().toLowerCase(),
+            LocaleKeys.select.tr().toLowerCase(),
+            LocaleKeys.color.tr().toLowerCase(),
           ],
         );
       });
@@ -194,11 +263,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
   void _pictureValidation() {
     if (_editedItem.picture.isEmpty) {
       setState(() {
-        _pictureError = 'errorNoAction'.tr(
+        _pictureError = LocaleKeys.errorNoAction.tr(
           gender: 'female',
           args: [
-            'take'.tr().toLowerCase(),
-            'picture'.tr().toLowerCase(),
+            LocaleKeys.take.tr().toLowerCase(),
+            LocaleKeys.picture.tr().toLowerCase(),
           ],
         );
       });
@@ -212,7 +281,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
   ///Validates the entire form and saves the data if there is no error
   ///If the [_editedItem] has an id, updates the existing [Item] in the database
   ///Otherwise, adds a new [Item] in the database
-  Future _saveForm() async {
+  Future<void> _saveForm() async {
     _seasonValidation();
     _colorValidation();
     _pictureValidation();
@@ -252,7 +321,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'editItemScreenTitleAdd'.tr(),
+            LocaleKeys.editItemScreenTitleAdd.tr(),
           ),
           actions: <Widget>[
             _isLoading
@@ -284,26 +353,29 @@ class _EditItemScreenState extends State<EditItemScreen> {
                         TextFormField(
                           controller: titleController,
                           decoration: InputDecoration(
-                            labelText: 'title'.tr(),
+                            labelText: LocaleKeys.title.tr(),
                           ),
                           textCapitalization: TextCapitalization.sentences,
                           textInputAction: TextInputAction.next,
                           autocorrect: true,
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'errorNoAction'.tr(
+                              return LocaleKeys.errorNoAction.tr(
                                 gender: 'male',
                                 args: [
-                                  'enter'.tr().toLowerCase(),
-                                  'title'.tr().toLowerCase(),
+                                  LocaleKeys.enter.tr().toLowerCase(),
+                                  LocaleKeys.title.tr().toLowerCase(),
                                 ],
                               );
                             }
 
                             if (value.length < 3) {
-                              return 'errorMinLength'.tr(
+                              return LocaleKeys.errorMinLength.tr(
                                   gender: 'male',
-                                  args: ['title'.tr().toLowerCase(), '3']);
+                                  args: [
+                                    LocaleKeys.title.tr().toLowerCase(),
+                                    '3'
+                                  ]);
                             }
                             return null;
                           },
@@ -311,21 +383,36 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           onFieldSubmitted: (_) =>
                               FocusScope.of(context).nextFocus(),
                         ),
+                        YearPickerInput(
+                          onYearChanged: _setPurchaseYear,
+                          pickedYear: _editedItem.purchaseYear,
+                          error: null,
+                        ),
                         RatingInput(
-                          label: 'rating'.tr(),
+                          label: LocaleKeys.rating.tr(),
                           initialValue: _editedItem.rating,
                           onPress: _setRating,
                         ),
                         RatingInput(
-                          label: 'quality'.tr(),
+                          label: LocaleKeys.quality.tr(),
                           initialValue: _editedItem.quality,
                           onPress: _setQuality,
                         ),
                         CustomDropdownSearch<Category>(
-                          label: 'category'.tr(),
+                          label: LocaleKeys.category.tr(),
                           onFind: (_) async => _categories,
                           onChanged: _selectCategory,
                           selectedItem: _editedItem.category,
+                          showCreateButton: true,
+                          onCreate: _createCategory,
+                        ),
+                        CustomDropdownSearch<Brand>(
+                          label: LocaleKeys.brand.tr(),
+                          onFind: (_) async => _brands,
+                          onChanged: _selectBrand,
+                          selectedItem: _editedItem.brand,
+                          showCreateButton: true,
+                          onCreate: _createBrand,
                         ),
                         SeasonTagsInput(
                           onPress: _toggleSeason,
@@ -333,14 +420,23 @@ class _EditItemScreenState extends State<EditItemScreen> {
                           error: _seasonError,
                         ),
                         ColorPickerInput(
-                          pickedColor: _editedItem.color?.getColor,
-                          onColorChanged: _changeColor,
+                          pickedColors: _editedItem.colors
+                              .map((color) => color.getColor)
+                              .toList(),
+                          onSave: _saveColors,
                           error: _colorError,
+                          showCreateButton: true,
+                          onCreate: _setColor,
+                        ),
+                        SwitchInput(
+                          label: LocaleKeys.isBrokenInput.tr(),
+                          value: _editedItem.isBroken,
+                          onChanged: _toggleIsBroken,
                         ),
                         TextFormField(
                           controller: commentController,
                           decoration: InputDecoration(
-                            labelText: 'comment'.tr(),
+                            labelText: LocaleKeys.comment.tr(),
                           ),
                           onSaved: _setComment,
                         ),

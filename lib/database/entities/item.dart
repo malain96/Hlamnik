@@ -1,16 +1,20 @@
 import 'package:floor/floor.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hlamnik/database/entities/brand.dart';
 import 'package:hlamnik/database/entities/category.dart';
 import 'package:hlamnik/database/entities/color.dart';
 import 'package:hlamnik/database/entities/season.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'item.g.dart';
 
 /// Defines the [Item] table
 @Entity(
   foreignKeys: [
     ForeignKey(
-      childColumns: ['color_id'],
+      childColumns: ['brand_id'],
       parentColumns: ['id'],
-      entity: Color,
+      entity: Brand,
     ),
     ForeignKey(
       childColumns: ['category_id'],
@@ -19,6 +23,7 @@ import 'package:hlamnik/database/entities/season.dart';
     ),
   ],
 )
+@JsonSerializable(nullable: false)
 class Item {
   @primaryKey
   int id;
@@ -27,17 +32,21 @@ class Item {
   double rating;
   String picture;
   String comment;
+  String purchaseYear;
+  bool isBroken;
   final String createdAt;
-  @ColumnInfo(name: 'color_id')
-  int colorId;
-  @ignore
-  Color color;
   @ColumnInfo(name: 'category_id')
   int categoryId;
+  @ColumnInfo(name: 'brand_id')
+  int brandId;
   @ignore
   Category category;
   @ignore
+  Brand brand;
+  @ignore
   List<Season> seasons;
+  @ignore
+  List<Color> colors;
 
   Item({
     @required this.id,
@@ -46,26 +55,18 @@ class Item {
     @required this.rating,
     @required this.picture,
     @required this.comment,
-    this.colorId,
+    @required this.isBroken,
+    @required this.purchaseYear,
+    this.brandId,
     this.categoryId,
-    this.color,
     this.category,
+    this.brand,
     this.seasons,
+    this.colors,
   }) : createdAt = DateTime.now().toIso8601String();
 
-  ///Clones an existing [Item]
-  Item.clone(Item item)
-      : this(
-          id: item.id,
-          title: item.title,
-          quality: item.quality,
-          rating: item.rating,
-          picture: item.picture,
-          comment: item.comment,
-          colorId: item.colorId,
-          categoryId: item.categoryId,
-          color: item.color,
-          category: item.category,
-          seasons: item.seasons,
-        );
+  ///Converts JSON to Item
+  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
+  ///Converts Item to JSON
+  Map<String, dynamic> toJson() => _$ItemToJson(this);
 }
