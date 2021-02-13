@@ -5,6 +5,7 @@
   * [Description](#description)
   * [Pre-requisites](#pre-requisites)
   * [Getting started](#getting-started)
+  * [Screenshots](#screenshots)
   * [License](#license)
 
 
@@ -39,6 +40,14 @@ You are more than welcome to use and modify the app as you please.
 * Generate the localizations using `flutter pub run easy_localization:generate -S assets/translations -f keys -o locale_keys.g.dart`
 * Launch an emulator or connect your phone
 * Run the app
+
+## Screenshots
+
+![Item List](https://github.com/malain96/Hlamnik/tree/master/screenshots/item_list.jpg)
+![Item List Filter](https://github.com/malain96/Hlamnik/tree/master/screenshots/item_list_filters.jpg)
+![Item details](https://github.com/malain96/Hlamnik/tree/master/screenshots/item_details.jpg)
+![Add item](https://github.com/malain96/Hlamnik/tree/master/screenshots/add_item.jpg)
+![Brand CRUD](https://github.com/malain96/Hlamnik/tree/master/screenshots/brand_crud.jpg)
 
 ## License
 
