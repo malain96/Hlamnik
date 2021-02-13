@@ -43,11 +43,11 @@ You are more than welcome to use and modify the app as you please.
 
 ## Screenshots
 
-![Item List](https://github.com/malain96/Hlamnik/tree/master/screenshots/item_list.jpg)
-![Item List Filter](https://github.com/malain96/Hlamnik/tree/master/screenshots/item_list_filters.jpg)
-![Item details](https://github.com/malain96/Hlamnik/tree/master/screenshots/item_details.jpg)
-![Add item](https://github.com/malain96/Hlamnik/tree/master/screenshots/add_item.jpg)
-![Brand CRUD](https://github.com/malain96/Hlamnik/tree/master/screenshots/brand_crud.jpg)
+![Item List](https://github.com/malain96/Hlamnik/tree/master/screenshots/item_list.jpg?raw=true)
+![Item List Filter](https://github.com/malain96/Hlamnik/tree/master/screenshots/item_list_filters.jpg?raw=true)
+![Item details](https://github.com/malain96/Hlamnik/tree/master/screenshots/item_details.jpg?raw=true)
+![Add item](https://github.com/malain96/Hlamnik/tree/master/screenshots/add_item.jpg?raw=true)
+![Brand CRUD](https://github.com/malain96/Hlamnik/tree/master/screenshots/brand_crud.jpg?raw=true)
 
 ## License
 
