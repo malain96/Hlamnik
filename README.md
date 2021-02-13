@@ -43,11 +43,13 @@ You are more than welcome to use and modify the app as you please.
 
 ## Screenshots
 
-<img src="https://github.com/malain96/Hlamnik/blob/master/screenshots/item_list.jpg?raw=true"  height="500">
-<img src="https://github.com/malain96/Hlamnik/blob/master/screenshots/item_list_filters.jpg?raw=true"  height="500">
-<img src="https://github.com/malain96/Hlamnik/blob/master/screenshots/item_details.jpg?raw=true"  height="500">
-<img src="https://github.com/malain96/Hlamnik/blob/master/screenshots/add_item.jpg?raw=true"  height="500">
-<img src="https://github.com/malain96/Hlamnik/blob/master/screenshots/brand_crud.jpg?raw=true"  height="500">
+<p float="left">
+  <img src="https://github.com/malain96/Hlamnik/blob/master/screenshots/item_list.jpg?raw=true"  height="500">
+  <img src="https://github.com/malain96/Hlamnik/blob/master/screenshots/item_list_filters.jpg?raw=true"  height="500">
+  <img src="https://github.com/malain96/Hlamnik/blob/master/screenshots/item_details.jpg?raw=true"  height="500">
+  <img src="https://github.com/malain96/Hlamnik/blob/master/screenshots/add_item.jpg?raw=true"  height="500">
+  <img src="https://github.com/malain96/Hlamnik/blob/master/screenshots/brand_crud.jpg?raw=true"  height="500">
+<p>
 
 ## License
 
